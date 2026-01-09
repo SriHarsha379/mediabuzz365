@@ -10,15 +10,144 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
+.dropdown.open .dropdown-menu{
+  display:block;
+}
 
+/* ================= BRAND ================= */
+:root{
+  --gold:#d4af37;
+  --orange:#f97316;
+  --dark:#1c1c1c;
+  --grey:#2e2e2e;
+  --light:#f5f5f5;
+}
 
+/* RESET */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* BODY */
 body{
   font-family:"Noto Sans Telugu",system-ui,sans-serif;
   background:#f4f6f9;
+  color:#111;
+}
+
+/* ================= HEADER ================= */
+header{
+  position:sticky;
+  top:0;
+  z-index:9999;
+  background:linear-gradient(135deg,var(--dark),#000);
+  border-bottom:3px solid var(--gold);
+}
+
+.header-inner{
+  max-width:1400px;
+  margin:auto;
+  padding:12px 16px;
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+
+/* LOGO */
+.logo img{
+  height:48px;
+}
+
+/* NAV */
+nav{flex:1}
+
+.menu{
+  position:fixed;
+  top:64px;
+  left:-100%;
+  width:260px;
+  height:calc(100vh - 64px); /* full height minus header */
+  background:#000;
+  flex-direction:column;
+  transition:.35s;
+  overflow-y:auto;  /* 🔥 THIS FIXES IT */
+  padding-bottom:40px;
 }
 
 
+.menu a{
+  color:#fff;
+  text-decoration:none;
+  font-weight:600;
+  letter-spacing:.3px;
+}
 
+.menu a:hover{color:var(--gold)}
+
+/* LIVE */
+.live-link{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:var(--orange);
+  font-weight:700;
+}
+
+.live-dot{
+  width:10px;
+  height:10px;
+  background:var(--orange);
+  border-radius:50%;
+  animation:blink 1.3s infinite;
+}
+
+@keyframes blink{
+  0%,100%{opacity:1}
+  50%{opacity:.3}
+}
+
+/* DROPDOWN */
+.dropdown{position:relative}
+
+.dropdown-menu{
+  display:none;
+  position:absolute;
+  top:100%;
+  left:0;
+  background:#fff;
+  min-width:220px;
+  border-radius:8px;
+  box-shadow:0 12px 30px rgba(0,0,0,.25);
+}
+
+/* Desktop only */
+@media(min-width:901px){
+  .dropdown:hover .dropdown-menu{
+    display:block;
+  }
+}
+
+
+.dropdown-menu a{
+  display:block;
+  padding:12px 14px;
+  color:#111;
+}
+
+.dropdown-menu a:hover{
+  background:#fff6d6;
+}
+
+/* USER */
+.user{
+  width:38px;
+  height:38px;
+  background:#fff;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.user img{width:22px}
 
 /* ================= MAIN ================= */
 main{
@@ -27,33 +156,100 @@ main{
   padding:0 20px;
 }
 
-h1{margin-bottom:20px}
+/* ================= LIVE LAYOUT ================= */
+.live-layout{
+  display:grid;
+  grid-template-columns:1fr 1.4fr;
+  gap:24px;
+}
+
+/* CARDS */
+.live-news,
+.live-video{
+  background:#fff;
+  border-radius:14px;
+  padding:16px;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
+}
+
+.section-title{
+  font-size:18px;
+  font-weight:700;
+  color:var(--dark);
+  margin-bottom:10px;
+}
 
 /* ================= VIDEO ================= */
-.video-area{
-  max-width:900px;
-}
-
 .video-box{
   background:#000;
-  border-radius:12px;
+  border-radius:14px;
   overflow:hidden;
   position:relative;
-  z-index:1;
 }
 
-.video-box::before{
-  content:"🔴 LIVE";
+/* LIVE BADGE */
+.video-logo{
+  position:absolute;
+  top:12px;
+  left:12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 12px;
+  border-radius:10px;
+  background:rgba(0,0,0,.6);
+  animation:glow 2s infinite alternate;
+}
+.video-watermark img{
+  height:50px;
+}
+
+.video-logo img{height:32px}
+.video-logo span{
+  color:var(--orange);
+  font-weight:700;
+}
+
+@keyframes glow{
+  from{box-shadow:0 0 8px rgba(249,115,22,.5)}
+  to{box-shadow:0 0 18px rgba(249,115,22,1)}
+}
+
+/* WATERMARK */
+/* ===== RIGHT SIDE CHANNEL LOGO ===== */
+.video-watermark{
   position:absolute;
   top:10px;
-  left:10px;
-  background:var(--brand);
-  color:#fff;
-  padding:5px 10px;
-  border-radius:20px;
-  font-size:12px;
-  z-index:2;
+  right:10px;
+
+  left:auto;
+  bottom:auto;
+  transform:none;
+
+  z-index:999;
+  opacity:0.7;
+  pointer-events:none;
 }
+
+
+.video-watermark img{
+  height:60px;              /* logo size */
+  width:auto;
+  object-fit:contain;
+  filter:drop-shadow(0 0 6px rgba(0,0,0,.6));
+  animation:logoPulse 2s infinite alternate;
+}
+@keyframes logoPulse{
+  from{filter:drop-shadow(0 0 4px #f97316)}
+  to{filter:drop-shadow(0 0 12px #f97316)}
+}
+/* Mobile */
+@media(max-width:600px){
+  .video-watermark img{
+    height:40px;
+  }
+}
+
 
 .video{
   position:relative;
@@ -68,480 +264,39 @@ h1{margin-bottom:20px}
   border:0;
 }
 
-/* ================= FIXED SIDE BUTTONS ================= */
-.live-side{
-  position:fixed;
-  top:160px;
-  right:24px;
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-  z-index:2000;
-}
-
-.live-btn{
-  width:160px;
-  padding:14px 10px;
-  border-radius:10px;
-  text-align:center;
-  font-weight:700;
-  cursor:pointer;
-  box-shadow:0 6px 18px rgba(0,0,0,.15);
-  transition:.25s;
-}
-.live-btn:hover{transform:translateY(-2px)}
-
-.live-btn.merupu{background:#e31e24;color:#fff}
-.live-btn.velugu{background:#0a2463;color:#fff}
-
-.live-btn span{
-  display:block;
-  font-size:12px;
-  font-weight:400;
-  margin-top:4px;
-}
-
-
-
-
-
-/* ================= FOOTER ================= */
-footer{
-  background:linear-gradient(135deg,var(--dark),#1e4d8b);
-  color:#fff;
-  padding:50px 20px 20px;
-  margin-top:80px;
-}
-.footer-inner{
-  width:100%;
-  max-width:1400px;
-  margin:auto;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:40px;
-}
-footer a{
-  color:#fff;
-  text-decoration:none;
-  opacity:.9;
-  display:block;
-  margin:6px 0;
-}
-footer a:hover{opacity:1}
-.copy{
-  text-align:center;
-  margin-top:30px;
-  opacity:.8;
-  font-size:14px;
-}
-
-
-
-/* ================= CHAT BOX ================= */
-.chat-widget{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  z-index:4000;
-  font-family:inherit;
-}
-
-/* Floating button */
-.chat-toggle{
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  background:var(--brand);
-  color:#fff;
-  font-size:24px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  box-shadow:0 6px 20px rgba(0,0,0,.3);
-}
-
-/* Chat box */
-.chat-box{
-  position:absolute;
-  bottom:70px;
-  right:0;
-  width:400px;
-  max-width:90vw;
-  height: 500px;
-  background:#fff;
-  border-radius:14px;
-  box-shadow:0 10px 30px rgba(0,0,0,.25);
+/* ================= BREAKING TICKER ================= */
+.news-container{
+  height:180px;
   overflow:hidden;
-  display:none;
-  flex-direction:column;
+  border-radius:12px;
+  background:#fff;
 }
 
-/* Header */
-.chat-header{
-  background:var(--dark);
-  color:#fff;
-  padding:12px 14px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-weight:600;
-}
-.chat-header button{
-  background:none;
-  border:none;
-  color:#fff;
-  font-size:16px;
-  cursor:pointer;
+.news-track{
+  animation:scroll 18s linear infinite;
 }
 
-/* Body */
-.chat-body{
-  padding:14px;
-  flex: 1;
-  overflow-y:auto;
-  background:#f4f6f9;
-}
-.msg{
-  margin-bottom:10px;
-  padding:8px 12px;
-  border-radius:10px;
-  max-width:85%;
-  font-size:13px;
-}
-.msg.bot{
-  background:#e9ebf0;
-}
-.msg.user{
-  background:var(--brand);
-  color:#fff;
-  margin-left:auto;
+@keyframes scroll{
+  0%{transform:translateY(0)}
+  100%{transform:translateY(-50%)}
 }
 
-/* Footer */
-.chat-footer{
-  display:flex;
-  border-top:1px solid #ddd;
-}
-.chat-footer input{
-  flex:1;
-  border:none;
+.news-box{
   padding:10px;
-  font-size:14px;
-  outline:none;
-}
-.chat-footer button{
-  background:var(--brand);
-  border:none;
-  color:#fff;
-  padding:0 16px;
-  cursor:pointer;
+  border-bottom:1px solid #eee;
 }
 
-
-
-
-/* ================= FOOTER APP BUTTONS ================= */
-
-.footer-apps{
-  display:flex;
-  gap:16px;
-  margin-top:24px;
-  flex-wrap:wrap;
-}
-
-.footer-apps img{
-  height:48px;
-  width:auto;
-  transition:transform .25s ease, box-shadow .25s ease;
-}
-
-.footer-apps a:hover img{
-  transform:translateY(-3px);
-  box-shadow:0 6px 18px rgba(0,0,0,.25);
-}
-
-/* mobile */
-@media(max-width:900px){
-  .footer-apps{
-    justify-content:center;
-  }
-  .footer-apps img{
-    height:42px;
-  }
-}
-
-
-
-
-
-
-
-
-
-/* ================= LIVE NEWS BOXES ================= */
-.news-container {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.news-container .news-box {
-  border: 1px solid #ddd;
-  padding: 12px 16px;
-  border-radius: 8px;
-  background: #fff;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.news-container .news-box:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-}
-
-.news-container .news-box h3 {
-  margin-bottom: 6px;
-  font-size: 18px;
-  color: var(--dark);
-}
-
-.news-container .news-box p {
-  margin: 0;
-  font-size: 14px;
-  color: #555;
-  line-height: 1.4;
-}
-
-/* ================= LIVE NEWS TICKER ================= */
-.news-container {
-  margin: 20px 0;
-  height: 160px;                 /* visible height */
-  overflow: hidden;
-  position: relative;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  padding: 10px;
-}
-
-.news-track {
-  display: flex;
-  flex-direction: column;
-  animation: newsScroll 20s linear infinite;
-}
-
-@keyframes newsScroll {
-  0%   { transform: translateY(0); }
-  100% { transform: translateY(-50%); }
-}
-
-
-.news-container:hover .news-track {
-  animation-play-state: paused; /* pause on hover */
-}
-
-.news-box {
-  padding: 10px 12px;
-  border-bottom: 1px solid #eee;
-}
-
-.news-box h3 {
-  font-size: 16px;
-  margin-bottom: 4px;
-  color: var(--dark);
-}
-
-.news-box p {
-  font-size: 14px;
-  color: #555;
-  margin: 0;
-}
-
-/* scroll animation */
-@keyframes newsScroll {
-  0%   { transform: translateY(0); }
-  100% { transform: translateY(-50%); }
-}
-
-
-
-
-/* ================= FLOATING LIVE WIDGET ================= */
-.live-widget{
-  position:fixed;
-  bottom:24px;
-  right:100px;   /* 👈 moved left from chat */
-  background:#111;
-  color:#fff;
-  padding:10px 16px;
-  border-radius:30px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  cursor:pointer;
-  z-index:3500;
-  box-shadow:0 8px 24px rgba(0,0,0,.35);
-  transition:transform .25s ease, background .25s ease;
-}
-
-
-.live-widget:hover{
-  transform:translateY(-3px);
-  background:#000;
-}
-
-/* blinking live dot */
-.live-dot{
-  width:10px;
-  height:10px;
-  background:#e31e24;
-  border-radius:50%;
-  animation:blink 1.4s infinite;
-}
-
-@keyframes blink{
-  0%,100%{opacity:1}
-  50%{opacity:.3}
-}
-
-.live-text{
-  font-size:13px;
-  font-weight:600;
-  letter-spacing:.3px;
-}
-
-/* hide live widget when chat is open */
-.live-widget.hide{
-  opacity:0;
-  pointer-events:none;
-  transform:scale(0.9);
-}
-
-@media(max-width:600px){
-  .live-widget{
-    right:20px;
-    bottom:90px; /* sits above chat icon */
-  }
-}
-
-
-
-/* ================= LIVE LAYOUT ================= */
-.live-layout{
-  display:grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap:24px;
-  align-items:start;
-  margin-top:20px;
-}
-
-/* section titles */
-.section-title{
-  margin-bottom:10px;
-  font-size:18px;
-  font-weight:700;
+.news-box h3{
+  font-size:16px;
   color:var(--dark);
 }
 
-/* LEFT: NEWS */
-.live-news{
-  background:#fff;
-  border-radius:12px;
-  padding:14px;
-  box-shadow:0 6px 18px rgba(0,0,0,.08);
+.news-box p{
+  font-size:14px;
+  color:#555;
 }
 
-/* RIGHT: VIDEO */
-.live-video{
-  background:#fff;
-  border-radius:12px;
-  padding:14px;
-  box-shadow:0 6px 18px rgba(0,0,0,.08);
-}
-
-/* MOBILE */
-@media(max-width:900px){
-  .live-layout{
-    grid-template-columns:1fr;
-  }
-}
-
-
-
-/* ===== LIVE VIDEO LOGO (ANIMATED GLOW) ===== */
-.video-logo{
-  position:absolute;
-  top:12px;
-  left:12px;
-  z-index:5;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:6px 10px;
-  border-radius:10px;
-  background:rgba(0,0,0,0.55);
-  pointer-events:none;
-  animation:logoGlow 2.5s infinite alternate;
-}
-
-.video-logo img{
-  height:32px;
-  width:auto;
-  object-fit:contain;
-}
-
-/* LIVE text */
-.video-logo span{
-  color:#fff;
-  font-size:12px;
-  font-weight:700;
-  letter-spacing:1px;
-}
-
-/* Glow animation */
-@keyframes logoGlow{
-  0%{
-    box-shadow:0 0 6px rgba(227,30,36,.4);
-  }
-  100%{
-    box-shadow:0 0 18px rgba(227,30,36,.95);
-  }
-}
-
-/* Mobile */
-@media(max-width:600px){
-  .video-logo img{ height:26px; }
-}
-
-
-/* ===== VIDEO WATERMARK ===== */
-.video-watermark{
-  position:absolute;
-  bottom:12px;
-  right:12px;
-  z-index:4;
-  opacity:0.25;                /* subtle */
-  pointer-events:none;
-}
-
-.video-watermark img{
-  height:38px;
-  width:auto;
-  object-fit:contain;
-}
-
-/* Mobile */
-@media(max-width:600px){
-  .video-watermark img{
-    height:28px;
-  }
-}
-
-
-
-/* ================= ALL NEWS GRID ================= */
+/* ================= ALL NEWS ================= */
 .all-news-grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
@@ -566,31 +321,21 @@ footer a:hover{opacity:1}
   object-fit:cover;
 }
 
-.news-content{
-  padding:14px;
-}
+.news-content{padding:14px}
 
 .news-content h3{
   font-size:16px;
   margin-bottom:6px;
-  color:var(--dark);
-}
-
-.news-content p{
-  font-size:14px;
-  color:#555;
-  line-height:1.4;
 }
 
 .news-meta{
   display:flex;
   justify-content:space-between;
-  margin-bottom:8px;
   font-size:12px;
   color:#777;
 }
 
-/* category badges */
+/* CATEGORY BADGES */
 .badge{
   padding:4px 10px;
   border-radius:20px;
@@ -598,14 +343,162 @@ footer a:hover{opacity:1}
   color:#fff;
 }
 
+.breaking{background:#dc2626}
 .politics{background:#16a34a}
 .crime{background:#b91c1c}
-.health{background:#22c55e}
-.sports{background:#ca8a04}
-.cinema{background:#9333ea}
 .business{background:#0f766e}
 .technology{background:#0891b2}
-.breaking{background:#e31e24}
+.cinema{background:#9333ea}
+.sports{background:#ca8a04}
+
+/* ================= FOOTER ================= */
+footer{
+  background:linear-gradient(135deg,var(--dark),#000);
+  color:#fff;
+  margin-top:60px;
+}
+
+.footer-inner{
+  max-width:1400px;
+  margin:auto;
+  padding:40px 20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:40px;
+}
+
+footer a{
+  color:#ddd;
+  text-decoration:none;
+  display:block;
+  margin:6px 0;
+}
+
+footer a:hover{color:var(--gold)}
+
+.copy{
+  text-align:center;
+  padding:12px;
+  background:#000;
+  font-size:13px;
+}
+
+/* ================= CHAT ================= */
+.chat-widget{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  z-index:4000;
+}
+
+.chat-toggle{
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--orange),var(--gold));
+  color:#fff;
+  font-size:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 6px 20px rgba(0,0,0,.35);
+}
+
+.chat-box{
+  position:absolute;
+  bottom:70px;
+  right:0;
+  width:360px;
+  height:480px;
+  background:#fff;
+  border-radius:14px;
+  display:none;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+/* ================= FLOAT LIVE ================= */
+.live-widget{
+  position:fixed;
+  bottom:24px;
+  right:100px;
+  background:#000;
+  color:#fff;
+  padding:10px 16px;
+  border-radius:30px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,.35);
+}
+
+.live-widget:hover{
+  background:#111;
+}
+
+/* ================= MOBILE ================= */
+.menu-btn{display:none}
+
+@media(max-width:900px){
+
+  /* Hide social icons from top */
+  .header-right .social{
+    display:none;
+  }
+
+  /* Only show user */
+  .header-right .user{
+    display:flex;
+  }
+
+  /* Move icons to side menu */
+  .mobile-social{
+    display:flex;
+    justify-content:center;
+    gap:16px;
+    padding:14px 0;
+    border-top:1px solid rgba(255,255,255,.15);
+  }
+
+  .mobile-social img{
+    width:26px;
+    background:rgba(255,255,255,.15);
+    padding:8px;
+    border-radius:50%;
+  }
+}
+
+
+  .menu-btn{
+    display:block;
+    font-size:26px;
+    color:#fff;
+    margin-left:auto;
+  }
+
+  .menu{
+    position:fixed;
+    top:64px;
+    left:-100%;
+    width:260px;
+    height:100vh;
+    background:#000;
+    flex-direction:column;
+    transition:.35s;
+  }
+
+  .menu.open{left:0}
+
+  .menu a{
+    padding:16px;
+    display:block;
+    border-bottom:1px solid rgba(255,255,255,.1);
+  }
+
+  .live-layout{
+    grid-template-columns:1fr;
+  }
+}
 
 
 
@@ -763,11 +656,12 @@ footer a:hover{opacity:1}
 
   <!-- Video -->
   <div class="video">
-    <iframe
-      src="https://www.youtube.com/embed/BBxhsGwOzQ0?autoplay=1&mute=1&playsinline=1"
-      allow="autoplay; encrypted-media"
-      allowfullscreen>
-    </iframe>
+<iframe
+  src="https://www.youtube.com/embed/NvaG6PijxUo?autoplay=1&mute=1&playsinline=1"
+  allow="autoplay; encrypted-media"
+  allowfullscreen>
+</iframe>
+
   </div>
 
 </div>
@@ -799,10 +693,11 @@ footer a:hover{opacity:1}
       <p style="margin-top:10px">Media Buzz 365 News – Latest Telugu Breaking News, Live TV & Special Stories.</p>
     </div>
     <div>
-      <a href="#">About</a>
-      <a href="#">Contact</a>
-      <a href="#">Advertise</a>
-      <a href="#">Privacy Policy</a>
+<a href="about.html">About</a>
+<a href="contact.html">Contact</a>
+<a href="advertise.html">Advertise</a>
+<a href="privacy.html">Privacy Policy</a>
+
     </div>
 
 
@@ -812,13 +707,13 @@ footer a:hover{opacity:1}
 
 <!-- APP STORE BUTTONS -->
 <div class="footer-apps">
-  <a href="#" target="_blank" aria-label="Google Play">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play">
-  </a>
+<!--  <a href="#" target="_blank" aria-label="Google Play">-->
+<!--    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play">-->
+<!--  </a>-->
 
-  <a href="#" target="_blank" aria-label="App Store">
-    <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store">
-  </a>
+<!--  <a href="#" target="_blank" aria-label="App Store">-->
+<!--    <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store">-->
+<!--  </a>-->
 </div>
 
 
@@ -1082,6 +977,28 @@ fetch("http://localhost:3000/api/news")
     });
   })
   .catch(err => console.error("All news error:", err));
+
+
+    document.querySelectorAll(".dropdown > a").forEach(menu=>{
+  menu.onclick = (e)=>{
+    if(window.innerWidth <= 900){
+      e.preventDefault();
+
+      const parent = menu.parentElement;
+
+      // close all
+      document.querySelectorAll(".dropdown").forEach(d=>{
+        if(d !== parent){
+          d.classList.remove("open");
+        }
+      });
+
+      // toggle current
+      parent.classList.toggle("open");
+    }
+  }
+});
+
 </script>
 
 </body>

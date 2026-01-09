@@ -97,7 +97,7 @@ nav{
     color:#111;                    /* ✅ always visible */
     font-size:20px;
     text-decoration:none;
-    
+
   }
 
   /* hover effect */
@@ -437,7 +437,7 @@ nav{
 
 
 .dropdown-menu{
-  z-index:4000;          
+  z-index:4000;
 }
 
 
