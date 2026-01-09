@@ -178,6 +178,16 @@ allow="autoplay; encrypted-media" allowfullscreen></iframe>
 © 2025 DHAATRI MEDIA BROADCAST PRIVATE LIMITED
 </div>
 </footer>
+<script>
+fetch("header.html")
+  .then(r => r.text())
+  .then(h => {
+    document.getElementById("header").innerHTML = h;
+    const s = document.createElement("script");
+    s.src = "header.js";
+    document.body.appendChild(s);
+  });
+</script>
 
 </body>
 </html>
