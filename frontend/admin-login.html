@@ -193,7 +193,7 @@ function login(){
   .then(d=>{
     if(d.success){
       localStorage.setItem("admin","true");
-      location.href="/admin";
+      location.href="/admin-dashboard.html";
     } else {
       throw new Error("Wrong password");
     }
