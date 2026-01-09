@@ -167,6 +167,8 @@ button.loading{
 </div>
 
 <script>
+const API = "https://mediabuzz365.in";
+
 function togglePassword(){
   const pass = document.getElementById("password");
   pass.type = pass.type === "password" ? "text" : "password";
@@ -182,7 +184,7 @@ function login(){
   btn.classList.add("loading");
   btnText.textContent = "Logging in...";
 
-  fetch("http://localhost:3000/api/admin/login",{
+  fetch(API + "/api/admin/login",{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
     body:JSON.stringify({ password: password.value })
@@ -192,7 +194,6 @@ function login(){
     if(d.success){
       localStorage.setItem("admin","true");
       location.href="/admin";
-
     } else {
       throw new Error("Wrong password");
     }
@@ -211,6 +212,7 @@ function login(){
   });
 }
 </script>
+
 
 </body>
 </html>

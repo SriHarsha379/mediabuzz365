@@ -75,6 +75,8 @@ body{
 </div>
 
 <script>
+const API = "https://mediabuzz365.in";
+
 const params = new URLSearchParams(location.search);
 const category = params.get("category");
 
@@ -87,7 +89,7 @@ if(!category){
 }else{
   titleEl.textContent = category.toUpperCase() + " వార్తలు";
 
-  fetch(`http://localhost:3000/api/news?category=${category}`)
+  fetch(`${API}/api/news?category=${category}`)
     .then(r=>r.json())
     .then(data=>{
       data.sort((a,b)=>new Date(b.date)-new Date(a.date));
@@ -124,6 +126,7 @@ if(!category){
     });
 }
 </script>
+
 
 <script>
 fetch("header.html")

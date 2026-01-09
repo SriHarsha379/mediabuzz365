@@ -115,6 +115,8 @@ body{
 </div>
 
 <script>
+const API = "https://mediabuzz365.in";
+
 const params = new URLSearchParams(window.location.search);
 const city = params.get("city");
 
@@ -129,7 +131,7 @@ if (!city) {
 
   cityTitle.textContent = city.toUpperCase() + " తాజా వార్తలు";
 
-  fetch(`http://localhost:3000/api/news?city=${city}`)
+  fetch(`${API}/api/news?city=${city}`)
     .then(res => res.json())
     .then(data => {
 
@@ -179,6 +181,7 @@ if (!city) {
     });
 }
 </script>
+
 
 <script>
 fetch("header.html")

@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/admin/news", {
+      const res = await fetch("https://mediabuzz365.in/api/admin/news", {
         method: "POST",
         body: formData
       });

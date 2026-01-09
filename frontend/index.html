@@ -4,1111 +4,180 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Media Buzz 365 Live</title>
+
 <link rel="stylesheet" href="common.css">
-
-<!-- GOOGLE FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
-
-<style>
-.dropdown.open .dropdown-menu{
-  display:block;
-}
-
-/* ================= BRAND ================= */
-:root{
-  --gold:#d4af37;
-  --orange:#f97316;
-  --dark:#1c1c1c;
-  --grey:#2e2e2e;
-  --light:#f5f5f5;
-}
-
-/* RESET */
-*{margin:0;padding:0;box-sizing:border-box}
-
-/* BODY */
-body{
-  font-family:"Noto Sans Telugu",system-ui,sans-serif;
-  background:#f4f6f9;
-  color:#111;
-}
-
-/* ================= HEADER ================= */
-header{
-  position:sticky;
-  top:0;
-  z-index:9999;
-  background:linear-gradient(135deg,var(--dark),#000);
-  border-bottom:3px solid var(--gold);
-}
-
-.header-inner{
-  max-width:1400px;
-  margin:auto;
-  padding:12px 16px;
-  display:flex;
-  align-items:center;
-  gap:18px;
-}
-
-/* LOGO */
-.logo img{
-  height:48px;
-}
-
-/* NAV */
-nav{flex:1}
-
-.menu{
-  position:fixed;
-  top:64px;
-  left:-100%;
-  width:260px;
-  height:calc(100vh - 64px); /* full height minus header */
-  background:#000;
-  flex-direction:column;
-  transition:.35s;
-  overflow-y:auto;  /* 🔥 THIS FIXES IT */
-  padding-bottom:40px;
-}
-
-
-.menu a{
-  color:#fff;
-  text-decoration:none;
-  font-weight:600;
-  letter-spacing:.3px;
-}
-
-.menu a:hover{color:var(--gold)}
-
-/* LIVE */
-.live-link{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  color:var(--orange);
-  font-weight:700;
-}
-
-.live-dot{
-  width:10px;
-  height:10px;
-  background:var(--orange);
-  border-radius:50%;
-  animation:blink 1.3s infinite;
-}
-
-@keyframes blink{
-  0%,100%{opacity:1}
-  50%{opacity:.3}
-}
-
-/* DROPDOWN */
-.dropdown{position:relative}
-
-.dropdown-menu{
-  display:none;
-  position:absolute;
-  top:100%;
-  left:0;
-  background:#fff;
-  min-width:220px;
-  border-radius:8px;
-  box-shadow:0 12px 30px rgba(0,0,0,.25);
-}
-
-/* Desktop only */
-@media(min-width:901px){
-  .dropdown:hover .dropdown-menu{
-    display:block;
-  }
-}
-
-
-.dropdown-menu a{
-  display:block;
-  padding:12px 14px;
-  color:#111;
-}
-
-.dropdown-menu a:hover{
-  background:#fff6d6;
-}
-
-/* USER */
-.user{
-  width:38px;
-  height:38px;
-  background:#fff;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.user img{width:22px}
-
-/* ================= MAIN ================= */
-main{
-  max-width:1400px;
-  margin:30px auto;
-  padding:0 20px;
-}
-
-/* ================= LIVE LAYOUT ================= */
-.live-layout{
-  display:grid;
-  grid-template-columns:1fr 1.4fr;
-  gap:24px;
-}
-
-/* CARDS */
-.live-news,
-.live-video{
-  background:#fff;
-  border-radius:14px;
-  padding:16px;
-  box-shadow:0 6px 18px rgba(0,0,0,.08);
-}
-
-.section-title{
-  font-size:18px;
-  font-weight:700;
-  color:var(--dark);
-  margin-bottom:10px;
-}
-
-/* ================= VIDEO ================= */
-.video-box{
-  background:#000;
-  border-radius:14px;
-  overflow:hidden;
-  position:relative;
-}
-
-/* LIVE BADGE */
-.video-logo{
-  position:absolute;
-  top:12px;
-  left:12px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:6px 12px;
-  border-radius:10px;
-  background:rgba(0,0,0,.6);
-  animation:glow 2s infinite alternate;
-}
-.video-watermark img{
-  height:50px;
-}
-
-.video-logo img{height:32px}
-.video-logo span{
-  color:var(--orange);
-  font-weight:700;
-}
-
-@keyframes glow{
-  from{box-shadow:0 0 8px rgba(249,115,22,.5)}
-  to{box-shadow:0 0 18px rgba(249,115,22,1)}
-}
-
-/* WATERMARK */
-/* ===== RIGHT SIDE CHANNEL LOGO ===== */
-.video-watermark{
-  position:absolute;
-  top:10px;
-  right:10px;
-
-  left:auto;
-  bottom:auto;
-  transform:none;
-
-  z-index:999;
-  opacity:0.7;
-  pointer-events:none;
-}
-
-
-.video-watermark img{
-  height:60px;              /* logo size */
-  width:auto;
-  object-fit:contain;
-  filter:drop-shadow(0 0 6px rgba(0,0,0,.6));
-  animation:logoPulse 2s infinite alternate;
-}
-@keyframes logoPulse{
-  from{filter:drop-shadow(0 0 4px #f97316)}
-  to{filter:drop-shadow(0 0 12px #f97316)}
-}
-/* Mobile */
-@media(max-width:600px){
-  .video-watermark img{
-    height:40px;
-  }
-}
-
-
-.video{
-  position:relative;
-  padding-bottom:56.25%;
-}
-
-.video iframe{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  border:0;
-}
-
-/* ================= BREAKING TICKER ================= */
-.news-container{
-  height:180px;
-  overflow:hidden;
-  border-radius:12px;
-  background:#fff;
-}
-
-.news-track{
-  animation:scroll 18s linear infinite;
-}
-
-@keyframes scroll{
-  0%{transform:translateY(0)}
-  100%{transform:translateY(-50%)}
-}
-
-.news-box{
-  padding:10px;
-  border-bottom:1px solid #eee;
-}
-
-.news-box h3{
-  font-size:16px;
-  color:var(--dark);
-}
-
-.news-box p{
-  font-size:14px;
-  color:#555;
-}
-
-/* ================= ALL NEWS ================= */
-.all-news-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:20px;
-}
-
-.news-item{
-  background:#fff;
-  border-radius:14px;
-  overflow:hidden;
-  box-shadow:0 6px 18px rgba(0,0,0,.08);
-  transition:.25s;
-}
-
-.news-item:hover{
-  transform:translateY(-4px);
-}
-
-.news-item img{
-  width:100%;
-  height:180px;
-  object-fit:cover;
-}
-
-.news-content{padding:14px}
-
-.news-content h3{
-  font-size:16px;
-  margin-bottom:6px;
-}
-
-.news-meta{
-  display:flex;
-  justify-content:space-between;
-  font-size:12px;
-  color:#777;
-}
-
-/* CATEGORY BADGES */
-.badge{
-  padding:4px 10px;
-  border-radius:20px;
-  font-size:12px;
-  color:#fff;
-}
-
-.breaking{background:#dc2626}
-.politics{background:#16a34a}
-.crime{background:#b91c1c}
-.business{background:#0f766e}
-.technology{background:#0891b2}
-.cinema{background:#9333ea}
-.sports{background:#ca8a04}
-
-/* ================= FOOTER ================= */
-footer{
-  background:linear-gradient(135deg,var(--dark),#000);
-  color:#fff;
-  margin-top:60px;
-}
-
-.footer-inner{
-  max-width:1400px;
-  margin:auto;
-  padding:40px 20px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:40px;
-}
-
-footer a{
-  color:#ddd;
-  text-decoration:none;
-  display:block;
-  margin:6px 0;
-}
-
-footer a:hover{color:var(--gold)}
-
-.copy{
-  text-align:center;
-  padding:12px;
-  background:#000;
-  font-size:13px;
-}
-
-/* ================= CHAT WIDGET UPGRADE ================= */
-
-.chat-widget{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  z-index:5000;
-  font-family:inherit;
-}
-
-/* Floating button */
-.chat-toggle{
-  width:58px;
-  height:58px;
-  border-radius:50%;
-  background:linear-gradient(135deg,var(--orange),var(--gold));
-  color:#fff;
-  font-size:22px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  box-shadow:0 8px 25px rgba(0,0,0,.35);
-  transition:.3s;
-}
-
-.chat-toggle:hover{
-  transform:scale(1.05);
-}
-
-/* Chat box */
-.chat-box{
-  position:absolute;
-  bottom:75px;
-  right:0;
-  width:360px;
-  max-width:90vw;
-  height:480px;
-  background:#fff;
-  border-radius:16px;
-  box-shadow:0 15px 40px rgba(0,0,0,.35);
-  overflow:hidden;
-  display:none;
-  flex-direction:column;
-  animation:slideUp .25s ease;
-}
-
-/* open animation */
-@keyframes slideUp{
-  from{opacity:0; transform:translateY(20px)}
-  to{opacity:1; transform:translateY(0)}
-}
-
-/* Header */
-.chat-header{
-  background:linear-gradient(135deg,var(--dark),#000);
-  color:#fff;
-  padding:14px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-weight:700;
-  border-bottom:2px solid var(--gold);
-}
-
-.chat-header button{
-  background:none;
-  border:none;
-  color:#fff;
-  font-size:18px;
-  cursor:pointer;
-}
-
-/* Body */
-.chat-body{
-  padding:14px;
-  flex:1;
-  overflow-y:auto;
-  background:#f6f7f9;
-}
-
-/* messages */
-.msg{
-  margin-bottom:12px;
-  padding:10px 14px;
-  border-radius:14px;
-  max-width:80%;
-  font-size:13px;
-  line-height:1.4;
-  animation:fadeIn .25s ease;
-}
-
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(5px)}
-  to{opacity:1; transform:translateY(0)}
-}
-
-/* bot */
-.msg.bot{
-  background:#fff;
-  border:1px solid #eee;
-  color:#111;
-}
-
-/* user */
-.msg.user{
-  background:linear-gradient(135deg,var(--orange),var(--gold));
-  color:#fff;
-  margin-left:auto;
-}
-
-/* Footer */
-.chat-footer{
-  display:flex;
-  border-top:1px solid #ddd;
-}
-
-.chat-footer input{
-  flex:1;
-  border:none;
-  padding:12px;
-  font-size:14px;
-  outline:none;
-}
-
-.chat-footer button{
-  background:linear-gradient(135deg,var(--orange),var(--gold));
-  border:none;
-  color:#fff;
-  padding:0 18px;
-  font-size:18px;
-  cursor:pointer;
-}
-
-/* mobile */
-@media(max-width:600px){
-  .chat-box{
-    width:100%;
-    right:-10px;
-  }
-}
-
-/* ================= FLOAT LIVE ================= */
-.live-widget{
-  position:fixed;
-  bottom:24px;
-  right:100px;
-  background:#000;
-  color:#fff;
-  padding:10px 16px;
-  border-radius:30px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  box-shadow:0 8px 24px rgba(0,0,0,.35);
-}
-
-.live-widget:hover{
-  background:#111;
-}
-
-/* ================= MOBILE ================= */
-.menu-btn{display:none}
-
-@media(max-width:900px){
-
-  /* Hide social icons from top */
-  .header-right .social{
-    display:none;
-  }
-
-  /* Only show user */
-  .header-right .user{
-    display:flex;
-  }
-
-  /* Move icons to side menu */
-  .mobile-social{
-    display:flex;
-    justify-content:center;
-    gap:16px;
-    padding:14px 0;
-    border-top:1px solid rgba(255,255,255,.15);
-  }
-
-  .mobile-social img{
-    width:26px;
-    background:rgba(255,255,255,.15);
-    padding:8px;
-    border-radius:50%;
-  }
-}
-
-
-  .menu-btn{
-    display:block;
-    font-size:26px;
-    color:#fff;
-    margin-left:auto;
-  }
-
-  .menu{
-    position:fixed;
-    top:64px;
-    left:-100%;
-    width:260px;
-    height:100vh;
-    background:#000;
-    flex-direction:column;
-    transition:.35s;
-  }
-
-  .menu.open{left:0}
-
-  .menu a{
-    padding:16px;
-    display:block;
-    border-bottom:1px solid rgba(255,255,255,.1);
-  }
-
-  .live-layout{
-    grid-template-columns:1fr;
-  }
-}
-
-
-
-
-
-</style>
 </head>
 
 <body>
 
 <header id="header">
-  <div class="header-inner">
-    <div class="logo">
-  <a href="index.html" aria-label="Media Buzz 365 Home">
-    <img src="images/IMG_2280.JPG" alt="Media Buzz 365 Logo">
-  </a>
+<div class="header-inner">
+
+<div class="logo">
+<a href="index.html" aria-label="Media Buzz 365 Home">
+<img src="images/IMG_2280.JPG" alt="Media Buzz 365 Logo">
+</a>
 </div>
 
+<nav>
+<div class="menu-btn" id="menuBtn">☰</div>
 
+<ul class="menu" id="menu">
 
-
-    <nav>
-      <div class="menu-btn" id="menuBtn">☰</div>
-      <ul class="menu" id="menu">
-        <li>
-  <a href="index.html" class="live-link">
-    <span class="live-dot"></span>
-    LIVE TV
-  </a>
+<li>
+<a href="index.html" class="live-link">
+<span class="live-dot"></span> LIVE TV
+</a>
 </li>
 
-        <li><a href="category.html?category=breaking">తాజావార్తలు</a></li>
+<li><a href="category.html?category=breaking">తాజావార్తలు</a></li>
 
 <li class="dropdown">
-  <a href="#">తెలంగాణ</a>
-  <div class="dropdown-menu" lang="te">
-    <a href="city.html?city=hyderabad">హైదరాబాద్</a>
-
-    <a href="city.html?state=telangana&city=karimnagar">కరీంనగర్</a>
-    <a href="city.html?state=telangana&city=khammam">ఖమ్మం</a>
-    <a href="city.html?state=telangana&city=mahbubnagar">మహబూబ్‌నగర్</a>
-    <a href="city.html?state=telangana&city=medak">మెదక్</a>
-    <a href="city.html?state=telangana&city=adilabad">అదిలాబాద్</a>
-    <a href="city.html?state=telangana&city=nalgonda">నల్గొండ</a>
-    <a href="city.html?state=telangana&city=nizamabad">నిజామాబాద్</a>
-
-    <a href="city.html?state=telangana&city=warangal">వరంగల్</a>
-  </div>
+<a href="#">తెలంగాణ</a>
+<div class="dropdown-menu">
+<a href="city.html?city=hyderabad">హైదరాబాద్</a>
+<a href="city.html?state=telangana&city=karimnagar">కరీంనగర్</a>
+<a href="city.html?state=telangana&city=khammam">ఖమ్మం</a>
+<a href="city.html?state=telangana&city=mahbubnagar">మహబూబ్‌నగర్</a>
+<a href="city.html?state=telangana&city=medak">మెదక్</a>
+<a href="city.html?state=telangana&city=adilabad">అదిలాబాద్</a>
+<a href="city.html?state=telangana&city=nalgonda">నల్గొండ</a>
+<a href="city.html?state=telangana&city=nizamabad">నిజామాబాద్</a>
+<a href="city.html?state=telangana&city=warangal">వరంగల్</a>
+</div>
 </li>
-
 
 <li class="dropdown">
-  <a href="#">ఆంధ్రప్రదేశ్</a>
-  <div class="dropdown-menu" lang="te">
-    <a href="city.html?state=andhra&city=guntur">గుంటూరు</a>
-
-    <a href="city.html?state=andhra&city=vijayawada">విజయవాడ</a>
-    <a href="city.html?state=andhra&city=anantapur">అనంతపురం</a>
-
-    <a href="city.html?state=andhra&city=kadapa">కడప</a>
-
-    <a href="city.html?state=andhra&city=kurnool">కర్నూలు</a>
-    <a href="city.html?state=andhra&city=nellore">నెల్లూరు</a>
-
-    <a href="city.html?state=andhra&city=thirupati">తిరుపతి</a>
-    <a href="city.html?state=andhra&city=visakhapatnam">విశాఖపట్నం</a>
-    <a href="city.html?state=andhra&city=vijayanagaram">విజయనగరం</a>
-    <a href="city.html?state=andhra&city=westgodavari">పశ్చిమ గోదావరి</a>
-    <a href="city.html?state=andhra&city=eastgodavari">తూర్పు గోదావరి</a>
-  </div>
+<a href="#">ఆంధ్రప్రదేశ్</a>
+<div class="dropdown-menu">
+<a href="city.html?state=andhra&city=guntur">గుంటూరు</a>
+<a href="city.html?state=andhra&city=vijayawada">విజయవాడ</a>
+<a href="city.html?state=andhra&city=anantapur">అనంతపురం</a>
+<a href="city.html?state=andhra&city=kadapa">కడప</a>
+<a href="city.html?state=andhra&city=kurnool">కర్నూలు</a>
+<a href="city.html?state=andhra&city=nellore">నెల్లూరు</a>
+<a href="city.html?state=andhra&city=thirupati">తిరుపతి</a>
+<a href="city.html?state=andhra&city=visakhapatnam">విశాఖపట్నం</a>
+<a href="city.html?state=andhra&city=vijayanagaram">విజయనగరం</a>
+<a href="city.html?state=andhra&city=westgodavari">పశ్చిమ గోదావరి</a>
+<a href="city.html?state=andhra&city=eastgodavari">తూర్పు గోదావరి</a>
+</div>
 </li>
 
-        <li><a href="category.html?category=national">నేషనల్</a></li>
-        <li><a href="category.html?category=international">ఇంటర్నేషనల్</a></li>
-        <li><a href="category.html?category=politics">రాజకీయాలు</a></li>
-        <li><a href="category.html?category=crime">క్రైం</a></li>
-        <li><a href="category.html?category=lifestyle">లైఫ్ స్టైల్</a></li>
-        <li><a href="category.html?category=technology">టెక్నాలజీ</a></li>
-        <li class="dropdown">
-          <a href="#">మరిన్ని</a>
-          <div class="dropdown-menu" lang="te">
-            <a href="category.html?category=sports">క్రీడలు</a>
-            <a href="category.html?category=cinema">సినిమా</a>
-            <a href="category.html?category=business">బిజినెస్</a>
-          </div>
-        </li>
+<li><a href="category.html?category=national">నేషనల్</a></li>
+<li><a href="category.html?category=international">ఇంటర్నేషనల్</a></li>
+<li><a href="category.html?category=politics">రాజకీయాలు</a></li>
+<li><a href="category.html?category=crime">క్రైం</a></li>
+<li><a href="category.html?category=lifestyle">లైఫ్ స్టైల్</a></li>
+<li><a href="category.html?category=technology">టెక్నాలజీ</a></li>
 
-
-        <li class="mobile-social">
-  <a href="https://www.facebook.com/MediaBuzz365/" target="_blank" class="social fb">
-    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook">
-  </a>
-  <a href="https://www.instagram.com/mediabuzz365/" target="_blank" class="social insta">
-    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
-  </a>
-  <a href="http://www.youtube.com/@mediabuzz365" target="_blank" class="social yt">
-    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
-  </a>
-  <a href="#" target="_blank" class="social wa">
-    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp">
-  </a>
+<li class="dropdown">
+<a href="#">మరిన్ని</a>
+<div class="dropdown-menu">
+<a href="category.html?category=sports">క్రీడలు</a>
+<a href="category.html?category=cinema">సినిమా</a>
+<a href="category.html?category=business">బిజినెస్</a>
+</div>
 </li>
 
-      </ul>
-    </nav>
-
-    <div class="header-right">
 
 
+</ul>
+</nav>
 
-  <!-- User -->
-  <div class="user" id="userBtn" style="margin-left: 30px;">
-    <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.18/24/solid/user-circle.svg" alt="User">
-  </div>
-
+<div class="header-right">
+<div class="user" id="userBtn">
+<img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.18/24/solid/user-circle.svg">
+</div>
 </div>
 
-
-  </div>
-
-
-
-
+</div>
 </header>
 
 <main>
-  <h1>Live TV</h1>
+<h1>Live TV</h1>
 
-  <!-- LIVE SECTION -->
 <div class="live-layout">
 
-  <!-- LEFT: NEWS TICKER -->
-  <div class="live-news">
-    <h3 class="section-title">Breaking News</h3>
-    <div id="newsSection" class="news-container">
-      <div id="newsTrack" class="news-track"></div>
-    </div>
-  </div>
-
-  <!-- RIGHT: LIVE VIDEO -->
-  <div class="live-video">
-    <h3 class="section-title">Live TV</h3>
-    <div class="video-box">
-
-  <!-- Top-left animated logo -->
-  <div class="video-logo">
-    <img src="images/IMG_2280.JPG">
-    <span>LIVE</span>
-  </div>
-
-  <!-- Bottom-right watermark -->
-  <div class="video-watermark">
-    <img src="images/IMG_2280.JPG">
-  </div>
-
-  <!-- Video -->
-  <div class="video">
-<iframe
-  src="https://www.youtube.com/embed/NvaG6PijxUo?autoplay=1&mute=1&playsinline=1"
-  allow="autoplay; encrypted-media"
-  allowfullscreen>
-</iframe>
-
-  </div>
-
+<div class="live-news">
+<h3 class="section-title">Breaking News</h3>
+<div class="news-container">
+<div id="newsTrack" class="news-track"></div>
+</div>
 </div>
 
-  </div>
+<div class="live-video">
+<h3 class="section-title">Live TV</h3>
 
+<div class="video-box">
+
+<div class="video-logo">
+<img src="images/IMG_2280.JPG">
+<span>LIVE</span>
 </div>
 
-<!-- ================= ALL NEWS ================= -->
+<div class="video-watermark">
+<img src="images/IMG_2280.JPG">
+</div>
+
+<div class="video">
+<iframe src="https://www.youtube.com/embed/NvaG6PijxUo?autoplay=1&mute=1&playsinline=1"
+allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
+
+</div>
+</div>
+</div>
+
 <section style="margin-top:40px">
-  <h2 class="section-title">Latest News</h2>
-
-  <div id="allNews" class="all-news-grid"></div>
+<h2 class="section-title">Latest News</h2>
+<div id="allNews" class="all-news-grid"></div>
 </section>
 
 </main>
 
-
-
 <footer>
-  <div class="footer-inner">
-    <div>
-      <div class="logo">
-  <a href="index.html" aria-label="Media Buzz 365 Home">
-    <img src="images/IMG_2280.JPG" alt="Media Buzz 365 Logo">
-  </a>
+<div class="footer-inner">
+
+<div>
+<div class="logo">
+<img src="images/IMG_2280.JPG">
+</div>
+<p>Media Buzz 365 News – Latest Telugu Breaking News, Live TV & Special Stories.</p>
 </div>
 
-      <p style="margin-top:10px">Media Buzz 365 News – Latest Telugu Breaking News, Live TV & Special Stories.</p>
-    </div>
-    <div>
+<div>
 <a href="about.html">About</a>
 <a href="contact.html">Contact</a>
 <a href="advertise.html">Advertise</a>
 <a href="privacy.html">Privacy Policy</a>
-
-    </div>
-
-
-
-
-
-
-<!-- APP STORE BUTTONS -->
-<div class="footer-apps">
-<!--  <a href="#" target="_blank" aria-label="Google Play">-->
-<!--    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play">-->
-<!--  </a>-->
-
-<!--  <a href="#" target="_blank" aria-label="App Store">-->
-<!--    <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store">-->
-<!--  </a>-->
 </div>
 
-
-<div class="header-right" style="margin-left: 50px;">
-  <!-- Facebook -->
-  <a href="https://www.facebook.com/RTVTeluguDigital/" target="_blank" class="social fb" >
-    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook">
+</div>
+<div class="footer-social">
+  <a href="https://www.facebook.com/share/16yj95q7u1/" target="_blank">
+    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg">
   </a>
 
-  <!-- Instagram -->
-  <a href="https://www.instagram.com/rtvnewsnetwork/" target="_blank" class="social insta" style="margin-left: 20px;">
-    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
+  <a href="https://www.instagram.com/mediabuzz365?igsh=MWNiemd6dWNhdmFwaQ==" target="_blank">
+    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg">
   </a>
 
-  <!-- YouTube -->
-  <a href="https://www.youtube.com/channel/UCE5RIa7b_JIK0a31Uaq4xRw/featured?disable_polymer=1" target="_blank" class="social yt" style="margin-left: 20px;">
-    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
+  <a href="https://www.youtube.com/@mediabuzz365" target="_blank">
+    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg">
   </a>
 
   <!-- WhatsApp -->
-<a href="https://www.whatsapp.com/channel/0029Va9lQhBGk1Fr2DHRUO1U" target="_blank" class="social wa" style="margin-left: 20px;">
-  <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp">
-</a>
+  <a href="https://wa.me/919XXXXXXXXX" target="_blank">
+    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg">
+  </a>
+</div>
 
-    </div>
-  </div>
-  <div class="copy">© 2025 DHAATRI MEDIA BROADCAST PRIVATE LIMITED</div>
+<div class="copy">
+© 2025 DHAATRI MEDIA BROADCAST PRIVATE LIMITED
+</div>
 </footer>
-
-
-
-
-<!-- CHAT WIDGET -->
-<div class="chat-widget">
-  <div class="chat-toggle" id="chatToggle">💬</div>
-
-  <div class="chat-box" id="chatBox">
-    <div class="chat-header">
-      <span>Media Buzz 365 Live Chat</span>
-      <button id="chatClose">✖</button>
-    </div>
-
-    <div class="chat-body">
-      <div class="msg bot">నమస్తే 👋<br>Media Buzz 365 Live కి స్వాగతం!</div>
-    </div>
-
-    <div class="chat-footer">
-      <input type="text" id="chatInput" placeholder="మీ సందేశం టైప్ చేయండి..." />
-      <button id="chatSend">➤</button>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- FLOATING LIVE WIDGET -->
-<div class="live-widget" id="liveWidget">
-  <div class="live-dot"></div>
-  <div class="live-text" id="liveText">LIVE • Telangana</div>
-</div>
-
-
-<!-- USER MODAL -->
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <h2>Join Media Buzz 365</h2>
-    <p style="margin:10px 0;opacity:.8">లైవ్ టీవీ & ప్రత్యేక కంటెంట్ కోసం సభ్యత్వం పొందండి</p>
-    <div class="auth">
-      <a href="mediabuzz365@gmail.com"></a>Sign in with Google</div>
-    <div class="auth fb">
-      <a href="https://www.facebook.com/MediaBuzz365/"></a>Sign in with Facebook</div>
-  </div>
-</div>
-
-
-<script>
-/* ================= CHAT ELEMENTS ================= */
-const chatToggle = document.getElementById("chatToggle");
-const chatBox    = document.getElementById("chatBox");
-const chatClose  = document.getElementById("chatClose");
-const chatSend   = document.getElementById("chatSend");
-const chatInput  = document.getElementById("chatInput");
-const chatBody   = document.querySelector(".chat-body");
-
-/* ================= CHAT OPEN / CLOSE ================= */
-chatToggle.onclick = () => {
-  chatBox.style.display = "flex";
-  chatInput.focus();
-  document.getElementById("liveWidget").classList.add("hide");
-};
-
-
-chatClose.onclick = () => {
-  chatBox.style.display = "none";
-  document.getElementById("liveWidget").classList.remove("hide");
-};
-
-
-/* ================= SEND MESSAGE ================= */
-chatSend.onclick = sendMsg;
-chatInput.addEventListener("keydown", e => {
-  if(e.key === "Enter") sendMsg();
-});
-
-function sendMsg(){
-  const text = chatInput.value.trim();
-  if(!text) return;
-
-  // USER MESSAGE
-  const userMsg = document.createElement("div");
-  userMsg.className = "msg user";
-  userMsg.textContent = text;
-  chatBody.appendChild(userMsg);
-
-  chatInput.value = "";
-  chatBody.scrollTop = chatBody.scrollHeight;
-
-  // BOT REPLY
-  setTimeout(() => {
-    const botMsg = document.createElement("div");
-    botMsg.className = "msg bot";
-    botMsg.innerHTML = getAutoReply(text.toLowerCase());
-    chatBody.appendChild(botMsg);
-    chatBody.scrollTop = chatBody.scrollHeight;
-  }, 700);
-}
-
-/* ================= FAQ AUTO REPLIES ================= */
-function getAutoReply(msg){
-
-  if(msg.includes("live") || msg.includes("టీవీ")){
-    return "📺 <b>Media Buzz 365 Live TV</b> 24x7 అందుబాటులో ఉంటుంది.<br>వెబ్ & మొబైల్ లో చూడవచ్చు.";
-  }
-
-  if(msg.includes("breaking") || msg.includes("తాజా")){
-    return "🚨 తాజా బ్రేకింగ్ న్యూస్ Media Buzz 365 లో వెంటనే పొందవచ్చు.";
-  }
-
-  if(msg.includes("contact") || msg.includes("సంప్రదించ")){
-    return "📞 సంప్రదించండి:<br>Email: support@mediabuzz365.com";
-  }
-
-  if(msg.includes("youtube")){
-    return "▶️ Media Buzz 365 Official YouTube Channel లో Live & Clips ఉన్నాయి.";
-  }
-
-  if(msg.includes("facebook") || msg.includes("fb")){
-    return "📘 Media Buzz 365 Facebook పేజీలో Live Updates చూడవచ్చు.";
-  }
-
-  if(msg.includes("login") || msg.includes("sign") || msg.includes("సభ్యత్వం")){
-    return "👤 Login / Signup ద్వారా సభ్యత్వం పొందవచ్చు.";
-  }
-
-  if(msg.includes("advertise") || msg.includes("ads")){
-    return "📢 ప్రకటనల కోసం advertise@mediabuzz365.com కి మెయిల్ చేయండి.";
-  }
-
-  if(msg.includes("thanks") || msg.includes("ధన్యవాద")){
-    return "😊 ధన్యవాదాలు! Media Buzz 365 ని చూసినందుకు.";
-  }
-
-  return "🤖 మీ ప్రశ్న అర్థం కాలేదు.<br>దయచేసి Live TV, Breaking News, Contact గురించి అడగండి.";
-}
-
-</script>
-
-
-
-<script>
-fetch("http://localhost:3000/api/news/breaking/today")
-  .then(res => res.json())
-  .then(data => {
-    const newsTrack = document.getElementById("newsTrack");
-    newsTrack.innerHTML = "";
-
-    if (data.length === 0) {
-      newsTrack.innerHTML = "<div class='news-box'>No breaking news today</div>";
-      return;
-    }
-
-    data.forEach(item => {
-      const box = document.createElement("div");
-      box.className = "news-box";
-      box.innerHTML = `
-  <h3>${item.title}</h3>
-  <small style="color:#777;font-size:12px">
-    🕒 ${new Date(item.date).toLocaleDateString("en-IN")}
-  </small>
-  <p>${item.description}</p>
-`;
-
-      newsTrack.appendChild(box);
-    });
-
-    // duplicate for smooth scroll
-    newsTrack.innerHTML += newsTrack.innerHTML;
-  })
-  .catch(err => console.error("News fetch error:", err));
-
-</script>
-
-
-<script>
-/* ================= LIVE WIDGET LOGIC ================= */
-
-const liveText = document.getElementById("liveText");
-
-const liveStates = [
-  "LIVE • Telangana",
-  "LIVE • Andhra Pradesh",
-  "LIVE • Breaking News"
-];
-
-let liveIndex = 0;
-
-setInterval(() => {
-  liveIndex = (liveIndex + 1) % liveStates.length;
-  liveText.textContent = liveStates[liveIndex];
-}, 3000);
-
-/* click → scroll to live video */
-document.getElementById("liveWidget").onclick = () => {
-  document.querySelector(".video-area")
-    .scrollIntoView({ behavior: "smooth" });
-};
-</script>
-
-
-<script src="header.js"></script>
-
-<script>
-fetch("http://localhost:3000/api/news")
-  .then(res => res.json())
-  .then(news => {
-    const container = document.getElementById("allNews");
-    container.innerHTML = "";
-
-    if(news.length === 0){
-      container.innerHTML = "<p>No news available</p>";
-      return;
-    }
-
-    news.reverse().forEach(n => {
-      const card = document.createElement("div");
-      card.className = "news-item";
-
-      card.innerHTML = `
-        <img src="${n.image || 'images/IMG_2280.JPG'}" alt="">
-        <div class="news-content">
-          <div class="news-meta">
-            <span class="badge ${n.category}">${n.category}</span>
-            <span>${new Date(n.date).toLocaleDateString("en-IN")}</span>
-          </div>
-          <h3>${n.title}</h3>
-          <p>${n.description || ""}</p>
-          <small>📍 ${n.city}</small>
-        </div>
-      `;
-
-      container.appendChild(card);
-    });
-  })
-  .catch(err => console.error("All news error:", err));
-
-
-    document.querySelectorAll(".dropdown > a").forEach(menu=>{
-  menu.onclick = (e)=>{
-    if(window.innerWidth <= 900){
-      e.preventDefault();
-
-      const parent = menu.parentElement;
-
-      // close all
-      document.querySelectorAll(".dropdown").forEach(d=>{
-        if(d !== parent){
-          d.classList.remove("open");
-        }
-      });
-
-      // toggle current
-      parent.classList.toggle("open");
-    }
-  }
-});
-
-</script>
 
 </body>
 </html>

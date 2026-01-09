@@ -451,6 +451,7 @@ if(localStorage.getItem("admin")!=="true"){
 <script>
 let allNews=[];
 
+
 /* NAV */
 function navigate(id){
   document.getElementById(id).scrollIntoView({behavior:"smooth"});
@@ -463,9 +464,11 @@ function logout(){
 
 }
 
+const API = "https://mediabuzz365.in";
+
 /* LOAD NEWS */
 function loadNews(){
-fetch("http://localhost:3000/api/news")
+fetch(API + "/api/news")
 .then(r=>r.json())
 .then(data=>{
   allNews=data.reverse();
@@ -521,7 +524,10 @@ form.append("title",title.value);
 form.append("description",description.value);
 if(image.files[0]) form.append("imageFile",image.files[0]);
 
-fetch("http://localhost:3000/api/admin/news",{method:"POST",body:form})
+fetch(API + "/api/admin/news",{
+  method:"POST",
+  body:form
+})
 .then(()=>{clearForm();loadNews();});
 }
 
@@ -539,11 +545,12 @@ navigate("add");
 
 /* DELETE */
 function del(id){
-fetch("http://localhost:3000/api/admin/news/"+id,{
+fetch(API + "/api/admin/news/"+id,{
 method:"DELETE",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify({password:"admin123"})
-}).then(loadNews);
+})
+.then(loadNews);
 }
 
 loadNews();
