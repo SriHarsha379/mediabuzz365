@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Login – mediabuzz365</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#f6d7ff,#d9e6ff);
+}
+
+/* Card */
+.login-card{
+  width:420px;
+  background:rgba(255,255,255,0.95);
+  padding:35px;
+  border-radius:18px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.12);
+  transition:.3s;
+}
+
+/* SHAKE ANIMATION */
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  50%{transform:translateX(6px)}
+  75%{transform:translateX(-6px)}
+  100%{transform:translateX(0)}
+}
+.shake{
+  animation:shake .4s;
+  border:2px solid #e31e24;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.logo img{
+  width:42px;
+  height:42px;
+  object-fit:contain;
+  border-radius:6px;
+}
+
+.logo span{
+  font-size:22px;
+  font-weight:600;
+  color:#333;
+}
+
+
+/* Title */
+h2{
+  text-align:center;
+  margin-bottom:25px;
+  color:#333;
+}
+
+/* Input */
+.input-box{
+  position:relative;
+}
+
+input{
+  width:100%;
+  padding:14px 45px 14px 14px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-size:15px;
+  outline:none;
+}
+
+input:focus{
+  border-color:#e31e24;
+}
+
+/* Eye */
+.eye{
+  position:absolute;
+  right:14px;
+  top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+  font-size:18px;
+  color:#777;
+}
+
+/* Button */
+button{
+  width:100%;
+  margin-top:22px;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:#e31e24;
+  color:#fff;
+  font-size:16px;
+  font-weight:500;
+  cursor:pointer;
+  transition:.35s;
+  box-shadow:0 8px 20px rgba(227,30,36,.35);
+}
+
+button:hover{
+  background:#c91a20;
+  transform:translateY(-2px);
+  box-shadow:0 14px 30px rgba(227,30,36,.55);
+}
+
+button.loading{
+  background:#aaa;
+  pointer-events:none;
+}
+
+/* Error */
+.error{
+  margin-top:12px;
+  text-align:center;
+  color:#e31e24;
+  font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-card" id="card">
+  <div class="logo">
+  <img src="/images/IMG_2280.JPG" alt="Media Buzz 365 Logo">
+
+  <span>Admin Login</span>
+</div>
+  <h2>Welcome Back, Admin</h2>
+
+  
+
+  <form onsubmit="event.preventDefault(); login();">
+    <div class="input-box">
+      <input id="password" type="password" placeholder="Admin Password" required>
+      <span class="eye" onclick="togglePassword()">👁️</span>
+    </div>
+
+    <button id="loginBtn">
+      <span id="btnText">Login</span>
+    </button>
+
+    <p id="msg" class="error"></p>
+  </form>
+</div>
+
+<script>
+const API = "";
+
+function togglePassword(){
+  const pass = document.getElementById("password");
+  pass.type = pass.type === "password" ? "text" : "password";
+}
+
+function login(){
+  const card = document.getElementById("card");
+  const btn = document.getElementById("loginBtn");
+  const btnText = document.getElementById("btnText");
+  const msg = document.getElementById("msg");
+
+  msg.textContent = "";
+  btn.classList.add("loading");
+  btnText.textContent = "Logging in...";
+
+  fetch("/api/admin/login",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ password: password.value })
+  })
+  .then(res=>res.json())
+  .then(d=>{
+    if(d.success){
+      localStorage.setItem("admin","true");
+      location.href="/admin/index.html";
+    } else {
+      throw new Error("Wrong password");
+    }
+  })
+  .catch(()=>{
+    msg.textContent = "❌ Wrong password";
+    card.classList.add("shake");
+
+    setTimeout(()=>{
+      card.classList.remove("shake");
+    },400);
+  })
+  .finally(()=>{
+    btn.classList.remove("loading");
+    btnText.textContent = "Login";
+  });
+}
+</script>
+
+
+</body>
+</html>
