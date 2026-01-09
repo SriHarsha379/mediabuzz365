@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Category News</title>
+<link rel="stylesheet" href="common.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+  font-family:"Noto Sans Telugu",sans-serif;
+  background:#f4f6f9;
+  margin:0;
+}
+.container{
+  max-width:1200px;
+  margin:30px auto;
+  padding:0 16px;
+}
+.category-title{
+  font-size:28px;
+  margin-bottom:20px;
+  color:#0a2463;
+}
+.top-news{
+  background:#fff;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 8px 22px rgba(0,0,0,.15);
+  margin-bottom:30px;
+}
+.top-news img{
+  width:100%;
+  height:360px;
+  object-fit:cover;
+}
+.top-news .content{padding:18px}
+.news-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:20px;
+}
+.news-card{
+  background:#fff;
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
+}
+.news-card img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+}
+.news-card .content{padding:12px}
+.tag{
+  background:#e31e24;
+  color:#fff;
+  font-size:11px;
+  padding:4px 8px;
+  border-radius:20px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="header"></div>
+
+<div class="container">
+  <div class="category-title" id="categoryTitle">Loading...</div>
+  <div id="topNews"></div>
+  <div class="news-grid" id="newsGrid"></div>
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const category = params.get("category");
+
+const titleEl = document.getElementById("categoryTitle");
+const topNews = document.getElementById("topNews");
+const grid = document.getElementById("newsGrid");
+
+if(!category){
+  titleEl.textContent = "తాజా వార్తలు";
+}else{
+  titleEl.textContent = category.toUpperCase() + " వార్తలు";
+
+  fetch(`http://localhost:3000/api/news?category=${category}`)
+    .then(r=>r.json())
+    .then(data=>{
+      data.sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+      if(data.length===0){
+        grid.innerHTML="<p>ఈ విభాగంలో వార్తలు లేవు</p>";
+        return;
+      }
+
+      const latest=data[0];
+      topNews.innerHTML=`
+        <div class="top-news">
+          <img src="${latest.image}">
+          <div class="content">
+            <span class="tag">${latest.category}</span>
+            <h2>${latest.title}</h2>
+            <small>🕒 ${new Date(latest.date).toLocaleString("en-IN")}</small>
+            <p>${latest.description||""}</p>
+          </div>
+        </div>
+      `;
+
+      data.slice(1).forEach(n=>{
+        grid.innerHTML+=`
+          <div class="news-card">
+            <img src="${n.image}">
+            <div class="content">
+              <span class="tag">${n.category}</span>
+              <h3>${n.title}</h3>
+              <small>🕒 ${new Date(n.date).toLocaleDateString("en-IN")}</small>
+            </div>
+          </div>`;
+      });
+    });
+}
+</script>
+
+<script>
+fetch("header.html")
+  .then(r=>r.text())
+  .then(h=>{
+    document.getElementById("header").innerHTML=h;
+    const s=document.createElement("script");
+    s.src="header.js";
+    document.body.appendChild(s);
+  });
+</script>
+
+</body>
+</html>

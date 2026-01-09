@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>City News</title>
+<link rel="stylesheet" href="common.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+  font-family:"Noto Sans Telugu",sans-serif;
+  background:#f4f6f9;
+  margin:0;
+}
+
+.container{
+  max-width:1200px;
+  margin:30px auto;
+  padding:0 16px;
+}
+
+.city-title{
+  font-size:28px;
+  margin-bottom:20px;
+  color:#0a2463;
+}
+
+/* 🔴 TOP BIG NEWS */
+.top-news{
+  width:100%;
+  background:#fff;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 8px 22px rgba(0,0,0,.15);
+  margin-bottom:30px;
+}
+
+.top-news img{
+  width:100%;
+  height:360px;
+  object-fit:cover;
+}
+
+.top-news .content{
+  padding:18px;
+}
+
+.top-news h2{
+  font-size:26px;
+  margin:10px 0;
+}
+
+.top-news .time{
+  color:#777;
+  font-size:13px;
+}
+
+/* 🟦 GRID NEWS */
+.news-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:20px;
+}
+
+.news-card{
+  background:#fff;
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
+  transition:.25s;
+}
+.news-card:hover{
+  transform:translateY(-4px);
+}
+
+.news-card img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+}
+
+.news-card .content{
+  padding:12px;
+}
+
+.tag{
+  display:inline-block;
+  background:#e31e24;
+  color:#fff;
+  font-size:11px;
+  padding:4px 8px;
+  border-radius:20px;
+  margin-bottom:6px;
+}
+
+.news-card h3{
+  font-size:16px;
+  margin:6px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div id="header"></div>    
+
+<div class="container">
+  <div class="city-title" id="cityTitle">Loading...</div>
+
+  <div id="topNews"></div>
+
+  <div class="news-grid" id="newsGrid"></div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const city = params.get("city");
+
+const cityTitle = document.getElementById("cityTitle");
+const topNews = document.getElementById("topNews");
+const newsGrid = document.getElementById("newsGrid");
+
+if (!city) {
+  cityTitle.textContent = "తాజా వార్తలు";
+  newsGrid.innerHTML = "<p>దయచేసి నగరాన్ని ఎంచుకోండి</p>";
+} else {
+
+  cityTitle.textContent = city.toUpperCase() + " తాజా వార్తలు";
+
+  fetch(`http://localhost:3000/api/news?city=${city}`)
+    .then(res => res.json())
+    .then(data => {
+
+      // 🔥 SORT BY LATEST TIME
+      data.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      topNews.innerHTML = "";
+      newsGrid.innerHTML = "";
+
+      if (data.length === 0) {
+        newsGrid.innerHTML = "<p>No news available</p>";
+        return;
+      }
+
+      // 🟥 BIG LATEST NEWS
+      const latest = data[0];
+      topNews.innerHTML = `
+        <div class="top-news">
+          <img src="${latest.image}">
+          <div class="content">
+            <span class="tag">${latest.category}</span>
+            <h2>${latest.title}</h2>
+            <div class="time">
+              🕒 ${new Date(latest.date).toLocaleString("en-IN")}
+            </div>
+            <p>${latest.description || ""}</p>
+          </div>
+        </div>
+      `;
+
+      // 🟦 REST NEWS
+      data.slice(1).forEach(item => {
+        const card = document.createElement("div");
+        card.className = "news-card";
+        card.innerHTML = `
+          <img src="${item.image}">
+          <div class="content">
+            <span class="tag">${item.category}</span>
+            <h3>${item.title}</h3>
+            <small style="color:#777">
+              🕒 ${new Date(item.date).toLocaleDateString("en-IN")}
+            </small>
+          </div>
+        `;
+        newsGrid.appendChild(card);
+      });
+    });
+}
+</script>
+
+<script>
+fetch("header.html")
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById("header").innerHTML = html;
+
+    const script = document.createElement("script");
+    script.src = "header.js";
+    document.body.appendChild(script);
+  });
+</script>
+
+</body>
+</html>

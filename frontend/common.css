@@ -1,0 +1,523 @@
+:root{
+  --brand:#e31e24;
+  --dark:#0a2463;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+/* ================= HEADER ================= */
+header{
+  position:sticky;
+  top:0;
+  z-index:9999;
+  background:linear-gradient(135deg,var(--dark),#1e4d8b);
+  transition:.3s;
+}
+header.shrink{
+  padding:6px 0;
+}
+.header-inner{
+  width:100%;
+  margin:0;
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:16px;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+}
+
+.logo img{
+  height:48px;        /* desktop size */
+  width:auto;
+  object-fit:contain;
+}
+
+@media(max-width:900px){
+  .logo img{
+    height:38px;     /* smaller on mobile */
+  }
+}
+
+nav{
+  display:flex;
+  align-items:center;
+  min-width:0;   /* VERY IMPORTANT */
+}
+
+.menu{
+  list-style:none;
+  display:flex;
+  gap:18px;
+  align-items:center;
+}
+.menu a{
+  color:#fff;
+  text-decoration:none;
+  white-space:nowrap;
+}
+
+.menu a:hover{color:var(--brand)}
+
+
+/* ===== DESKTOP DROPDOWN (CLEAN & PROFESSIONAL) ===== */
+@media(min-width:901px){
+
+  .dropdown{
+    position:relative;
+    z-index:3000;
+  }
+
+  .dropdown-menu{
+    position:absolute;
+    top:100%;
+    left:0;
+    margin-top:8px;
+    background:#ffffff;            /* ✅ solid white */
+    min-width:220px;
+    max-height:320px;
+    overflow-y:auto;
+    border-radius:8px;
+    box-shadow:0 12px 30px rgba(0,0,0,.18);
+    display:none;
+    z-index:5000;
+  }
+
+  .dropdown.open .dropdown-menu{
+    display:block;
+  }
+
+  /* dropdown links */
+  .dropdown-menu a{
+    display:block;
+    padding:10px 14px;
+    color:#111;                    /* ✅ always visible */
+    font-size:20px;
+    text-decoration:none;
+    
+  }
+
+  /* hover effect */
+  .dropdown-menu a:hover{
+  background:#fff7b7;
+  color:#111;   /* 🔥 readable */
+}
+
+}
+
+
+/* increase hover-safe area */
+.dropdown > a{
+  padding-bottom:14px;
+  display:inline-block;
+}
+
+/* smooth feel */
+.dropdown-menu{
+  animation:fadeDown .18s ease;
+}
+
+@keyframes fadeDown{
+  from{opacity:0; transform:translateY(-6px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:900px){
+
+  body{
+    overflow-x:hidden;
+  }
+
+  .header-inner{
+    padding:12px 12px;
+  }
+
+  .header-right{
+    gap:10px;
+  }
+
+  .menu-btn{
+    display:block;
+    z-index:4000;
+    font-size:26px;
+    color:#fff;
+    cursor:pointer;
+    margin-left:auto;
+  }
+
+  nav{
+    flex:1;
+    position: relative;
+  z-index: 5000;
+  }
+
+  /* ===== MOBILE SLIDE MENU ===== */
+  .menu{
+  position:fixed;
+  top:64px;
+  left:-100%;
+  width:280px;
+  height:calc(100vh - 64px);
+  background:var(--dark);
+  flex-direction:column;
+  padding-top:10px;
+  transition:left .35s ease;
+  z-index:10000; /* 🔥 ABOVE HEADER */
+  /* ✅ SCROLL FIX */
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+}
+
+
+
+.menu.open{
+  left:0;
+}
+
+  .menu li{
+    width:100%;
+  }
+
+  .menu a{
+    padding:16px 20px;
+    display:block;
+    width:100%;
+    font-size:18px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+
+  .menu .dropdown-menu {
+    position: relative;
+    top: 0;
+    left: 0;
+    max-height: 260px;
+    overflow-y: auto;
+    display: none;
+    border-radius: 6px;
+    padding-left: 0;
+    background: #222;
+    box-shadow: none;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .menu .dropdown.open .dropdown-menu {
+    display: block;
+  }
+
+  .menu .dropdown-menu a {
+    color: #fff;
+    padding: 12px 30px;  /* indented for submenu */
+    border-bottom: 1px solid rgba(255,255,255,.1);
+  }
+
+  .menu-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(197, 185, 185, 0.5);
+    z-index:9000;
+    display:none;
+  }
+
+  .menu-overlay.show{
+    display:block;
+  }
+}
+
+
+
+@media(max-width:900px){
+
+  .menu::-webkit-scrollbar{
+    width:6px;
+  }
+
+  .menu::-webkit-scrollbar-thumb{
+    background:rgba(255,255,255,.3);
+    border-radius:6px;
+  }
+
+  .menu::-webkit-scrollbar-track{
+    background:transparent;
+  }
+
+}
+
+
+
+/* Social icons in mobile menu */
+.menu .mobile-social {
+  display: flex;
+  justify-content: flex-start;
+  gap: 4px;
+  padding: 14px 20px;
+  border-top: 1px solid rgba(255,255,255,.1);
+}
+.menu .mobile-social a img {
+  width: 22px;
+  height: 22px;
+  filter: invert(100%);
+}
+
+
+
+/* ================= DESKTOP NAVBAR IMPROVEMENTS ================= */
+@media(min-width:901px){
+
+  nav{
+  flex:1;
+  overflow:visible;  /* ✅ allow dropdown to overflow */
+}
+
+  .menu{
+    display:flex;
+    align-items:center;
+    gap:26px;                   /* ✅ space between buttons */
+    flex-wrap:nowrap;           /* ✅ force single line */
+    white-space:nowrap;         /* ✅ no text wrapping */
+  }
+
+  .menu > li{
+    flex-shrink:0;              /* ✅ prevents items shrinking */
+  }
+
+  .menu a{
+    font-size:16px;      /* ⬆ increased */
+    font-weight:600;
+    padding:10px 6px;     /* ⬆ better click area */
+    letter-spacing:.3px;
+  }
+
+
+  /* Dropdown arrow alignment */
+  .dropdown > a{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+}
+
+
+@media(min-width:901px){
+  .menu a:hover{
+    color:var(--brand);
+  }
+}
+
+
+.dropdown > a::after{
+  content:"▾";
+  margin-left:6px;
+  transition:transform .25s ease;
+}
+
+.dropdown.open > a::after{
+  transform:rotate(180deg);
+}
+
+
+
+/* Right icons */
+
+/* ================= SOCIAL ICONS ================= */
+.header-right{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-left:auto;   /* pushes icons to extreme right */
+  flex-shrink:0;      /* NEVER allow shrinking */
+}
+
+
+/* Base icon style */
+.social img{
+  width:22px;
+  height:22px;
+  filter:invert(1);
+  transition:0.3s ease;
+}
+
+/* Facebook hover */
+.social.fb:hover img{
+  filter:none;
+  fill:#1877f2;
+  filter:invert(34%) sepia(89%) saturate(2926%) hue-rotate(202deg) brightness(97%);
+}
+
+/* Instagram hover (gradient look) */
+.social.insta:hover img{
+  filter:none;
+  filter:invert(30%) sepia(96%) saturate(3500%) hue-rotate(320deg) brightness(95%);
+}
+
+/* YouTube hover */
+.social.yt:hover img{
+  filter:none;
+  filter:invert(21%) sepia(94%) saturate(7460%) hue-rotate(356deg) brightness(92%);
+}
+
+/* WhatsApp hover */
+.social.wa:hover img{
+  filter:none;
+  filter: invert(48%) sepia(87%) saturate(425%) hue-rotate(88deg) brightness(94%);
+}
+
+
+/* User icon */
+.user{
+  width:36px;
+  height:36px;
+  background:#fff;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+.user img{
+  width:22px;
+  height:22px;
+  fill:#333;
+  transition:.25s;
+}
+
+.user:hover{
+  background:var(--brand);
+}
+
+.user:hover img{
+  filter:invert(1);
+}
+
+.icon{
+  width:22px;
+  height:22px;
+  fill:#fff;
+  cursor:pointer;
+}
+.icon:hover{fill:var(--brand)}
+
+
+
+
+@media(max-width:900px){
+
+  body{
+    overflow-x:hidden;
+  }
+
+  .header-inner{
+    padding:12px 12px;
+  }
+
+  .header-right{
+    gap:10px;
+  }
+
+  .social img{
+    width:20px;
+    height:20px;
+  }
+
+  .user{
+    width:32px;
+    height:32px;
+  }
+
+  .user img{
+    width:18px;
+    height:18px;
+  }
+}
+
+
+.dropdown-menu{
+  z-index:4000;          
+}
+
+
+.breaking{
+  z-index:1000;
+}
+
+
+
+.menu-btn{
+  display:none;
+}
+
+@media(max-width:900px){
+  .menu-btn{
+    display:block;
+  }
+}
+
+
+/* ================= MODAL ================= */
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:3000;
+}
+.modal{
+  background:#fff;
+  max-width:420px;
+  width:100%;
+  padding:30px;
+  border-radius:12px;
+  text-align:center;
+}
+.auth{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:center;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:600;
+  border:1px solid #ddd;
+}
+.auth.fb{
+  background:#1877f2;
+  color:#fff;
+  border:none;
+}
+
+
+
+/* LIVE TV BLINKING DOT */
+.live-link{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#e31e24;
+  font-weight:600;
+}
+
+.live-dot{
+  width:10px;
+  height:10px;
+  background:#e31e24;
+  border-radius:50%;
+  margin-bottom: 10px;
+  animation:blink 1.2s infinite;
+  box-shadow:0 0 8px rgba(227,30,36,.8);
+}
+
+@keyframes blink{
+  0%{opacity:1}
+  50%{opacity:.3}
+  100%{opacity:1}
+}

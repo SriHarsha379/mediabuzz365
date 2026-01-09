@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard – Media Buzz 365</title>
+
+<style>
+:root{
+  --brand:#e31e24;
+  --dark:#1f2937;
+  --light:#f4f6f9;
+}
+
+/* ===== GLOBAL ===== */
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+body{background:var(--light);}
+
+/* ===== LAYOUT ===== */
+.wrapper{
+  display:flex;
+  min-height:100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  width:240px;
+  background:var(--dark);
+  color:#fff;
+  padding:20px;
+  position:sticky;
+  top:0;
+  height:100vh;
+}
+
+.sidebar h2{
+  margin-bottom:20px;
+}
+
+.sidebar button{
+  display:block;
+  width:100%;
+  padding:10px 14px;
+  margin-bottom:8px;
+  background:none;
+  border:none;
+  color:#fff;
+  text-align:left;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.sidebar button:hover{
+  background:var(--brand);
+}
+
+/* ===== MAIN ===== */
+.main{
+  flex:1;
+  padding:20px;
+}
+
+/* ===== TOPBAR ===== */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  background:var(--light);
+  z-index:10;
+  padding-bottom:10px;
+}
+
+.top-buttons{
+  display:flex;
+  gap:10px;
+  margin:15px 0;
+}
+
+.top-buttons button{
+  padding:8px 14px;
+  border:none;
+  border-radius:6px;
+  background:var(--brand);
+  color:#fff;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.top-buttons button:hover{background:#c11c1f}
+
+/* ===== STATS ===== */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.stat{
+  background:#fff;
+  padding:16px;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,.08);
+}
+
+.stat h3{font-size:14px;color:#666}
+.stat b{font-size:24px}
+
+/* ===== CARD ===== */
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:14px;
+  margin-bottom:20px;
+}
+
+/* ===== FORM ===== */
+input,textarea,select{
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+
+.save-btn{
+  margin-top:12px;
+  padding:8px 16px;
+  background:var(--brand);
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* ===== FILTER ===== */
+.filters{
+  display:flex;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+/* ===== NEWS GRID ===== */
+#newsList{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:16px;
+}
+
+.news-card{
+  background:#fff;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 4px 10px rgba(0,0,0,.08);
+}
+
+.news-card img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+}
+
+.news-body{
+  padding:14px;
+}
+
+.news-body h4{margin-bottom:6px}
+
+/* ===== BADGES ===== */
+.badge{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:20px;
+  font-size:12px;
+  color:#fff;
+  margin-bottom:6px;
+}
+
+.breaking{background:#e31e24}
+.national{background:#2563eb}
+.international{background:#7c3aed}
+.politics{background:#16a34a}
+.crime{background:#b91c1c}
+.lifestyle{background:#db2777}
+.technology{background:#0891b2}
+.sports{background:#ca8a04}
+.cinema{background:#9333ea}
+.business{background:#0f766e}
+.health{background:#22c55e}
+.weather{background:#0284c7}
+
+/* ===== ACTIONS ===== */
+.actions{
+  margin-top:10px;
+}
+
+.btn-small{
+  padding:6px 10px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:13px;
+}
+
+.btn-gray{background:#e5e7eb}
+.btn-red{background:#ef4444;color:#fff}
+
+/* ===== MOBILE ===== */
+@media(max-width:900px){
+  .sidebar{display:none}
+}
+
+
+.logo{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.logo img{
+  width:42px;
+  height:42px;
+  object-fit:contain;
+  border-radius:6px;
+}
+
+.logo span{
+  font-size:22px;
+  font-weight:600;
+  color:#fff;
+}
+
+
+
+
+/* ===== MOBILE TOP BAR ===== */
+.mobile-topbar{
+  display:none;
+}
+
+@media(max-width:900px){
+
+  /* Show mobile bar */
+  .mobile-topbar{
+    display:flex;
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:1000;
+    background:#1f2937;
+    color:#fff;
+    padding:10px 14px;
+    align-items:center;
+    justify-content:space-between;
+    box-shadow:0 4px 12px rgba(0,0,0,.2);
+  }
+
+  .mobile-logo{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .mobile-logo img{
+    width:34px;
+    height:34px;
+    border-radius:6px;
+  }
+
+  .mobile-logo span{
+    font-size:16px;
+    font-weight:600;
+    color:#fff;
+  }
+
+  .mobile-actions{
+    display:flex;
+    gap:8px;
+  }
+
+  .mobile-actions button{
+    padding:6px 10px;
+    font-size:13px;
+    border:none;
+    border-radius:6px;
+    background:var(--brand);
+    color:#fff;
+    cursor:pointer;
+  }
+
+  .mobile-actions .logout-btn{
+  background:#ef4444;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:6px 10px;
+}
+
+
+  /* Hide desktop elements */
+  .sidebar,
+  .top-buttons{
+    display:none;
+  }
+
+  /* Push content below fixed bar */
+  .main{
+    padding-top:70px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- 🔐 HARD PROTECTION -->
+<script>
+if(localStorage.getItem("admin")!=="true"){
+  location.replace("/admin/login");
+}
+</script>
+
+
+<!-- ===== MOBILE TOP BAR ===== -->
+<div class="mobile-topbar">
+  <div class="mobile-logo">
+    <img src="/images/IMG_2280.JPG" alt="Media Buzz 365 Logo">
+    <span>Admin Login</span>
+  </div>
+
+  <div class="mobile-actions">
+    <button onclick="navigate('add')">➕ Add</button>
+    <button onclick="navigate('list')">📰 News</button>
+    <button class="logout-btn" onclick="logout()" title="Logout">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+       stroke="currentColor" stroke-width="2"
+       stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+    <polyline points="16 17 21 12 16 7"/>
+    <line x1="21" y1="12" x2="9" y2="12"/>
+  </svg>
+</button>
+
+  </div>
+</div>
+
+
+<div class="wrapper">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo">
+  <img src="/images/IMG_2280.JPG" alt="Media Buzz 365 Logo">
+
+  <span>Admin Login</span>
+</div>
+
+  <!-- <h2>Admin Panel</h2> -->
+  <button onclick="navigate('add')">➕ Add News</button>
+  <button onclick="navigate('list')">📰 All News</button>
+  <button class="logout-btn" onclick="logout()" title="Logout">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+       stroke="currentColor" stroke-width="2"
+       stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+    <polyline points="16 17 21 12 16 7"/>
+    <line x1="21" y1="12" x2="9" y2="12"/>
+  </svg> Logout
+</button>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="topbar">
+  <h2>Dashboard</h2>
+</div>
+
+<div class="top-buttons">
+  <button onclick="navigate('add')">Add News</button>
+  <button onclick="navigate('list')">All News</button>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><h3>Total News</h3><b id="totalCount">0</b></div>
+  <div class="stat"><h3>Health News</h3><b id="healthCount">0</b></div>
+  <div class="stat"><h3>Politics News</h3><b id="politicsCount">0</b></div>
+</div>
+
+<!-- ADD NEWS -->
+<div class="card" id="add">
+<h3>Add / Edit News</h3>
+<input id="city" placeholder="City">
+<select id="category">
+<option value="">-- Category --</option>
+<option value="breaking">తాజావార్తలు</option>
+<option value="national">నేషనల్</option>
+<option value="international">ఇంటర్నేషనల్</option>
+<option value="politics">రాజకీయాలు</option>
+<option value="crime">క్రైం</option>
+<option value="lifestyle">లైఫ్ స్టైల్</option>
+<option value="technology">టెక్నాలజీ</option>
+<option value="sports">క్రీడలు</option>
+<option value="cinema">సినిమా</option>
+<option value="business">బిజినెస్</option>
+<option value="health">హెల్త్</option>
+<option value="weather">వాతావరణం</option>
+</select>
+<input id="title" placeholder="Title">
+<textarea id="description" placeholder="Description"></textarea>
+<input type="file" id="image">
+<button class="save-btn" onclick="addNews()">Save News</button>
+</div>
+
+<!-- NEWS LIST -->
+<div class="card" id="list">
+<h3>All News</h3>
+
+<div class="filters">
+<input id="searchInput" placeholder="Search city or title">
+<select id="filterCategory">
+<option value="">All Categories</option>
+<option value="health">Health</option>
+<option value="politics">Politics</option>
+<option value="breaking">Breaking News</option>
+<option value="national">National</option>
+<option value="international">International</option>
+<option value="crime">Crime</option>
+<option value="lifestyle">Lifestyle</option>
+<option value="technology">Technology</option>
+<option value="sports">Sports</option>
+<option value="cinema">Cinema</option>
+<option value="business">Business</option>
+</select>
+</div>
+
+<div id="newsList"></div>
+</div>
+
+</div>
+</div>
+
+<script>
+let allNews=[];
+
+/* NAV */
+function navigate(id){
+  document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+
+/* LOGOUT */
+function logout(){
+  localStorage.removeItem("admin");
+  location.replace("/admin/login");
+
+}
+
+/* LOAD NEWS */
+function loadNews(){
+fetch("http://localhost:3000/api/news")
+.then(r=>r.json())
+.then(data=>{
+  allNews=data.reverse();
+  updateCounts(allNews);
+  renderNews(allNews);
+});
+}
+
+/* COUNTS (NOT FILTERED) */
+function updateCounts(data){
+  totalCount.textContent=data.length;
+  healthCount.textContent=data.filter(n=>n.category==="health").length;
+  politicsCount.textContent=data.filter(n=>n.category==="politics").length;
+}
+
+/* RENDER */
+function renderNews(data){
+  const s=searchInput.value.toLowerCase();
+  const f=filterCategory.value;
+  newsList.innerHTML="";
+
+  data.forEach(n=>{
+    if(s && !n.title.toLowerCase().includes(s) && !n.city.toLowerCase().includes(s)) return;
+    if(f && n.category!==f) return;
+
+    newsList.innerHTML+=`
+    <div class="news-card">
+      <img src="${n.image}">
+      <div class="news-body">
+        <span class="badge ${n.category}">${n.category}</span>
+        <h4>${n.title}</h4>
+        <p>${n.city}</p>
+        <small>${new Date(n.date).toLocaleString("en-IN")}</small>
+        <div class="actions">
+          <button class="btn-small btn-gray" onclick="fillEdit('${n.city}','${n.category}','${n.title}','${n.description}')">✏ Edit</button>
+          <button class="btn-small btn-red" onclick="del(${n.id})">Delete</button>
+        </div>
+      </div>
+    </div>`;
+  });
+}
+
+searchInput.oninput=()=>renderNews(allNews);
+filterCategory.onchange=()=>renderNews(allNews);
+
+/* ADD */
+function addNews(){
+const form=new FormData();
+form.append("password","admin123");
+form.append("city",city.value);
+form.append("category",category.value);
+form.append("title",title.value);
+form.append("description",description.value);
+if(image.files[0]) form.append("imageFile",image.files[0]);
+
+fetch("http://localhost:3000/api/admin/news",{method:"POST",body:form})
+.then(()=>{clearForm();loadNews();});
+}
+
+function clearForm(){
+city.value=title.value=description.value="";
+category.value="";image.value="";
+}
+
+/* EDIT */
+function fillEdit(c,cat,t,d){
+city.value=c;category.value=cat;
+title.value=t;description.value=d;
+navigate("add");
+}
+
+/* DELETE */
+function del(id){
+fetch("http://localhost:3000/api/admin/news/"+id,{
+method:"DELETE",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({password:"admin123"})
+}).then(loadNews);
+}
+
+loadNews();
+</script>
+
+</body>
+</html>
