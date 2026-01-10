@@ -691,3 +691,104 @@ footer a:hover{
     justify-content:center;
   }
 }
+/* ================= GLOBAL FIXES ================= */
+img, iframe, video{
+  max-width:100%;
+  height:auto;
+}
+
+body{
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%; /* iOS zoom fix */
+}
+
+/* ================= SMALL PHONES ================= */
+@media(max-width:480px){
+
+  main{
+    padding:0 14px;
+  }
+
+  h1{
+    font-size:20px;
+  }
+
+  .logo img{
+    height:34px;
+  }
+
+  .section-title{
+    font-size:16px;
+  }
+
+  .news-item img{
+    height:160px;
+  }
+
+  .chat-box{
+    width:95vw;
+    height:420px;
+    right:-10px;
+  }
+
+  .live-widget{
+    right:20px;
+    bottom:90px;
+  }
+}
+
+/* ================= TABLETS ================= */
+@media(min-width:481px) and (max-width:1024px){
+
+  .menu{
+    gap:14px;
+  }
+
+  .live-layout{
+    grid-template-columns:1fr;
+  }
+
+  .chat-box{
+    width:320px;
+  }
+}
+
+/* ================= LAPTOPS ================= */
+@media(min-width:1025px) and (max-width:1366px){
+
+  main{
+    max-width:1200px;
+  }
+
+  .menu{
+    gap:18px;
+  }
+}
+
+/* ================= LARGE SCREENS ================= */
+@media(min-width:1600px){
+
+  main,
+  .footer-inner{
+    max-width:1500px;
+  }
+}
+
+/* ================= iOS SAFARI FIXES ================= */
+input, textarea, button{
+  -webkit-appearance:none;
+  border-radius:10px;
+}
+
+/* ================= SAFE AREAS (iPhone Notch) ================= */
+@supports(padding:max(0px)){
+  body{
+    padding-left:max(0px, env(safe-area-inset-left));
+    padding-right:max(0px, env(safe-area-inset-right));
+  }
+}
+
+/* ================= SMOOTHER TOUCH ================= */
+a, button{
+  touch-action:manipulation;
+}
