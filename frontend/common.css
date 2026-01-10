@@ -792,3 +792,105 @@ input, textarea, button{
 a, button{
   touch-action:manipulation;
 }
+/* ================= MOBILE REAL FIX ================= */
+@media(max-width:600px){
+
+  /* HEADER */
+  header{
+    border-bottom:2px solid #8c6f1f;
+  }
+
+  .header-inner{
+    padding:8px 12px;
+  }
+
+  .logo img{
+    height:32px;
+  }
+
+  nav{
+    font-size:13px;
+  }
+
+  .menu{
+    gap:12px;
+  }
+
+  /* PAGE SPACING */
+  main{
+    margin:16px auto;
+    padding:0 12px;
+  }
+
+  h1{
+    font-size:18px;
+    margin-bottom:12px;
+  }
+
+  /* LIVE LAYOUT FIX */
+  .live-layout{
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+
+  .live-news,
+  .live-video{
+    padding:12px;
+    border-radius:12px;
+  }
+
+  /* VIDEO */
+  .video-logo img{
+    height:26px;
+  }
+
+  .video-watermark img{
+    height:34px;
+  }
+
+  /* BREAKING NEWS */
+  .news-container{
+    height:140px;
+  }
+
+  .news-box h3{
+    font-size:14px;
+  }
+
+  .news-box p{
+    font-size:12px;
+  }
+
+  /* FOOTER FIX */
+  footer{
+    margin-top:30px;
+  }
+
+  .footer-inner{
+    padding:24px 14px;
+    gap:20px;
+    text-align:center;
+  }
+
+  .footer-inner .logo img{
+    height:40px;
+    margin:auto;
+  }
+
+  .footer-social{
+    padding:10px 0;
+  }
+
+  .copy{
+    font-size:12px;
+    padding:8px;
+  }
+
+  /* FLOAT LIVE BUTTON */
+  .live-widget{
+    right:16px;
+    bottom:80px;
+    font-size:13px;
+    padding:8px 14px;
+  }
+}
