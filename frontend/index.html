@@ -173,6 +173,33 @@ allow="autoplay; encrypted-media" allowfullscreen></iframe>
     <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg">
   </a>
 </div>
+<!-- CHAT WIDGET -->
+<div class="chat-widget">
+  <div class="chat-toggle" id="chatToggle">💬</div>
+
+  <div class="chat-box" id="chatBox">
+    <div class="chat-header">
+      <span>Media Buzz 365 Live Chat</span>
+      <button id="chatClose">✖</button>
+    </div>
+
+    <div class="chat-body" id="chatBody">
+      <div class="msg bot">
+        నమస్తే 👋<br>
+        Media Buzz 365 Live కి స్వాగతం!
+      </div>
+    </div>
+
+    <div class="chat-footer">
+      <input type="text" id="chatInput" placeholder="మీ సందేశం టైప్ చేయండి..." />
+      <button id="chatSend">➤</button>
+    </div>
+  </div>
+</div>
+
+<div class="contact-card">
+📧 Email: support@mediabuzz365.com
+</div>
 
 <div class="copy">
 © 2025 DHAATRI MEDIA BROADCAST PRIVATE LIMITED
@@ -188,6 +215,74 @@ fetch("header.html")
     document.body.appendChild(s);
   });
 </script>
+<script>
+const chatToggle = document.getElementById("chatToggle");
+const chatBox = document.getElementById("chatBox");
+const chatClose = document.getElementById("chatClose");
+const chatSend = document.getElementById("chatSend");
+const chatInput = document.getElementById("chatInput");
+const chatBody = document.getElementById("chatBody");
+
+/* OPEN */
+chatToggle.onclick = () => {
+  chatBox.style.display = "flex";
+  chatInput.focus();
+};
+
+/* CLOSE */
+chatClose.onclick = () => {
+  chatBox.style.display = "none";
+};
+
+/* SEND */
+chatSend.onclick = sendMsg;
+chatInput.addEventListener("keydown", e=>{
+  if(e.key==="Enter") sendMsg();
+});
+
+function sendMsg(){
+  const text = chatInput.value.trim();
+  if(!text) return;
+
+  const userMsg = document.createElement("div");
+  userMsg.className="msg user";
+  userMsg.textContent=text;
+  chatBody.appendChild(userMsg);
+
+  chatInput.value="";
+  chatBody.scrollTop = chatBody.scrollHeight;
+
+  setTimeout(()=>{
+    const botMsg = document.createElement("div");
+    botMsg.className="msg bot";
+    botMsg.innerHTML = getReply(text.toLowerCase());
+    chatBody.appendChild(botMsg);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  },600);
+}
+
+function getReply(msg){
+
+  if(msg.includes("hi")||msg.includes("hello")){
+    return "👋 హాయ్! Media Buzz 365 కి స్వాగతం";
+  }
+
+  if(msg.includes("contact")){
+    return "📞 Contact:<br>Email: support@mediabuzz365.com<br>";
+  }
+
+  if(msg.includes("live")){
+    return "📺 Media Buzz 365 Live TV 24x7 అందుబాటులో ఉంది";
+  }
+
+  if(msg.includes("breaking")){
+    return "🚨 తాజా బ్రేకింగ్ న్యూస్ వెంటనే పొందండి";
+  }
+
+  return "🤖 మీ ప్రశ్న అర్థం కాలేదు. Live, Contact, Breaking అడగండి";
+}
+</script>
+
 
 </body>
 </html>
