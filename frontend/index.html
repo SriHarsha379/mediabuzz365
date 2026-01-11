@@ -91,6 +91,22 @@
 <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.18/24/solid/user-circle.svg">
 </div>
 </div>
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>Join Media Buzz 365</h2>
+    <p style="margin:10px 0;opacity:.8">
+      లైవ్ టీవీ & ప్రత్యేక కంటెంట్ కోసం సభ్యత్వం పొందండి
+    </p>
+
+    <div class="auth google">
+      Sign in with Google
+    </div>
+
+    <div class="auth fb">
+      Sign in with Facebook
+    </div>
+  </div>
+</div>
 
 </div>
 </header>
@@ -273,6 +289,30 @@ function getReply(msg){
 
   return "🤖 మీ ప్రశ్న అర్థం కాలేదు. Live, Contact, Breaking అడగండి";
 }
+
+    /* ================= USER MODAL ================= */
+
+const userBtn = document.getElementById("userBtn");
+const modal   = document.getElementById("modal");
+
+/* OPEN */
+userBtn.onclick = () => {
+  modal.style.display = "flex";
+};
+
+/* CLOSE when clicking outside */
+modal.onclick = (e) => {
+  if(e.target === modal){
+    modal.style.display = "none";
+  }
+};
+
+/* ESC key close */
+document.addEventListener("keydown", e=>{
+  if(e.key === "Escape"){
+    modal.style.display = "none";
+  }
+});
 </script>
 
 <script src="news.js"></script>

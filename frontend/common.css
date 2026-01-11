@@ -1215,3 +1215,34 @@ a, button{
 .news-container:hover .news-track{
   animation-play-state:paused;
 }
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:5000;
+}
+
+.modal{
+  background:#fff;
+  padding:24px;
+  border-radius:14px;
+  width:320px;
+  text-align:center;
+}
+
+.auth{
+  background:#f3f4f6;
+  padding:12px;
+  margin-top:12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.auth.fb{
+  background:#1877f2;
+  color:#fff;
+}
