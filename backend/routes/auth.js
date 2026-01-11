@@ -1,3 +1,4 @@
+console.log("ADMIN_PASSWORD =", process.env.ADMIN_PASSWORD);
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
