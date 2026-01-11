@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Category News</title>
-<link rel="stylesheet" href="common.css">
 
+<link rel="stylesheet" href="common.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -14,16 +14,19 @@ body{
   background:#f4f6f9;
   margin:0;
 }
+
 .container{
   max-width:1200px;
   margin:30px auto;
   padding:0 16px;
 }
+
 .category-title{
   font-size:28px;
   margin-bottom:20px;
   color:#0a2463;
 }
+
 .top-news{
   background:#fff;
   border-radius:14px;
@@ -31,29 +34,40 @@ body{
   box-shadow:0 8px 22px rgba(0,0,0,.15);
   margin-bottom:30px;
 }
+
 .top-news img{
   width:100%;
   height:360px;
   object-fit:cover;
 }
-.top-news .content{padding:18px}
+
+.top-news .content{
+  padding:18px;
+}
+
 .news-grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
   gap:20px;
 }
+
 .news-card{
   background:#fff;
   border-radius:10px;
   overflow:hidden;
   box-shadow:0 6px 18px rgba(0,0,0,.08);
 }
+
 .news-card img{
   width:100%;
   height:180px;
   object-fit:cover;
 }
-.news-card .content{padding:12px}
+
+.news-card .content{
+  padding:12px;
+}
+
 .tag{
   background:#e31e24;
   color:#fff;
@@ -66,14 +80,20 @@ body{
 
 <body>
 
-<div id="header"></div>
+<!-- ================= HEADER ================= -->
+<header id="header"></header>
 
+<!-- ================= PAGE CONTENT ================= -->
 <div class="container">
   <div class="category-title" id="categoryTitle">Loading...</div>
   <div id="topNews"></div>
   <div class="news-grid" id="newsGrid"></div>
 </div>
 
+<!-- ================= FOOTER ================= -->
+<footer></footer>
+
+<!-- ================= NEWS SCRIPT ================= -->
 <script>
 const API = location.hostname.includes("localhost")
  ? "http://localhost:3000"
@@ -95,20 +115,14 @@ if(!category){
  .then(r=>r.json())
  .then(data=>{
 
-  // FILTER MANUALLY (backend doesn't support query)
-  const filtered = data.filter(
-   n => n.category === category
-  );
+  const filtered = data.filter(n => n.category === category);
 
   if(!filtered.length){
    grid.innerHTML="<p>ఈ విభాగంలో వార్తలు లేవు</p>";
    return;
   }
 
-  filtered.sort(
-   (a,b)=>new Date(b.date)-new Date(a.date)
-  );
-
+  filtered.sort((a,b)=>new Date(b.date)-new Date(a.date));
   const latest=filtered[0];
 
   topNews.innerHTML=`
@@ -140,17 +154,21 @@ if(!category){
 }
 </script>
 
-
+<!-- ================= LOAD HEADER ================= -->
 <script>
 fetch("header.html")
   .then(r=>r.text())
   .then(h=>{
-    document.getElementById("header").innerHTML=h;
+    document.getElementById("header").innerHTML = h;
+
     const s=document.createElement("script");
     s.src="header.js";
     document.body.appendChild(s);
   });
 </script>
+
+<!-- ================= LOAD FOOTER ================= -->
+<script src="footer.js"></script>
 
 </body>
 </html>
