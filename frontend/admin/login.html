@@ -137,6 +137,22 @@ button.loading{
   color:#e31e24;
   font-size:14px;
 }
+
+.back-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.back-link a {
+  color: #666;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.back-link a:hover {
+  color: #e31e24;
+}
 </style>
 </head>
 
@@ -144,13 +160,10 @@ button.loading{
 
 <div class="login-card" id="card">
   <div class="logo">
-  <img src="/images/IMG_2280.JPG" alt="Media Buzz 365 Logo">
-
-  <span>Admin Login</span>
-</div>
+    <img src="/images/mediabuzz365.png" alt="Media Buzz 365 Logo">
+    <span>Admin Login</span>
+  </div>
   <h2>Welcome Back, Admin</h2>
-
-  
 
   <form onsubmit="event.preventDefault(); login();">
     <div class="input-box">
@@ -164,10 +177,16 @@ button.loading{
 
     <p id="msg" class="error"></p>
   </form>
+
+  <div class="back-link">
+    <a href="/">← Back to Homepage</a>
+  </div>
 </div>
 
 <script>
-const API = "";
+const API = location.hostname.includes("localhost")
+  ? "http://localhost:3000"
+  : "https://mediabuzz365.in";
 
 function togglePassword(){
   const pass = document.getElementById("password");
@@ -184,35 +203,42 @@ function login(){
   btn.classList.add("loading");
   btnText.textContent = "Logging in...";
 
-  fetch("/api/admin/login",{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ password: password.value })
+  // Use the correct API endpoint: /api/auth/login
+  fetch(API + "/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password: password.value })
   })
-  .then(res=>res.json())
-  .then(d=>{
-    if(d.success){
-      localStorage.setItem("admin","true");
-      location.href="/admin/index.html";
+  .then(res => res.json())
+  .then(d => {
+    if(d.success && d.token){
+      // Store the JWT token
+      localStorage.setItem("token", d.token);
+      // Redirect to admin dashboard
+      location.href = "/admin/index.html";
     } else {
       throw new Error("Wrong password");
     }
   })
-  .catch(()=>{
+  .catch(() => {
     msg.textContent = "❌ Wrong password";
     card.classList.add("shake");
 
-    setTimeout(()=>{
+    setTimeout(() => {
       card.classList.remove("shake");
-    },400);
+    }, 400);
   })
-  .finally(()=>{
+  .finally(() => {
     btn.classList.remove("loading");
     btnText.textContent = "Login";
   });
 }
-</script>
 
+// Check if already logged in
+if(localStorage.getItem("token")){
+  location.href = "/admin/index.html";
+}
+</script>
 
 </body>
 </html>

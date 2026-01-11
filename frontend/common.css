@@ -1172,3 +1172,46 @@ a, button{
 .quick-btn span{
   display:inline-block;
 }
+/* ================= BREAKING NEWS FIX ================= */
+
+.news-container{
+  height:160px;
+  overflow:hidden;
+  background:#fff;
+  border-radius:12px;
+  padding:10px;
+}
+
+.news-track{
+  display:flex;
+  flex-direction:column;
+  animation:scrollNews 12s linear infinite;
+}
+
+.news-item{
+  padding:10px 0;
+  font-size:15px;
+  font-weight:600;
+  color:#dc2626;
+  border-bottom:1px solid #eee;
+}
+
+.news-item:last-child{
+  border-bottom:none;
+}
+
+.news-item a{
+  text-decoration:none;
+  color:#dc2626;
+}
+
+/* SCROLL EFFECT */
+@keyframes scrollNews{
+  0%{transform:translateY(0)}
+  100%{transform:translateY(-50%)}
+}
+
+/* Hover pause */
+.news-container:hover .news-track{
+  animation-play-state:paused;
+}

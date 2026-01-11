@@ -101,11 +101,12 @@
 <div class="live-layout">
 
 <div class="live-news">
-<h3 class="section-title">Breaking News</h3>
-<div class="news-container">
-<div id="newsTrack" class="news-track"></div>
+  <h3 class="section-title">Breaking News</h3>
+  <div class="news-container">
+    <div id="newsTrack" class="news-track"></div>
+  </div>
 </div>
-</div>
+
 
 <div class="live-video">
 <h3 class="section-title">Live TV</h3>
@@ -131,9 +132,10 @@ allow="autoplay; encrypted-media" allowfullscreen></iframe>
 </div>
 
 <section style="margin-top:40px">
-<h2 class="section-title">Latest News</h2>
-<div id="allNews" class="all-news-grid"></div>
+ <h2 class="section-title">Latest News</h2>
+ <div id="allNews" class="all-news-grid"></div>
 </section>
+
 
 </main>
 
@@ -206,16 +208,6 @@ allow="autoplay; encrypted-media" allowfullscreen></iframe>
 </div>
 </footer>
 <script>
-fetch("header.html")
-  .then(r => r.text())
-  .then(h => {
-    document.getElementById("header").innerHTML = h;
-    const s = document.createElement("script");
-    s.src = "header.js";
-    document.body.appendChild(s);
-  });
-</script>
-<script>
 const chatToggle = document.getElementById("chatToggle");
 const chatBox = document.getElementById("chatBox");
 const chatClose = document.getElementById("chatClose");
@@ -283,6 +275,7 @@ function getReply(msg){
 }
 </script>
 
+<script src="news.js"></script>
 
 </body>
 </html>

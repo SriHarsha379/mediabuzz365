@@ -75,7 +75,9 @@ body{
 </div>
 
 <script>
-const API = "https://mediabuzz365.in";
+const API = location.hostname.includes("localhost")
+ ? "http://localhost:3000"
+ : "https://mediabuzz365.in";
 
 const params = new URLSearchParams(location.search);
 const category = params.get("category");
@@ -85,45 +87,56 @@ const topNews = document.getElementById("topNews");
 const grid = document.getElementById("newsGrid");
 
 if(!category){
-  titleEl.textContent = "తాజా వార్తలు";
+ titleEl.textContent="తాజా వార్తలు";
 }else{
-  titleEl.textContent = category.toUpperCase() + " వార్తలు";
+ titleEl.textContent = category.toUpperCase()+" వార్తలు";
 
-  fetch(`${API}/api/news?category=${category}`)
-    .then(r=>r.json())
-    .then(data=>{
-      data.sort((a,b)=>new Date(b.date)-new Date(a.date));
+ fetch(`${API}/api/news`)
+ .then(r=>r.json())
+ .then(data=>{
 
-      if(data.length===0){
-        grid.innerHTML="<p>ఈ విభాగంలో వార్తలు లేవు</p>";
-        return;
-      }
+  // FILTER MANUALLY (backend doesn't support query)
+  const filtered = data.filter(
+   n => n.category === category
+  );
 
-      const latest=data[0];
-      topNews.innerHTML=`
-        <div class="top-news">
-          <img src="${latest.image}">
-          <div class="content">
-            <span class="tag">${latest.category}</span>
-            <h2>${latest.title}</h2>
-            <small>🕒 ${new Date(latest.date).toLocaleString("en-IN")}</small>
-            <p>${latest.description||""}</p>
-          </div>
-        </div>
-      `;
+  if(!filtered.length){
+   grid.innerHTML="<p>ఈ విభాగంలో వార్తలు లేవు</p>";
+   return;
+  }
 
-      data.slice(1).forEach(n=>{
-        grid.innerHTML+=`
-          <div class="news-card">
-            <img src="${n.image}">
-            <div class="content">
-              <span class="tag">${n.category}</span>
-              <h3>${n.title}</h3>
-              <small>🕒 ${new Date(n.date).toLocaleDateString("en-IN")}</small>
-            </div>
-          </div>`;
-      });
-    });
+  filtered.sort(
+   (a,b)=>new Date(b.date)-new Date(a.date)
+  );
+
+  const latest=filtered[0];
+
+  topNews.innerHTML=`
+   <div class="top-news">
+    <img src="${API}${latest.image}">
+    <div class="content">
+     <span class="tag">${latest.category}</span>
+     <h2>${latest.title}</h2>
+     <small>🕒 ${new Date(latest.date).toLocaleString("te-IN")}</small>
+     <p>${latest.description||""}</p>
+    </div>
+   </div>
+  `;
+
+  grid.innerHTML="";
+  filtered.slice(1).forEach(n=>{
+   grid.innerHTML+=`
+    <div class="news-card">
+     <img src="${API}${n.image}">
+     <div class="content">
+      <span class="tag">${n.category}</span>
+      <h3>${n.title}</h3>
+      <small>🕒 ${new Date(n.date).toLocaleDateString("te-IN")}</small>
+     </div>
+    </div>`;
+  });
+
+ });
 }
 </script>
 
