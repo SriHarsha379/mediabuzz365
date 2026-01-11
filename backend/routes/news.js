@@ -7,19 +7,20 @@ const auth = require("../middleware/authMiddleware");
 const FILE = path.join(__dirname,"../data/news.json");
 
 /* HELPERS */
-const read = () => JSON.parse(fs.readFileSync(FILE));
-const write = d => fs.writeFileSync(FILE, JSON.stringify(d,null,2));
+const read = ()=>JSON.parse(fs.readFileSync(FILE));
+const write = d=>fs.writeFileSync(FILE,JSON.stringify(d,null,2));
 
-/* UPLOAD */
+/* FILE UPLOAD */
 const storage = multer.diskStorage({
  destination:"uploads/",
- filename:(req,file,cb)=>cb(null,Date.now()+"-"+file.originalname)
+ filename:(req,file,cb)=>{
+  cb(null, Date.now()+"-"+file.originalname);
+ }
 });
 const upload = multer({storage});
 
-/* ================= ADD ================= */
+/* ---------------- ADD NEWS ---------------- */
 router.post("/", auth, upload.single("imageFile"), (req,res)=>{
-
  const news = read();
 
  news.push({
@@ -33,14 +34,28 @@ router.post("/", auth, upload.single("imageFile"), (req,res)=>{
  res.json({msg:"Added"});
 });
 
-/* ================= GET ================= */
+/* ---------------- GET NEWS ---------------- */
+/*
+  Supports:
+  /api/news
+  /api/news?category=breaking
+*/
 router.get("/",(req,res)=>{
- res.json(read());
+ const data = read();
+ const { category } = req.query;
+
+ if(category){
+  const filtered = data.filter(
+   n => n.category === category
+  );
+  return res.json(filtered);
+ }
+
+ res.json(data);
 });
 
-/* ================= UPDATE ================= */
+/* ---------------- UPDATE NEWS ---------------- */
 router.put("/:id", auth, upload.single("imageFile"), (req,res)=>{
-
  let news = read();
 
  news = news.map(n=>{
@@ -58,9 +73,11 @@ router.put("/:id", auth, upload.single("imageFile"), (req,res)=>{
  res.json({msg:"Updated"});
 });
 
-/* ================= DELETE ================= */
+/* ---------------- DELETE NEWS ---------------- */
 router.delete("/:id", auth,(req,res)=>{
- const news = read().filter(n=>n.id!=req.params.id);
+ const news = read().filter(
+  n => n.id != req.params.id
+ );
  write(news);
  res.json({msg:"Deleted"});
 });

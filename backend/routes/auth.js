@@ -1,31 +1,19 @@
-console.log("ADMIN_PASSWORD =", process.env.ADMIN_PASSWORD);
-const express = require("express");
+const router = require("express").Router();
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
 
-const router = express.Router();
+router.post("/login",(req,res)=>{
+ const { password } = req.body;
 
-// store HASHED password
-const ADMIN_PASSWORD_HASH = bcrypt.hashSync("admin123", 10);
+ if(password !== process.env.ADMIN_PASSWORD)
+  return res.status(401).json({success:false});
 
-router.post("/login", async (req, res) => {
-  const { password } = req.body;
+ const token = jwt.sign(
+  {role:"admin"},
+  process.env.JWT_SECRET,
+  {expiresIn:"1d"}
+ );
 
-  // ✅ compare plain password with hash
-  const isMatch = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
-
-  if (!isMatch) {
-    return res.status(401).json({ message: "Invalid password" });
-  }
-
-  // ✅ create JWT token
-  const token = jwt.sign(
-    { role: "admin" },
-    process.env.JWT_SECRET || "SECRET_KEY",
-    { expiresIn: "2h" }
-  );
-
-  res.json({ token });
+ res.json({success:true, token});
 });
 
 module.exports = router;
