@@ -7,69 +7,68 @@ async function loadAllNews(){
   const res = await fetch(`${API}/api/news`);
   const allNews = await res.json();
 
-  console.log("Loaded:", allNews);
-
   const breaking = allNews.filter(
     n => n.category === "breaking"
   );
 
-  displayBreakingNews(breaking);
-  displayAllNews(allNews);
+  renderBreaking(breaking);
+  renderAll(allNews);
 
  }catch(err){
-  console.error("Load error:", err);
+  console.error(err);
  }
 }
 
 /* BREAKING */
-function displayBreakingNews(news){
- const track=document.getElementById("newsTrack");
- if(!track) return;
+function renderBreaking(news){
+ const box=document.getElementById("newsTrack");
+ if(!box) return;
 
- if(!news.length){
-  track.innerHTML="<div>No breaking news</div>";
-  return;
- }
-
- track.innerHTML=news.map(n=>`
-  <div class="news-item">
-   🔴 <a href="news-detail.html?id=${n.id}">
-   ${n.title}
-   </a>
+ box.innerHTML=news.map(n=>`
+  <div class="news-item"
+       onclick="openNews(event,'${n._id}')">
+   🔴 ${n.title}
   </div>
  `).join("");
 }
 
-/* ALL NEWS */
-function displayAllNews(news){
+/* ALL */
+function renderAll(news){
  const box=document.getElementById("allNews");
  if(!box) return;
 
- if(!news.length){
-  box.innerHTML="<p>No news</p>";
-  return;
- }
-
  box.innerHTML=news.map(n=>`
-  <article class="news-card">
-   <a href="news-detail.html?id=${n.id}">
-    <img src="${API}${n.image}">
-    <div>
-     <span class="badge ${n.category}">
-      ${n.category}
-     </span>
-     <h3>${n.title}</h3>
-     <p>📍 ${n.city}</p>
-     <small>${formatDate(n.date)}</small>
-    </div>
-   </a>
+  <article class="news-card"
+           onclick="openNews(event,'${n._id}')">
+   <img src="${API}${n.image}">
+   <div>
+    <span class="badge ${n.category}">
+     ${n.category}
+    </span>
+    <h3>${n.title}</h3>
+    <p>📍 ${n.city}</p>
+    <small>${formatDate(n.date)}</small>
+   </div>
   </article>
  `).join("");
 }
 
-/* DATE */
-function formatDate(d){
- return new Date(d).toLocaleString("te-IN");
+/* FORCE NAVIGATION */
+function openNews(e,id){
+ e.stopPropagation();   // STOP header click
+ e.preventDefault();    // STOP browser
+
+ window.location.href =
+  "news-detail.html?id=" + id;
 }
 
-document.addEventListener("DOMContentLoaded",loadAllNews);
+/* DATE */
+function formatDate(d){
+ return new Date(d)
+ .toLocaleString("te-IN");
+}
+
+document.addEventListener(
+ "DOMContentLoaded",
+ loadAllNews
+);

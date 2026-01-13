@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>News Details</title>
+
+<link rel="stylesheet" href="common.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+.container{
+ max-width:900px;
+ margin:30px auto;
+ padding:0 16px;
+}
+
+.news-img{
+ width:100%;
+ max-width:900px;
+ height:420px;
+ object-fit:cover;
+ border-radius:16px;
+ box-shadow:0 12px 30px rgba(0,0,0,.2);
+ display:block;
+ margin:0 auto 25px;
+}
+
+
+.news-title{
+ font-size:26px;
+ margin:16px 0;
+}
+
+.meta{
+ color:#64748b;
+ font-size:13px;
+ margin-bottom:14px;
+}
+
+.desc{
+ font-size:16px;
+ line-height:1.8;
+}
+</style>
+</head>
+
+<body>
+
+<header id="header"></header>
+
+<div class="container">
+ <img id="img" class="news-img">
+ <h1 id="title" class="news-title"></h1>
+ <div class="meta" id="meta"></div>
+ <p id="desc" class="desc"></p>
+</div>
+
+<footer></footer>
+
+<script>
+const API =
+ location.hostname === "localhost" ||
+ location.hostname === "127.0.0.1"
+ ? "http://localhost:3000"
+ : "https://mediabuzz365.in";
+
+const id = new URLSearchParams(location.search).get("id");
+
+fetch(`${API}/api/news/${id}`)
+.then(r=>r.json())
+.then(n=>{
+ document.getElementById("img").src = API+n.image;
+ document.getElementById("title").innerText = n.title;
+ document.getElementById("meta").innerText =
+  `📍 ${n.city} | 🕒 ${new Date(n.date).toLocaleString("te-IN")}`;
+ document.getElementById("desc").innerText = n.description;
+});
+</script>
+
+<!-- HEADER -->
+<script>
+fetch("header.html")
+ .then(r=>r.text())
+ .then(h=>{
+  document.getElementById("header").innerHTML=h;
+  const s=document.createElement("script");
+  s.src="header.js";
+  document.body.appendChild(s);
+ });
+</script>
+
+<script src="footer.js"></script>
+
+</body>
+</html>

@@ -24,7 +24,7 @@ document.getElementById("header").innerHTML = `
 
 <!-- TELANGANA -->
 <li class="dropdown">
-<a href="#">తెలంగాణ</a>
+<a href="javascript:void(0)">తెలంగాణ</a>
 <div class="dropdown-menu">
 <a href="city.html?state=telangana&city=adilabad">ఆదిలాబాద్</a>
 <a href="city.html?state=telangana&city=bhadradri_kothagudem">భద్రాద్రి కొత్తగూడెం</a>
@@ -64,7 +64,7 @@ document.getElementById("header").innerHTML = `
 
 <!-- ANDHRA -->
 <li class="dropdown">
-<a href="#">ఆంధ్రప్రదేశ్</a>
+<a href="javascript:void(0)">ఆంధ్రప్రదేశ్</a>
 <div class="dropdown-menu">
 <a href="city.html?state=andhra&city=alluri_sitarama_rau">అల్లూరి సీతారామ రాజు</a>
 <a href="city.html?state=andhra&city=anantapur">అనంతపురం</a>
@@ -99,7 +99,7 @@ document.getElementById("header").innerHTML = `
 
 <!-- MORE -->
 <li class="dropdown">
-<a href="#">మరిన్ని</a>
+<a href="javascript:void(0)">తెలంగాణ</a>
 <div class="dropdown-menu">
 <a href="category.html?category=sports">క్రీడలు</a>
 <a href="category.html?category=cinema">సినిమా</a>
@@ -190,7 +190,7 @@ header.classList.toggle("shrink", window.scrollY > 80);
 /* DROPDOWNS */
 document.querySelectorAll(".dropdown > a").forEach(link => {
 link.addEventListener("click", e => {
-e.preventDefault();
+//e.preventDefault();
 e.stopPropagation();
 
 const parent = link.parentElement;
