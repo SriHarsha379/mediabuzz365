@@ -1,13 +1,30 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
-module.exports = (req,res,next)=>{
- const auth = req.headers.authorization;
- if(!auth) return res.sendStatus(401);
+module.exports = async (req, res, next) => {
 
- try{
-  jwt.verify(auth.split(" ")[1], process.env.JWT_SECRET);
+ const token = req.headers.authorization?.split(" ")[1];
+
+ if (!token)
+  return res.status(401).json({ msg: "No token" });
+
+ try {
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+  // FETCH USER FROM DB
+  const user = await User.findById(decoded.id);
+
+  if (!user)
+   return res.status(401).json({ msg: "User not found" });
+
+  if (user.status === "blocked")
+   return res.status(403).json({ msg: "Account blocked" });
+
+  req.user = user;   // ⭐ IMPORTANT LINE
+
   next();
- }catch{
-  res.sendStatus(401);
+
+ } catch (err) {
+  res.status(401).json({ msg: "Invalid token" });
  }
 };

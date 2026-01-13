@@ -1,19 +1,39 @@
 const router = require("express").Router();
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const User = require("../models/User");
 
-router.post("/login",(req,res)=>{
- const { password } = req.body;
+/* LOGIN */
+router.post("/login", async (req, res) => {
 
- if(password !== process.env.ADMIN_PASSWORD)
-  return res.status(401).json({success:false});
+ try{
+  const { email, password } = req.body;
 
- const token = jwt.sign(
-  {role:"admin"},
-  process.env.JWT_SECRET,
-  {expiresIn:"1d"}
- );
+  const user = await User.findOne({ email });
+  if (!user)
+   return res.status(400).json({ msg: "User not found" });
 
- res.json({success:true, token});
+  if(user.status==="blocked")
+   return res.status(403).json({ msg: "Account blocked" });
+
+  const match = await bcrypt.compare(password, user.password);
+  if (!match)
+   return res.status(400).json({ msg: "Wrong password" });
+
+  const token = jwt.sign(
+   { id: user._id, role: user.role },
+   process.env.JWT_SECRET,
+   { expiresIn: "1d" }
+  );
+
+  res.json({
+   token,
+   role: user.role
+  });
+
+ }catch(err){
+  res.status(500).json({msg:"Server error"});
+ }
 });
 
 module.exports = router;
