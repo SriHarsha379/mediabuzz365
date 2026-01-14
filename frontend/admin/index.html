@@ -723,7 +723,7 @@ function render(data){
       onclick='editNews(${JSON.stringify(n).replace(/'/g,"&#39;")})'>Edit</button>
 
      <button class="btn-small btn-red"
-      onclick="openConfirm(${n.id})">Delete</button>
+      onclick="openConfirm('${n._id}')">Delete</button>
     </div>
    </div>
   </div>`;
@@ -779,7 +779,7 @@ function saveNews(){
 /* EDIT */
 function editNews(n){
  editMode=true;
- editId=n.id;
+ editId=n._id;
 
  city.value=n.city;
  category.value=n.category;
@@ -805,21 +805,17 @@ function cancelEdit(){
  image.value="";
 }
 
-/* ---------------- DELETE SYSTEM ---------------- */
-
-/* OPEN MODAL */
+/* DELETE */
 function openConfirm(id){
  deleteId=id;
  document.getElementById("confirmBox").style.display="flex";
 }
 
-/* CLOSE MODAL */
 function closeConfirm(){
  deleteId=null;
  document.getElementById("confirmBox").style.display="none";
 }
 
-/* FINAL DELETE */
 function confirmDelete(){
 
  const token=localStorage.getItem("token");
@@ -861,16 +857,10 @@ function showMsg(text,type="success"){
 /* INIT */
 loadNews();
 
-    document.getElementById("confirmYes")
+document.getElementById("confirmYes")
  .addEventListener("click",confirmDelete);
-
-    const role=localStorage.getItem("role");
-
-if(role==="reporter"){
- document.querySelector(".deleteBtn").style.display="none";
-}
-
 </script>
+
 
 
 </body>
