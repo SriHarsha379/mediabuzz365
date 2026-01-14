@@ -1,0 +1,20 @@
+<h2>🛡 Audit Logs</h2>
+<div id="logs"></div>
+
+<script>
+const token=localStorage.getItem("token");
+
+fetch("/api/audit",{
+ headers:{Authorization:"Bearer "+token}
+})
+.then(r=>r.json())
+.then(data=>{
+ logs.innerHTML=data.map(l=>`
+  <div class="news">
+   <b>${l.action}</b>
+   <p>${l.performedBy.name}</p>
+   <small>${new Date(l.time).toLocaleString()}</small>
+  </div>
+ `).join("");
+});
+</script>

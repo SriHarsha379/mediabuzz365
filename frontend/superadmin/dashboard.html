@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Super Admin Panel</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<div class="side">
+<h2 class="admin-title">
+  <img src="/images/mediabuzz365.png" class="logo">
+  <span>Super Admin</span>
+</h2>
+
+<button onclick="show('dashboard')">📊 Dashboard</button>
+<button onclick="show('pending')">⏳ Pending News</button>
+<button onclick="show('analytics')">📈 Analytics</button>
+<button onclick="location.href='admins.html'">👥 Manage Admins</button>
+<!--<button onclick="location.href='audit.html'">🛡 Audit Logs</button>-->
+<button class="danger" onclick="logout()">🚪 Logout</button>
+
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="page">
+ <h2>Dashboard</h2>
+ <div class="stats">
+  <div class="card">Total News <b id="total"></b></div>
+  <div class="card">Pending <b id="pendingCount"></b></div>
+  <div class="card">Approved <b id="approvedCount"></b></div>
+ </div>
+</div>
+
+<!-- PENDING -->
+<div id="pending" class="page">
+ <h2>Pending News</h2>
+ <div id="pendingList"></div>
+</div>
+
+<!-- ANALYTICS -->
+<div id="analytics" class="page">
+ <h2>Analytics</h2>
+ <canvas id="chart"></canvas>
+</div>
+
+</div>
+</div>
+<!-- NEWS MODAL -->
+<div id="newsModal" class="modal">
+ <div class="modal-card">
+  <span class="close" onclick="closeModal()">×</span>
+
+  <h2 id="mTitle"></h2>
+  <p id="mCity"></p>
+  <img id="mImage">
+  <p id="mDesc"></p>
+
+  <div class="modal-actions">
+   <button class="approve" onclick="approve(currentId)">Approve</button>
+   <button class="reject" onclick="rejectNews(currentId)">Reject</button>
+  </div>
+ </div>
+</div>
+
+<script src="super.js"></script>
+</body>
+</html>

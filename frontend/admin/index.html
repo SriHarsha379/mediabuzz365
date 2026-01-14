@@ -864,6 +864,12 @@ loadNews();
     document.getElementById("confirmYes")
  .addEventListener("click",confirmDelete);
 
+    const role=localStorage.getItem("role");
+
+if(role==="reporter"){
+ document.querySelector(".deleteBtn").style.display="none";
+}
+
 </script>
 
 

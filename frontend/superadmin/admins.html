@@ -1,0 +1,39 @@
+<h2>👥 Admin Management</h2>
+<div id="list"></div>
+
+<script>
+const token=localStorage.getItem("token");
+
+fetch("/api/users",{
+ headers:{Authorization:"Bearer "+token}
+})
+.then(r=>r.json())
+.then(data=>{
+ list.innerHTML=data.map(u=>`
+  <div class="news">
+   <b>${u.name}</b>
+   <p>${u.email}</p>
+   <small>${u.role} | ${u.status}</small>
+
+   <div>
+    <button onclick="block('${u._id}')">Block</button>
+    <button onclick="activate('${u._id}')">Activate</button>
+   </div>
+  </div>
+ `).join("");
+});
+
+function block(id){
+ fetch("/api/users/block/"+id,{
+  method:"PATCH",
+  headers:{Authorization:"Bearer "+token}
+ }).then(()=>location.reload());
+}
+
+function activate(id){
+ fetch("/api/users/activate/"+id,{
+  method:"PATCH",
+  headers:{Authorization:"Bearer "+token}
+ }).then(()=>location.reload());
+}
+</script>
