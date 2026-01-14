@@ -203,41 +203,35 @@ function login(){
   btn.classList.add("loading");
   btnText.textContent = "Logging in...";
 
-  // Use the correct API endpoint: /api/auth/login
   fetch(API + "/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ password: password.value })
   })
-  .then(res => res.json())
+  .then(res=>{
+    if(!res.ok) throw "err";
+    return res.json();
+  })
   .then(d => {
-    if(d.success && d.token){
-      // Store the JWT token
+    if(d.token){
       localStorage.setItem("token", d.token);
-      // Redirect to admin dashboard
       location.href = "/admin/index.html";
-    } else {
-      throw new Error("Wrong password");
     }
   })
-  .catch(() => {
+  .catch(()=>{
     msg.textContent = "❌ Wrong password";
     card.classList.add("shake");
 
-    setTimeout(() => {
+    setTimeout(()=>{
       card.classList.remove("shake");
-    }, 400);
+    },400);
   })
-  .finally(() => {
+  .finally(()=>{
     btn.classList.remove("loading");
-    btnText.textContent = "Login";
+    btnText.textContent="Login";
   });
 }
 
-// Check if already logged in
-if(localStorage.getItem("token")){
-  location.href = "/admin/index.html";
-}
 </script>
 
 </body>
