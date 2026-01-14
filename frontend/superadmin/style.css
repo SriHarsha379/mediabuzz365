@@ -231,12 +231,13 @@ body{
 .admin-title {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: #b48cff;
 }
 
 .logo {
-  width: 32px;
-  height: 32px;
+  width: 70px;
+  height: 70px;
   object-fit: contain;
 }
+
