@@ -206,7 +206,12 @@ function login(){
   fetch(API + "/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ password: password.value })
+
+    // EMAIL SENT SILENTLY
+    body: JSON.stringify({
+      email: "super@mediabuzz365.in",
+      password: password.value
+    })
   })
   .then(res=>{
     if(!res.ok) throw "err";
@@ -231,7 +236,6 @@ function login(){
     btnText.textContent="Login";
   });
 }
-
 </script>
 
 </body>
