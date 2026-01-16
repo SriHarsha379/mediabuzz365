@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>City News</title>
-<link rel="stylesheet" href="common.css">
 
+<link rel="stylesheet" href="common.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -17,7 +17,6 @@ body{
 #header{
   background:linear-gradient(90deg,#caa449,#e6c26b);
 }
-
 
 .container{
   max-width:1200px;
@@ -74,6 +73,7 @@ body{
   overflow:hidden;
   box-shadow:0 6px 18px rgba(0,0,0,.08);
   transition:.25s;
+  cursor:pointer;
 }
 .news-card:hover{
   transform:translateY(-4px);
@@ -119,86 +119,162 @@ body{
 </div>
 
 <script>
-const API = "https://mediabuzz365.in";
+const API = location.hostname.includes("localhost")
+ ? "http://localhost:3000"
+ : "https://mediabuzz365.in";
 
-const params = new URLSearchParams(window.location.search);
+/* GET URL PARAM */
+const params = new URLSearchParams(
+  window.location.search
+);
 const city = params.get("city");
 
-const cityTitle = document.getElementById("cityTitle");
-const topNews = document.getElementById("topNews");
-const newsGrid = document.getElementById("newsGrid");
+/* DOM */
+const cityTitle =
+ document.getElementById("cityTitle");
+const topNews =
+ document.getElementById("topNews");
+const newsGrid =
+ document.getElementById("newsGrid");
 
-if (!city) {
-  cityTitle.textContent = "తాజా వార్తలు";
-  newsGrid.innerHTML = "<p>దయచేసి నగరాన్ని ఎంచుకోండి</p>";
-} else {
+/* NO CITY */
+if(!city){
+ cityTitle.textContent="తాజా వార్తలు";
+ newsGrid.innerHTML=
+  "<p>దయచేసి నగరాన్ని ఎంచుకోండి</p>";
+}else{
 
-  cityTitle.textContent = city.toUpperCase() + " తాజా వార్తలు";
+ cityTitle.textContent =
+  city.toUpperCase()+" తాజా వార్తలు";
 
-  fetch(`${API}/api/news?city=${city}`)
-    .then(res => res.json())
-    .then(data => {
+ loadCityNews();
+}
 
-      // 🔥 SORT BY LATEST TIME
-      data.sort((a, b) => new Date(b.date) - new Date(a.date));
+async function loadCityNews(){
 
-      topNews.innerHTML = "";
-      newsGrid.innerHTML = "";
+ try{
+  const res =
+   await fetch(`${API}/api/news`);
 
-      if (data.length === 0) {
-        newsGrid.innerHTML = "<p>No news available</p>";
-        return;
-      }
+  const data = await res.json();
 
-      // 🟥 BIG LATEST NEWS
-      const latest = data[0];
-      topNews.innerHTML = `
-        <div class="top-news">
-          <img src="${latest.image}">
-          <div class="content">
-            <span class="tag">${latest.category}</span>
-            <h2>${latest.title}</h2>
-            <div class="time">
-              🕒 ${new Date(latest.date).toLocaleString("en-IN")}
-            </div>
-            <p>${latest.description || ""}</p>
-          </div>
-        </div>
-      `;
+/* FILTER (STRICT MATCH) */
+const filtered = data.filter(n => {
 
-      // 🟦 REST NEWS
-      data.slice(1).forEach(item => {
-        const card = document.createElement("div");
-        card.className = "news-card";
-        card.innerHTML = `
-          <img src="${item.image}">
-          <div class="content">
-            <span class="tag">${item.category}</span>
-            <h3>${item.title}</h3>
-            <small style="color:#777">
-              🕒 ${new Date(item.date).toLocaleDateString("en-IN")}
-            </small>
-          </div>
-        `;
-        newsGrid.appendChild(card);
-      });
-    });
+  const apiCity =
+   (n.city || "")
+   .toLowerCase()
+   .replace(/\s+/g,"");
+
+  const urlCity =
+   city.toLowerCase()
+   .replace(/\s+/g,"");
+
+  return apiCity === urlCity;
+});
+
+
+  /* SORT LATEST */
+  filtered.sort(
+   (a,b)=>new Date(b.date)
+   -new Date(a.date)
+  );
+
+  topNews.innerHTML="";
+  newsGrid.innerHTML="";
+
+  if(filtered.length===0){
+   newsGrid.innerHTML=
+    "<p>No news available</p>";
+   return;
+  }
+
+  /* BIG NEWS */
+  const latest = filtered[0];
+
+  topNews.innerHTML=`
+   <div class="top-news"
+    onclick="openNews('${latest._id}')">
+
+    <img src="${API}${latest.image}">
+
+    <div class="content">
+     <span class="tag">
+      ${latest.category}
+     </span>
+
+     <h2>${latest.title}</h2>
+
+     <div class="time">
+      🕒 ${new Date(latest.date)
+      .toLocaleString("en-IN")}
+     </div>
+
+     <p>
+      ${latest.description||""}
+     </p>
+    </div>
+   </div>
+  `;
+
+  /* REST */
+  filtered.slice(1).forEach(n=>{
+
+   const card =
+    document.createElement("div");
+
+   card.className="news-card";
+
+   card.onclick =
+    ()=>openNews(n._id);
+
+   card.innerHTML=`
+    <img src="${API}${n.image}">
+    <div class="content">
+     <span class="tag">
+      ${n.category}
+     </span>
+
+     <h3>${n.title}</h3>
+
+     <small style="color:#777">
+      🕒 ${new Date(n.date)
+      .toLocaleDateString("en-IN")}
+     </small>
+    </div>
+   `;
+
+   newsGrid.appendChild(card);
+  });
+
+ }catch(err){
+  console.error(err);
+ }
+}
+
+/* OPEN NEWS */
+function openNews(id){
+ window.location.href=
+  "news-detail.html?id="+id;
 }
 </script>
 
-
+<!-- HEADER LOAD -->
 <script>
 fetch("header.html")
-  .then(res => res.text())
-  .then(html => {
-    document.getElementById("header").innerHTML = html;
+.then(res=>res.text())
+.then(html=>{
+ document.getElementById("header")
+ .innerHTML=html;
 
-    const script = document.createElement("script");
-    script.src = "header.js";
-    document.body.appendChild(script);
-  });
+ const s=document.createElement("script");
+ s.src="header.js";
+ document.body.appendChild(s);
+});
 </script>
+
 <footer></footer>
 <script src="footer.js"></script>
+
 </body>
 </html>

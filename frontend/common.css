@@ -1338,3 +1338,41 @@ footer p,
 footer a{
   color:#ddd;
 }
+.admin-btn{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 12px;
+  border-radius:20px;
+  background:linear-gradient(135deg,#111,#333);
+  color:#fff;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.admin-btn img{
+  width:18px;
+  filter:invert(1);
+}
+
+.admin-btn:hover{
+  background:linear-gradient(135deg,#d4af37,#b8962e);
+  color:#000;
+  transform:scale(1.05);
+}
+.all-news-grid{
+  max-height:520px;   /* adjust */
+  overflow-y:auto;
+  padding-right:6px;
+}
+
+/* Custom scrollbar */
+.all-news-grid::-webkit-scrollbar{
+  width:6px;
+}
+.all-news-grid::-webkit-scrollbar-thumb{
+  background:#e31e24;
+  border-radius:10px;
+}
