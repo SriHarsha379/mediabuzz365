@@ -6,147 +6,654 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-/* (Keeping your existing styles – shortened for clarity) */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-*{box-sizing:border-box;margin:0;padding:0;}
-body{
- font-family:Arial;
- background:linear-gradient(135deg,#667eea,#764ba2);
- min-height:100vh;
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+/* LAYOUT */
+.wrapper {
+  display: flex;
+  min-height: 100vh;
 }
 
 /* SIDEBAR */
-.sidebar{
- position:fixed;
- left:0;top:0;
- width:260px;
- height:100vh;
- background:#020617;
- padding:25px;
- color:#fff;
+.sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, #1a1f35 0%, #0f1419 100%);
+  color: #fff;
+  padding: 30px 20px;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar h2 {
+  margin-bottom: 40px;
+  font-size: 24px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #e31e24 0%, #ff6b6b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sidebar button {
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar button:hover {
+  background: linear-gradient(135deg, #e31e24 0%, #ff4757 100%);
+  transform: translateX(5px);
+  box-shadow: 0 4px 15px rgba(227, 30, 36, 0.4);
 }
 
 /* MAIN */
-.main{
- margin-left:260px;
- padding:30px;
+.main {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+  margin-left:260px;
+}
+
+/* STATS */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.stat:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+}
+
+.stat h3 {
+  font-size: 13px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.stat b {
+  font-size: 32px;
+  color: #1e293b;
+  font-weight: 700;
+  background: linear-gradient(135deg, #e31e24 0%, #ff6b6b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* CARD */
-.card{
+.card {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.card h3 {
+  font-size: 22px;
+  color: #1e293b;
+  margin-bottom: 25px;
+  font-weight: 700;
+}
+
+/* FORM */
+input, textarea, select {
+  width: 100%;
+  padding: 14px 16px;
+  margin-top: 12px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  background: #fff;
+  font-family: inherit;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #e31e24;
+  box-shadow: 0 0 0 3px rgba(227, 30, 36, 0.1);
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+input[type="file"] {
+  padding: 10px;
+  border: 2px dashed #e2e8f0;
+  background: #f8fafc;
+  cursor: pointer;
+}
+
+input[type="file"]:hover {
+  border-color: #e31e24;
+  background: #fff;
+}
+
+.save-btn {
+  margin-top: 10px;
+  margin-right: 10px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #e31e24 0%, #ff4757 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(227, 30, 36, 0.3);
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(227, 30, 36, 0.4);
+}
+
+.save-btn:active {
+  transform: translateY(0);
+}
+
+.save-btn.cancel {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
+}
+
+.save-btn.cancel:hover {
+  box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
+}
+
+/* NEWS */
+#newsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.news-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid #f1f5f9;
+}
+
+.news-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.news-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.news-card:hover img {
+  transform: scale(1.05);
+}
+
+.news-body {
+  padding: 16px;
+}
+
+.news-body h4 {
+  margin: 10px 0 8px 0;
+  font-size: 16px;
+  color: #1e293b;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.news-body p {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.news-body small {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.breaking { background: linear-gradient(135deg, #e31e24 0%, #ff4757 100%); }
+.national { background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); }
+.international { background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); }
+.politics { background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%); }
+.crime { background: linear-gradient(135deg, #dc2626 0%, #f87171 100%); }
+.lifestyle { background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%); }
+.technology { background: linear-gradient(135deg, #0891b2 0%, #22d3ee 100%); }
+.sports { background: linear-gradient(135deg, #ea580c 0%, #fb923c 100%); }
+.cinema { background: linear-gradient(135deg, #9333ea 0%, #c084fc 100%); }
+.business { background: linear-gradient(135deg, #059669 0%, #34d399 100%); }
+.health { background: linear-gradient(135deg, #9333ea 0%, #a855f7 100%); }
+
+.actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+}
+
+.btn-small {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.btn-gray {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.btn-gray:hover {
+  background: #e2e8f0;
+  transform: translateY(-2px);
+}
+
+.btn-red {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: #fff;
+}
+
+.btn-red:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .wrapper {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+
+  .main {
+    padding: 20px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  #newsList {
+    grid-template-columns: 1fr;
+  }
+}
+    .sidebar{
+  width:260px;
+  height:100vh;
+  background:linear-gradient(180deg,#020617,#0f172a);
+  padding:25px 20px;
+  color:white;
+  box-shadow:8px 0 40px rgba(0,0,0,.6);
+  position:relative;
+}
+
+/* BRAND */
+.brand{
+  text-align:center;
+  margin-bottom:40px;
+}
+
+.logo-wrap{
+  width:110px;
+  height:110px;
+  margin:auto;
+  border-radius:50%;
+  background:linear-gradient(135deg,#ff004f,#00f0ff);
+  padding:3px;
+  animation:pulse 2.5s infinite;
+}
+
+.logo-wrap img{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  background:#000;
+}
+
+.brand h2{
+  margin-top:12px;
+  font-size:20px;
+  letter-spacing:1px;
+  background:linear-gradient(90deg,#ff004f,#00f0ff);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.brand p{
+  font-size:12px;
+  letter-spacing:2px;
+  opacity:.7;
+}
+
+/* MENU */
+nav button{
+  width:100%;
+  padding:14px;
+  margin-bottom:14px;
+  border-radius:14px;
+  background:rgba(255,255,255,.04);
+  backdrop-filter:blur(10px);
+  color:white;
+  border:1px solid rgba(255,255,255,.1);
+  cursor:pointer;
+  font-size:15px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  transition:.35s;
+  position:relative;
+  overflow:hidden;
+}
+
+nav button::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,transparent,#00f0ff,transparent);
+  opacity:0;
+}
+
+nav button:hover::before{
+  animation:shine 1.2s;
+}
+
+nav button:hover{
+  transform:translateX(6px);
+  background:linear-gradient(90deg,#ff004f,#00f0ff);
+  box-shadow:0 0 25px #00f0ff;
+}
+
+nav button span{
+  font-size:18px;
+}
+
+/* LOGOUT */
+.danger:hover{
+  background:linear-gradient(90deg,#ff0000,#ff7300)!important;
+  box-shadow:0 0 25px red;
+}
+
+/* ANIMATIONS */
+@keyframes pulse{
+  0%{box-shadow:0 0 0 #00f0ff}
+  50%{box-shadow:0 0 30px #00f0ff}
+  100%{box-shadow:0 0 0 #00f0ff}
+}
+
+@keyframes shine{
+  0%{opacity:0}
+  30%{opacity:.7}
+  100%{opacity:0}
+}
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  height:100vh;
+  width:260px;
+  background:linear-gradient(180deg,#020617,#0f172a);
+  padding:25px 20px;
+  color:white;
+  box-shadow:8px 0 40px rgba(0,0,0,.6);
+  overflow-y:auto;
+  z-index:100;
+}
+/* MESSAGE TOAST */
+.msg-box{
+  position:fixed;
+  top:20px;
+  right:20px;
+  background:#111;
+  color:#fff;
+  padding:14px 20px;
+  border-radius:12px;
+  font-size:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
+  z-index:9999;
+  display:none;
+  animation:slideIn .3s ease;
+}
+
+.msg-box.success{background:#16a34a;}
+.msg-box.error{background:#dc2626;}
+.msg-box.warn{background:#f59e0b;}
+
+@keyframes slideIn{
+  from{transform:translateX(50px);opacity:0}
+  to{transform:translateX(0);opacity:1}
+}
+/* CONFIRM MODAL */
+.confirm-overlay{
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,.55);
+ display:none;
+ align-items:center;
+ justify-content:center;
+ z-index:99999;
+}
+
+.confirm-card{
  background:#fff;
- padding:25px;
+ padding:24px;
+ width:320px;
  border-radius:14px;
- margin-bottom:25px;
+ text-align:center;
+ animation:pop .25s ease;
 }
 
-/* INPUTS */
-input,textarea,select{
- width:100%;
- padding:12px;
- margin:10px 0;
- border-radius:10px;
- border:2px solid #e5e7eb;
+.confirm-card h3{
+ margin-bottom:10px;
 }
 
-.save-btn{
- padding:12px 24px;
- background:#e31e24;
- color:#fff;
+.confirm-card p{
+ color:#555;
+ font-size:14px;
+ margin-bottom:18px;
+}
+
+.confirm-actions{
+ display:flex;
+ justify-content:space-between;
+ gap:10px;
+}
+
+.btn-cancel{
+ flex:1;
+ padding:10px;
  border:none;
  border-radius:10px;
+ background:#e5e7eb;
  cursor:pointer;
 }
 
-.save-btn.cancel{
- background:#6b7280;
-}
-
-/* NEWS GRID */
-#newsList{
- display:grid;
- grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
- gap:20px;
-}
-
-.news-card{
- background:#fff;
- border-radius:14px;
- overflow:hidden;
- box-shadow:0 5px 15px rgba(0,0,0,.1);
-}
-
-.news-body{padding:14px;}
-
-.img-wrap{
- display:flex;
- gap:6px;
- overflow-x:auto;
+.btn-ok{
+ flex:1;
  padding:10px;
+ border:none;
+ border-radius:10px;
+ background:#dc2626;
+ color:#fff;
+ cursor:pointer;
 }
 
-.img-wrap img{
- width:120px;
- height:80px;
- object-fit:cover;
- border-radius:6px;
+@keyframes pop{
+ from{transform:scale(.85);opacity:0}
+ to{transform:scale(1);opacity:1}
 }
+
 </style>
 </head>
 
 <body>
 
+<!-- 🔐 AUTH PROTECTION -->
 <script>
 if(!localStorage.getItem("token")){
  location.href="/admin/login.html";
 }
 </script>
+<!-- MESSAGE BOX -->
+<div id="msgBox" class="msg-box"></div>
+<!-- CONFIRM MODAL -->
+<div id="confirmBox" class="confirm-overlay">
+ <div class="confirm-card">
+  <h3>Confirm Delete</h3>
+  <p id="confirmText">Are you sure?</p>
 
-<div class="sidebar">
- <h2>MediaBuzz365</h2>
- <button onclick="navigate('add')">➕ Add News</button>
- <button onclick="navigate('list')">📰 All News</button>
- <button onclick="logout()">🚪 Logout</button>
+  <div class="confirm-actions">
+   <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+   <button class="btn-ok" id="confirmYes">Delete</button>
+  </div>
+ </div>
 </div>
 
+<div class="wrapper">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+  <div class="brand">
+    <div class="logo-wrap">
+      <img src="../images/mediabuzz365.png" alt="logo">
+    </div>
+    <h2>MediaBuzz365</h2>
+    <p>Admin Panel</p>
+  </div>
+
+  <nav>
+    <button onclick="navigate('add')">
+      <span>➕</span> Add News
+    </button>
+    <button onclick="navigate('list')">
+      <span>📰</span> All News
+    </button>
+    <button class="danger" onclick="logout()">
+      <span>🚪</span> Logout
+    </button>
+  </nav>
+
+</div>
+
+
+<!-- MAIN -->
 <div class="main">
+
+<!-- STATS -->
+<div class="stats">
+ <div class="stat"><h3>Total News</h3><b id="totalCount">0</b></div>
+ <div class="stat"><h3>Breaking News</h3><b id="breakingCount">0</b></div>
+ <div class="stat"><h3>National</h3><b id="nationalCount">0</b></div>
+ <div class="stat"><h3>Politics</h3><b id="politicsCount">0</b></div>
+</div>
 
 <!-- ADD -->
 <div class="card" id="add">
 <h3>Add / Edit News</h3>
 
-<input id="city" placeholder="City">
+<input id="city" placeholder="Enter city name (e.g., Hyderabad, Guntur)">
 
 <select id="category">
-<option value="">-- Select --</option>
-<option value="breaking">Breaking</option>
-<option value="national">National</option>
-<option value="international">International</option>
-<option value="politics">Politics</option>
-<option value="crime">Crime</option>
-<option value="lifestyle">Lifestyle</option>
-<option value="technology">Technology</option>
-<option value="sports">Sports</option>
-<option value="cinema">Cinema</option>
-<option value="business">Business</option>
+<option value="">-- Select Category --</option>
+<option value="breaking">తాజావార్తలు (Breaking)</option>
+<option value="national">నేషనల్ (National)</option>
+<option value="international">ఇంటర్నేషనల్ (International)</option>
+<option value="politics">రాజకీయాలు (Politics)</option>
+<option value="crime">క్రైం (Crime)</option>
+<option value="lifestyle">లైఫ్ స్టైల్ (Lifestyle)</option>
+<option value="technology">టెక్నాలజీ (Technology)</option>
+<option value="sports">క్రీడలు (Sports)</option>
+<option value="cinema">సినిమా (Cinema)</option>
+<option value="business">బిజినెస్ (Business)</option>
+<option value="health">Health</option>
 </select>
 
-<input id="title" placeholder="Title">
-<textarea id="description" placeholder="Description"></textarea>
+<input id="title" placeholder="Enter news title (Telugu or English)">
+<textarea id="description" placeholder="Enter news description"></textarea>
+<input type="file" id="image" accept="image/*">
 
-<!-- 🔥 MULTI IMAGE -->
-<input type="file" id="image" accept="image/*" multiple>
-
-<button class="save-btn" onclick="saveNews()" id="saveBtn">Save</button>
+<div>
+<button class="save-btn" onclick="saveNews()" id="saveBtn">Save News</button>
 <button class="save-btn cancel" onclick="cancelEdit()" id="cancelBtn" style="display:none">Cancel</button>
+</div>
 </div>
 
 <!-- LIST -->
 <div class="card" id="list">
-<h3>All News</h3>
+<h3>All News Articles</h3>
 <div id="newsList"></div>
 </div>
 
+</div>
 </div>
 
 <script>
@@ -157,6 +664,7 @@ const API = location.hostname.includes("localhost")
 let allNews=[];
 let editMode=false;
 let editId=null;
+let deleteId=null;
 
 /* NAV */
 function navigate(id){
@@ -175,60 +683,69 @@ function loadNews(){
  .then(r=>r.json())
  .then(d=>{
   allNews=d.reverse();
+  updateCounts(allNews);
   render(allNews);
+ })
+ .catch(err=>{
+   console.error("Error loading news:", err);
+   showMsg("Failed to load news","error");
  });
+}
+
+/* COUNTS */
+function updateCounts(d){
+ totalCount.textContent=d.length;
+ breakingCount.textContent=d.filter(n=>n.category==="breaking").length;
+ nationalCount.textContent=d.filter(n=>n.category==="national").length;
+ politicsCount.textContent=d.filter(n=>n.category==="politics").length;
 }
 
 /* RENDER */
 function render(data){
  newsList.innerHTML="";
- if(!data.length){
-  newsList.innerHTML="<p>No news</p>";
+ if(data.length===0){
+  newsList.innerHTML='<p style="text-align:center;color:#64748b;padding:40px">No news yet</p>';
   return;
  }
 
  data.forEach(n=>{
   newsList.innerHTML+=`
-   <div class="news-card">
+  <div class="news-card">
+   <img src="${n.image||'https://via.placeholder.com/280x180'}">
+   <div class="news-body">
+    <span class="badge ${n.category}">${n.category}</span>
+    <h4>${n.title}</h4>
+    <p>📍 ${n.city}</p>
+    <small>🕐 ${new Date(n.date).toLocaleString()}</small>
 
-    <div class="img-wrap">
-     ${(n.images||[]).map(img=>`
-      <img src="${API}${img}">
-     `).join("")}
-    </div>
+    <div class="actions">
+     <button class="btn-small btn-gray"
+      onclick='editNews(${JSON.stringify(n).replace(/'/g,"&#39;")})'>Edit</button>
 
-    <div class="news-body">
-     <h4>${n.title}</h4>
-     <p>📍 ${n.city}</p>
-
-     <button onclick='editNews(${JSON.stringify(n)})'>Edit</button>
-     <button onclick="deleteNews('${n._id}')">Delete</button>
+     <button class="btn-small btn-red"
+      onclick="openConfirm('${n._id}')">Delete</button>
     </div>
    </div>
-  `;
+  </div>`;
  });
 }
 
 /* SAVE */
 function saveNews(){
 
- if(!city.value || !category.value || !title.value){
-  alert("Fill all");
+ const token=localStorage.getItem("token");
+
+ if(!city.value || !category.value || !title.value || !description.value){
+  showMsg("Fill all fields","warn");
   return;
  }
 
- const token=localStorage.getItem("token");
  const form=new FormData();
-
  form.append("city",city.value);
  form.append("category",category.value);
  form.append("title",title.value);
  form.append("description",description.value);
-
- /* MULTI FILE */
- for(let f of image.files){
-  form.append("imageFiles",f);
- }
+ if(image.files[0]) form.append("imageFile",image.files[0]);
 
  let url=API+"/api/news";
  let method="POST";
@@ -245,11 +762,17 @@ function saveNews(){
   },
   body:form
  })
- .then(r=>r.json())
+ .then(r=>{
+  if(!r.ok) throw "err";
+  return r.json();
+ })
  .then(()=>{
-  alert("Saved");
+  showMsg(editMode?"Updated successfully":"News added","success");
   cancelEdit();
   loadNews();
+ })
+ .catch(()=>{
+  showMsg("Save failed","error");
  });
 }
 
@@ -263,42 +786,82 @@ function editNews(n){
  title.value=n.title;
  description.value=n.description;
 
- saveBtn.innerText="Update";
+ saveBtn.innerHTML="Update News";
  cancelBtn.style.display="inline-block";
+ navigate("add");
 }
 
 /* CANCEL */
 function cancelEdit(){
  editMode=false;
  editId=null;
+ saveBtn.innerHTML="Save News";
+ cancelBtn.style.display="none";
 
  city.value="";
  title.value="";
  description.value="";
  category.value="";
  image.value="";
-
- saveBtn.innerText="Save";
- cancelBtn.style.display="none";
 }
 
 /* DELETE */
-function deleteNews(id){
- if(!confirm("Delete?")) return;
+function openConfirm(id){
+ deleteId=id;
+ document.getElementById("confirmBox").style.display="flex";
+}
+
+function closeConfirm(){
+ deleteId=null;
+ document.getElementById("confirmBox").style.display="none";
+}
+
+function confirmDelete(){
 
  const token=localStorage.getItem("token");
 
- fetch(API+"/api/news/"+id,{
+ fetch(API+"/api/news/"+deleteId,{
   method:"DELETE",
   headers:{
    "Authorization":"Bearer "+token
   }
  })
- .then(()=>loadNews());
+ .then(r=>{
+  if(r.ok){
+   showMsg("Deleted successfully","success");
+   loadNews();
+  }else{
+   showMsg("Delete failed","error");
+  }
+ })
+ .catch(()=>{
+  showMsg("Server error","error");
+ })
+ .finally(()=>{
+  closeConfirm();
+ });
 }
 
+/* MESSAGE BOX */
+function showMsg(text,type="success"){
+ const box=document.getElementById("msgBox");
+ box.className="msg-box "+type;
+ box.innerText=text;
+ box.style.display="block";
+
+ setTimeout(()=>{
+  box.style.display="none";
+ },3000);
+}
+
+/* INIT */
 loadNews();
+
+document.getElementById("confirmYes")
+ .addEventListener("click",confirmDelete);
 </script>
+
+
 
 </body>
 </html>
