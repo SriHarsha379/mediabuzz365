@@ -13,127 +13,141 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage});
 
-/* ---------------- ADD NEWS ---------------- */
+/* ADD NEWS */
 router.post("/",
  auth,
  upload.single("imageFile"),
- async (req,res)=>{
+ async(req,res)=>{
 
- try{
-  const news = await News.create({
-   ...req.body,
-   image:req.file?"/uploads/"+req.file.filename:"",
-   createdBy:req.user.id,
-   status:"pending"
-  });
+ const user=req.user;
 
-  res.json({msg:"Added", news});
-
- }catch(err){
-  res.status(500).json({error:"Add failed"});
+ if(user.role==="admin"){
+  if(!user.districts.includes(req.body.city)){
+   return res.status(403).json({
+    msg:"No access to this district"
+   });
+  }
  }
+
+ const news=await News.create({
+  ...req.body,
+  status:"pending",
+  createdBy:user.id,
+  image:req.file?"/uploads/"+req.file.filename:""
+ });
+
+ res.json({msg:"Sent for approval"});
 });
 
-/* ---------------- GET ALL NEWS ---------------- */
+/* ================= PUBLIC ================= */
 router.get("/", async (req,res)=>{
- try{
-  const { category, status } = req.query;
-  let filter={};
+ const { category } = req.query;
 
-  if(category) filter.category = category;
-  if(status) filter.status = status;
+ let filter={ status:"approved" };
+ if(category) filter.category=category;
 
-  const data = await News
-    .find(filter)
-    .sort({date:-1});
+ const data = await News.find(filter).sort({date:-1});
+ res.json(data);
+});
+
+/* ================= ADMIN FETCH ================= */
+router.get("/admin",
+ auth,
+ allow("admin"),
+ async(req,res)=>{
+
+  const user=req.user;
+
+  const data = await News.find({
+   city:{ $in:user.districts }
+  }).sort({date:-1});
 
   res.json(data);
-
- }catch(err){
-  res.status(500).json({error:"Fetch failed"});
- }
 });
 
-/* ---------------- GET SINGLE NEWS ---------------- */
-router.get("/:id", async (req,res)=>{
- try{
-  const news = await News.findById(req.params.id);
+/* ================= SUPER ADMIN ================= */
+router.get("/admin/all",
+ auth,
+ allow("super_admin"),
+ async(req,res)=>{
 
-  if(!news){
-   return res
-    .status(404)
-    .json({error:"Not found"});
-  }
+  const {status}=req.query;
+  let filter={};
+  if(status) filter.status=status;
 
-  res.json(news);
-
- }catch(err){
-  res.status(500).json({error:"Fetch failed"});
- }
+  const data = await News.find(filter).sort({date:-1});
+  res.json(data);
 });
 
-/* ---------------- UPDATE NEWS ---------------- */
+/* ================= UPDATE ================= */
 router.put("/:id",
  auth,
  upload.single("imageFile"),
  async (req,res)=>{
 
  try{
+  const user=req.user;
+  const old = await News.findById(req.params.id);
+
+  if(!old) return res.status(404).json({msg:"Not found"});
+
+  if(user.role==="admin"){
+   if(!user.districts.includes(old.city)){
+    return res.status(403).json({
+     msg:"No access to edit this district"
+    });
+   }
+  }
+
   let data={...req.body};
 
   if(req.file){
    data.image="/uploads/"+req.file.filename;
   }
 
+  data.status="pending";
+
   await News.findByIdAndUpdate(req.params.id,data);
-  res.json({msg:"Updated"});
+
+  res.json({msg:"Updated, sent for re-approval"});
 
  }catch(err){
   res.status(500).json({error:"Update failed"});
  }
 });
 
-/* ---------------- DELETE NEWS ---------------- */
+/* ================= DELETE ================= */
 router.delete("/:id",
  auth,
- allow("super_admin","admin"),
+ allow("super_admin"),
  async (req,res)=>{
-
- try{
   await News.findByIdAndDelete(req.params.id);
   res.json({msg:"Deleted"});
-
- }catch(err){
-  res.status(500).json({error:"Delete failed"});
- }
 });
 
-/* ---------------- APPROVE NEWS ---------------- */
+/* ================= APPROVE ================= */
 router.patch("/approve/:id",
  auth,
- allow("super_admin","admin","editor"),
+ allow("super_admin"),
  async (req,res)=>{
 
- try{
   await News.findByIdAndUpdate(req.params.id,{
    status:"approved",
    approvedBy:req.user.id
   });
 
   res.json({msg:"Approved"});
-
- }catch(err){
-  res.status(500).json({error:"Approve failed"});
- }
 });
 
+/* ================= REJECT ================= */
 router.patch("/reject/:id",
  auth,
- allow("super_admin","admin","editor"),
+ allow("super_admin"),
  async(req,res)=>{
 
   await News.findByIdAndUpdate(req.params.id,{
-   status:"rejected"
+   status:"rejected",
+   rejectedBy:req.user.id
   });
 
   res.json({msg:"Rejected"});

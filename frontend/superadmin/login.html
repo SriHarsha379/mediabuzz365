@@ -21,6 +21,7 @@
 
 <script>
 async function login(){
+
  const res = await fetch("/api/auth/login",{
   method:"POST",
   headers:{'Content-Type':'application/json'},
@@ -31,8 +32,15 @@ async function login(){
  });
 
  const data = await res.json();
+ console.log("LOGIN RESPONSE:",data);
 
- if(data.role!=="super_admin"){
+ if(!data.token){
+  msg.innerText=data.msg || "Login failed";
+  return;
+ }
+
+ // ✅ FIX HERE
+ if(data.user.role!=="super_admin"){
   msg.innerText="Access denied";
   return;
  }
@@ -41,6 +49,7 @@ async function login(){
  location.href="dashboard.html";
 }
 </script>
+
 
 </body>
 </html>

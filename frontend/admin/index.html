@@ -620,7 +620,8 @@ if(!localStorage.getItem("token")){
 <div class="card" id="add">
 <h3>Add / Edit News</h3>
 
-<input id="city" placeholder="Enter city name (e.g., Hyderabad, Guntur)">
+<select id="city"></select>
+
 
 <select id="category">
 <option value="">-- Select Category --</option>
@@ -859,6 +860,34 @@ loadNews();
 
 document.getElementById("confirmYes")
  .addEventListener("click",confirmDelete);
+
+
+const token = localStorage.getItem("token");
+
+fetch(API + "/api/users/me",{
+ headers:{ Authorization:"Bearer "+token }
+})
+.then(r=>r.json())
+.then(user=>{
+
+ city.innerHTML="";
+
+ if(!user.districts.length){
+  city.innerHTML=`<option disabled selected>
+   No district assigned
+  </option>`;
+  return;
+ }
+
+ user.districts.forEach((d,i)=>{
+  city.innerHTML+=`
+   <option ${i===0?"selected":""}>
+    ${d}
+   </option>`;
+ });
+
+});
+
 </script>
 
 

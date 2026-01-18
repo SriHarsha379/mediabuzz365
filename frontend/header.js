@@ -99,7 +99,7 @@ document.getElementById("header").innerHTML = `
 
 <!-- MORE -->
 <li class="dropdown">
-<a href="javascript:void(0)">తెలంగాణ</a>
+<a href="javascript:void(0)">మరిన్ని</a>
 <div class="dropdown-menu">
 <a href="category.html?category=sports">క్రీడలు</a>
 <a href="category.html?category=cinema">సినిమా</a>
