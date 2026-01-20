@@ -1376,3 +1376,47 @@ footer a{
   background:#e31e24;
   border-radius:10px;
 }
+/* LATEST NEWS CARD FIX */
+
+.news-card{
+  height: 320px;            /* fixed card height */
+  display:flex;
+  flex-direction:column;
+}
+
+.news-card img{
+  height:160px;
+  object-fit:cover;
+}
+
+.news-card .news-body{
+  flex:1;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Title clamp */
+.news-card h4{
+  display:-webkit-box;
+  -webkit-line-clamp:2;     /* show only 2 lines */
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+/* Description clamp */
+.news-card p{
+  display:-webkit-box;
+  -webkit-line-clamp:3;     /* show only 3 lines */
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+/* Read more */
+.read-more{
+  margin-top:auto;
+  color:#e31e24;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+}

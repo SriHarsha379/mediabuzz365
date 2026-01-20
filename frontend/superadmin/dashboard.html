@@ -1,98 +1,243 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <title>Super Admin Panel</title>
+
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+/* ================= MODAL ================= */
+.modal{
+ display:none;
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,.35);
+ backdrop-filter:blur(2px);
+ align-items:center;
+ justify-content:center;
+ z-index:1000;
+}
+.modal-card{
+ background:#fff;
+ padding:40px 30px 30px;
+ border-radius:8px;
+ max-width:700px;
+ width:90%;
+ max-height:90vh;
+ overflow-y:auto;
+ position:relative;
+}
+.close{
+ position:absolute;
+ top:12px;
+ right:18px;
+ font-size:26px;
+ cursor:pointer;
+ color:#666;
+}
+.close:hover{color:#000}
+
+/* FORM */
+.form-group{margin-bottom:15px}
+.form-group label{
+ display:block;
+ margin-bottom:6px;
+ font-weight:600;
+}
+.form-group input{
+ width:100%;
+ padding:10px;
+ border:1px solid #ddd;
+ border-radius:4px;
 }
 
-.modal-card {
-  background: white;
-  padding: 30px;
-  border-radius: 8px;
-  max-width: 500px;
-  width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
+/* BUTTONS */
+.btn-primary{
+ background:#007bff;
+ color:#fff;
+ padding:12px;
+ border:none;
+ width:100%;
+ border-radius:4px;
+ cursor:pointer;
+}
+.create-admin-btn{
+ background:#28a745;
+ color:#fff;
+ padding:12px 24px;
+ border:none;
+ border-radius:4px;
+ cursor:pointer;
+ margin-bottom:20px;
+}
+    /* ================= MODAL OVERLAY ================= */
+.modal{
+ display:none;
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,.55);
+ backdrop-filter: blur(6px);
+ align-items:center;
+ justify-content:center;
+ z-index:9999;
+ animation:fadeIn .25s ease;
 }
 
-.close {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 28px;
-  cursor: pointer;
-  color: #999;
+/* ================= MODAL CARD ================= */
+.modal-card{
+ background:#fff;
+ padding:35px 30px;
+ border-radius:16px;
+ max-width:720px;
+ width:90%;
+ max-height:90vh;
+ overflow-y:auto;
+ position:relative;
+ box-shadow:0 20px 60px rgba(0,0,0,.35);
+ animation:pop .25s ease;
 }
 
-.close:hover {
-  color: #333;
+/* CLOSE */
+.close{
+ position:absolute;
+ top:14px;
+ right:18px;
+ font-size:26px;
+ cursor:pointer;
+ color:#888;
+ transition:.2s;
+}
+.close:hover{
+ color:#000;
+ transform:rotate(90deg);
 }
 
-.form-group {
-  margin-bottom: 15px;
+/* IMAGE */
+#mImage{
+ width:100%;
+ max-height:320px;
+ object-fit:cover;
+ border-radius:10px;
+ margin:15px 0;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+/* TITLE */
+#mTitle{
+ font-size:22px;
+ font-weight:700;
+ margin-bottom:6px;
+ color:#111;
 }
 
-.form-group input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  box-sizing: border-box;
+/* CITY */
+#mCity{
+ font-size:14px;
+ color:#666;
+ margin-bottom:10px;
 }
 
-.btn-primary {
-  background: #007bff;
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  width: 100%;
-  margin-top: 10px;
+/* DESC */
+#mDesc{
+ font-size:15px;
+ color:#333;
+ line-height:1.6;
 }
 
-.btn-primary:hover {
-  background: #0056b3;
+/* ================= ACTION BUTTONS ================= */
+.modal-card button{
+ padding:12px 22px;
+ border:none;
+ border-radius:10px;
+ cursor:pointer;
+ font-weight:600;
+ margin-top:18px;
+ margin-right:10px;
+ transition:.25s;
 }
 
-.create-admin-btn {
-  background: #28a745;
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-bottom: 20px;
+/* APPROVE */
+.modal-card button:first-of-type{
+ background:linear-gradient(135deg,#16a34a,#22c55e);
+ color:#fff;
+}
+.modal-card button:first-of-type:hover{
+ transform:translateY(-2px);
+ box-shadow:0 8px 20px rgba(34,197,94,.5);
 }
 
-.create-admin-btn:hover {
-  background: #218838;
+/* REJECT */
+.modal-card button:last-of-type{
+ background:linear-gradient(135deg,#dc2626,#f87171);
+ color:#fff;
 }
+.modal-card button:last-of-type:hover{
+ transform:translateY(-2px);
+ box-shadow:0 8px 20px rgba(248,113,113,.5);
+}
+
+/* ================= ADMIN MODAL ================= */
+#createAdminModal .modal-card{
+ max-width:420px;
+}
+
+.form-group{
+ margin-bottom:16px;
+}
+
+.form-group label{
+ font-weight:600;
+ margin-bottom:6px;
+ display:block;
+}
+
+.form-group input{
+ width:100%;
+ padding:12px;
+ border-radius:10px;
+ border:2px solid #e5e7eb;
+ font-size:14px;
+}
+
+.form-group input:focus{
+ outline:none;
+ border-color:#3b82f6;
+ box-shadow:0 0 0 3px rgba(59,130,246,.15);
+}
+
+/* CREATE BTN */
+.btn-primary{
+ width:100%;
+ padding:13px;
+ border:none;
+ border-radius:12px;
+ font-weight:600;
+ cursor:pointer;
+ background:linear-gradient(135deg,#2563eb,#3b82f6);
+ color:white;
+ transition:.25s;
+}
+
+.btn-primary:hover{
+ transform:translateY(-2px);
+ box-shadow:0 8px 20px rgba(59,130,246,.5);
+}
+
+/* ================= ANIMATIONS ================= */
+@keyframes fadeIn{
+ from{opacity:0}
+ to{opacity:1}
+}
+
+@keyframes pop{
+ from{transform:scale(.85);opacity:0}
+ to{transform:scale(1);opacity:1}
+}
+
 </style>
 </head>
+
 <body>
 
 <div class="layout">
@@ -100,8 +245,8 @@
 <!-- SIDEBAR -->
 <div class="side">
 <h2 class="admin-title">
-  <img src="/images/mediabuzz365.png" class="logo">
-  <span>Super Admin</span>
+ <img src="/images/mediabuzz365.png" class="logo">
+ <span>Super Admin</span>
 </h2>
 
 <button onclick="show('dashboard')">📊 Dashboard</button>
@@ -109,7 +254,6 @@
 <button onclick="show('analytics')">📈 Analytics</button>
 <button onclick="show('admins')">👥 Manage Admins</button>
 <button class="danger" onclick="logout()">🚪 Logout</button>
-
 </div>
 
 <!-- CONTENT -->
@@ -137,10 +281,11 @@
  <canvas id="chart"></canvas>
 </div>
 
-<!-- ADMIN MANAGEMENT -->
+<!-- ADMINS -->
 <div id="admins" class="page">
  <h2>👥 Admin Management</h2>
- <button class="create-admin-btn" onclick="showCreateAdminModal()">➕ Create New Admin</button>
+ <button class="create-admin-btn"
+ onclick="showCreateAdminModal()">➕ Create New Admin</button>
  <div id="adminList"></div>
 </div>
 
@@ -151,49 +296,70 @@
 <div id="newsModal" class="modal">
  <div class="modal-card">
   <span class="close" onclick="closeModal()">×</span>
-
   <h2 id="mTitle"></h2>
   <p id="mCity"></p>
-  <img id="mImage" style="max-width:100%;height:auto;margin:15px 0">
+  <img id="mImage" style="width:100%;margin:15px 0">
   <p id="mDesc"></p>
 
-  <div class="modal-actions">
-   <button class="approve" onclick="approve(currentId)">Approve</button>
-   <button class="reject" onclick="rejectNews(currentId)">Reject</button>
-  </div>
+  <button onclick="approve(currentId)">Approve</button>
+  <button onclick="rejectNews(currentId)">Reject</button>
  </div>
 </div>
 
 <!-- CREATE ADMIN MODAL -->
 <div id="createAdminModal" class="modal">
  <div class="modal-card">
-  <span class="close" onclick="closeCreateAdminModal()">×</span>
+  <span class="close"
+  onclick="closeCreateAdminModal()">×</span>
 
-  <h2>➕ Create New Admin</h2>
-  <p style="color:#666;margin-bottom:20px">Create login credentials for a district admin</p>
+  <h2>Create Admin</h2>
 
-  <form id="createAdminForm" onsubmit="createAdmin(event)">
+  <form onsubmit="createAdmin(event)">
    <div class="form-group">
-    <label for="adminName">Admin Name *</label>
-    <input type="text" id="adminName" required placeholder="Enter admin name">
+    <label>Name</label>
+    <input id="adminName" required>
    </div>
 
    <div class="form-group">
-    <label for="adminEmail">Email Address *</label>
-    <input type="email" id="adminEmail" required placeholder="admin@example.com">
+    <label>Email</label>
+    <input id="adminEmail" type="email" required>
    </div>
 
    <div class="form-group">
-    <label for="adminPassword">Password *</label>
-    <input type="text" id="adminPassword" required placeholder="Create a secure password">
-    <small style="color:#666">Share this password with the admin after creation</small>
+    <label>Password</label>
+    <input id="adminPassword" required>
    </div>
 
-   <button type="submit" class="btn-primary">Create Admin Account</button>
+   <button class="btn-primary">
+    Create
+   </button>
   </form>
  </div>
 </div>
 
+<!-- ================= SOCKET.IO ================= -->
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+const socket = io();
+
+socket.emit("join","super-admin");
+
+/* realtime */
+
+socket.on("news:new",()=>{
+ console.log("🟢 new pending news");
+ loadPending();
+});
+
+socket.on("stats:update",()=>{
+ console.log("📊 stats updated");
+ loadStats();
+});
+</script>
+
+<!-- MAIN LOGIC -->
 <script src="super.js"></script>
+
 </body>
 </html>

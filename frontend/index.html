@@ -439,6 +439,60 @@ document.addEventListener("click", e => {
 </script>
 
 <script src="news.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+/* ================= SOCKET.IO ================= */
+
+const socket = io(); // connect to backend
+
+// Join PUBLIC room
+socket.emit("join","public");
+
+/* REALTIME EVENTS */
+
+// News approved → refresh homepage
+socket.on("news:approved",()=>{
+ console.log("🟢 New approved news");
+
+ if(typeof loadLatestNews==="function"){
+  loadLatestNews();
+ }
+
+ if(typeof loadBreaking==="function"){
+  loadBreaking();
+ }
+
+ if(typeof loadAllNews==="function"){
+  loadAllNews();
+ }
+});
+
+// News deleted
+socket.on("news:deleted",()=>{
+ console.log("🔴 News deleted");
+
+ if(typeof loadLatestNews==="function"){
+  loadLatestNews();
+ }
+
+ if(typeof loadBreaking==="function"){
+  loadBreaking();
+ }
+
+ if(typeof loadAllNews==="function"){
+  loadAllNews();
+ }
+});
+
+/* DEBUG */
+socket.on("connect",()=>{
+ console.log("🟢 Socket connected:",socket.id);
+});
+
+socket.on("disconnect",()=>{
+ console.log("🔴 Socket disconnected");
+});
+</script>
 
 </body>
 </html>
