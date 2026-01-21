@@ -1,14 +1,35 @@
 // TOP BAR
 document.getElementById("topBar").innerHTML = `
 <div class="top-bar-inner">
+
   <div class="logo">
     <a href="index.html">
       <img src="images/mediabuzz365.png" alt="Media Buzz 365">
     </a>
   </div>
-  <a href="#" class="epaper-btn">తెలంగాణ E-Paper</a>
+
+  <!-- RIGHT BUTTONS -->
+  <div style="display:flex; gap:10px; align-items:center;">
+
+    <!-- ADMIN BUTTON -->
+    <a
+      href="/admin/login.html"
+      class="epaper-btn"
+      style="background:#2563eb;"
+    >
+      🔐 Admin
+    </a>
+
+    <!-- EPAPER BUTTON -->
+    <a href="#" class="epaper-btn">
+      📰 తెలంగాణ E-Paper
+    </a>
+
+  </div>
+
 </div>
 `;
+
 
 // MAIN NAV
 document.getElementById("mainNav").innerHTML = `
