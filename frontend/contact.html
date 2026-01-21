@@ -2,156 +2,353 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Contact - MediaBuzz365</title>
 <link rel="stylesheet" href="common.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-body{
-font-family:Arial, sans-serif;
-margin:0;
-background:#f4f6f9;
+:root {
+  --primary: #2563eb;
+  --red: #dc2626;
+  --gold: #d4af37;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f5f5f5;
+}
+
+/* TOP BAR */
+.top-bar {
+  background: #fff;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 12px 0;
+}
+
+.top-bar-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo img {
+  height: 50px;
+}
+
+.epaper-btn {
+  background: var(--red);
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* MAIN NAV */
+.main-nav {
+  background: var(--primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 0 20px;
+  position: relative;
+}
+
+.nav-inner::-webkit-scrollbar {
+  height: 0;
+}
+
+.nav-inner a {
+  color: #fff;
+  text-decoration: none;
+  padding: 14px 20px;
+  white-space: nowrap;
+  font-weight: 600;
+  font-size: 15px;
+  transition: background 0.3s;
+  cursor: pointer;
+}
+
+.nav-inner a:hover,
+.nav-inner a.active {
+  background: rgba(255,255,255,0.15);
+}
+
+.nav-inner a.home {
+  font-size: 18px;
+}
+
+/* DROPDOWN MENU */
+.nav-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: none;
+  z-index: 2000;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.nav-dropdown.show {
+  display: block;
+}
+
+.dropdown-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.dropdown-grid a {
+  color: #111;
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.dropdown-grid a:hover {
+  background: #f3f4f6;
 }
 
 /* PAGE */
-.page{
-max-width:900px;
-margin:40px auto;
-padding:30px;
-background:#fff;
-border-radius:10px;
-box-shadow:0 5px 15px rgba(0,0,0,.1);
+.page {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,.1);
 }
 
-h1{
-margin-bottom:15px;
-color:#111;
+h1 {
+  margin-bottom: 15px;
+  color: #111;
 }
 
-h2{
-margin-top:25px;
-color:#cc0000;
+h2 {
+  margin-top: 25px;
+  color: var(--red);
 }
 
 /* FORM */
-.contact-form{
-max-width:600px;
-margin:25px 0;
+.contact-form {
+  max-width: 600px;
+  margin: 25px 0;
 }
 
-.contact-form label{
-display:block;
-margin-top:15px;
-font-weight:600;
+.contact-form label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
 }
 
 .contact-form input,
-.contact-form textarea{
-width:100%;
-padding:12px;
-margin-top:5px;
-border:1px solid #ccc;
-border-radius:6px;
-font-size:14px;
+.contact-form textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
-.contact-form textarea{
-resize:vertical;
+.contact-form textarea {
+  resize: vertical;
 }
 
-.contact-form button{
-margin-top:20px;
-padding:12px 30px;
-background:#cc0000;
-color:#fff;
-border:none;
-border-radius:6px;
-font-size:15px;
-cursor:pointer;
-transition:.2s;
+.contact-form button {
+  margin-top: 20px;
+  padding: 12px 30px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: .2s;
 }
 
-.contact-form button:hover{
-background:#a30000;
+.contact-form button:hover {
+  background: #b91c1c;
 }
 
 /* TEXT */
-p{
-line-height:1.7;
-color:#333;
+p {
+  line-height: 1.7;
+  color: #333;
 }
 
-ul{
-margin-left:20px;
+ul {
+  margin-left: 20px;
 }
 
-li{
-margin:6px 0;
-color:#444;
+li {
+  margin: 6px 0;
+  color: #444;
+}
+
+/* FOOTER */
+footer {
+  background: #1f2937;
+  color: #fff;
+  margin-top: 40px;
+  padding: 30px 20px 20px;
+}
+
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+footer h4 {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: var(--gold);
+}
+
+footer a {
+  color: #d1d5db;
+  text-decoration: none;
+  display: block;
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+footer a:hover {
+  color: var(--gold);
+}
+
+.copyright {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #374151;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.footer-social {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.footer-social img {
+  width: 24px;
+  height: 24px;
+  filter: invert(1);
+  transition: transform 0.3s;
+}
+
+.footer-social img:hover {
+  transform: scale(1.15);
+}
+
+.contact-card {
+  text-align: center;
+  padding: 16px;
+  background: #374151;
+  border-radius: 6px;
+  margin: 20px auto;
+  max-width: 400px;
+  font-size: 14px;
 }
 
 /* Responsive */
-@media(max-width:600px){
-.page{
-margin:20px;
-padding:20px;
-}
+@media(max-width:600px) {
+  .page {
+    margin: 20px;
+    padding: 20px;
+  }
 }
 </style>
-
 </head>
 
 <body>
 
-<header id="header"></header>
+<!-- TOP BAR -->
+<div class="top-bar" id="topBar"></div>
+
+<!-- MAIN NAVIGATION -->
+<nav class="main-nav" id="mainNav"></nav>
 
 <main class="page">
-<h1>Contact Us</h1>
+  <h1>Contact Us</h1>
 
-<p>
-For any queries related to the website, please fill out the form below:
-</p>
+  <p>
+    For any queries related to the website, please fill out the form below:
+  </p>
 
-<form class="contact-form">
+  <form class="contact-form">
+    <label>Your Name</label>
+    <input type="text" required>
 
-<label>Your Name</label>
-<input type="text" required>
+    <label>Your Email</label>
+    <input type="email" required>
 
-<label>Your Email</label>
-<input type="email" required>
+    <label>Your Message</label>
+    <textarea rows="6" required></textarea>
 
-<label>Your Message</label>
-<textarea rows="6" required></textarea>
+    <button type="submit">Submit</button>
+  </form>
 
-<button type="submit">Submit</button>
+  <section>
+    <h2>Feedback</h2>
+    <ul>
+      <li>Content quality and accuracy</li>
+      <li>Website usability</li>
+      <li>Video presentation</li>
+      <li>General suggestions</li>
+    </ul>
+  </section>
 
-</form>
+  <section>
+    <h2>Grievance Redressal</h2>
+    <ul>
+      <li>Content accuracy</li>
+      <li>Editorial practices</li>
+      <li>Copyright</li>
+      <li>Ethical standards</li>
+    </ul>
 
-<section>
-<h2>Feedback</h2>
-<ul>
-<li>Content quality and accuracy</li>
-<li>Website usability</li>
-<li>Video presentation</li>
-<li>General suggestions</li>
-</ul>
-</section>
-
-<section>
-<h2>Grievance Redressal</h2>
-<ul>
-<li>Content accuracy</li>
-<li>Editorial practices</li>
-<li>Copyright</li>
-<li>Ethical standards</li>
-</ul>
-
-<p>
-📧 <strong>support@mediabuzz365.in</strong>
-</p>
-</section>
-
+    <p>
+      📧 <strong>support@mediabuzz365.in</strong>
+    </p>
+  </section>
 </main>
 
-<footer></footer>
+<!-- FOOTER -->
+<footer id="footer"></footer>
 
 <script src="header.js"></script>
 <script src="footer.js"></script>

@@ -51,6 +51,17 @@ router.get("/",async(req,res)=>{
  const data=await News.find(filter).sort({date:-1});
  res.json(data);
 });
+/* ================= SINGLE NEWS ================= */
+router.get("/single/:id", async (req,res)=>{
+ try{
+  const news = await News.findById(req.params.id);
+  if(!news) return res.status(404).json({msg:"Not found"});
+  res.json(news);
+ }catch(e){
+  res.status(500).json({msg:"error"});
+ }
+});
+
 
 /* ================= ADMIN ================= */
 router.get("/admin",

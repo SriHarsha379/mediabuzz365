@@ -3,101 +3,310 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Category News</title>
-
+<title>Category News - MediaBuzz365</title>
 <link rel="stylesheet" href="common.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
-
 <style>
-body{
-  font-family:"Noto Sans Telugu",sans-serif;
-  background:#f4f6f9;
-  margin:0;
+:root {
+  --primary: #2563eb;
+  --red: #dc2626;
+  --gold: #d4af37;
 }
 
-.container{
-  max-width:1200px;
-  margin:30px auto;
-  padding:0 16px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.category-title{
-  font-size:28px;
-  margin-bottom:20px;
-  color:#0a2463;
+body {
+  font-family: "Noto Sans Telugu", sans-serif;
+  background: #f5f5f5;
+  margin: 0;
 }
 
-.top-news{
-  background:#fff;
-  border-radius:14px;
-  overflow:hidden;
-  box-shadow:0 8px 22px rgba(0,0,0,.15);
-  margin-bottom:30px;
+/* TOP BAR */
+.top-bar {
+  background: #fff;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 12px 0;
 }
 
-.top-news img{
-  width:100%;
-  height:360px;
-  object-fit:cover;
+.top-bar-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.top-news .content{
-  padding:18px;
+.logo img {
+  height: 50px;
 }
 
-.news-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:20px;
+.epaper-btn {
+  background: var(--red);
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
 }
 
-.news-card{
-  background:#fff;
-  border-radius:10px;
-  overflow:hidden;
-  box-shadow:0 6px 18px rgba(0,0,0,.08);
+/* MAIN NAV */
+.main-nav {
+  background: var(--primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-.news-card img{
-  width:100%;
-  height:180px;
-  object-fit:cover;
+.nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 0 20px;
+  position: relative;
 }
 
-.news-card .content{
-  padding:12px;
+.nav-inner::-webkit-scrollbar {
+  height: 0;
 }
 
-.tag{
-  background:#e31e24;
-  color:#fff;
-  font-size:11px;
-  padding:4px 8px;
-  border-radius:20px;
+.nav-inner a {
+  color: #fff;
+  text-decoration: none;
+  padding: 14px 20px;
+  white-space: nowrap;
+  font-weight: 600;
+  font-size: 15px;
+  transition: background 0.3s;
+  cursor: pointer;
+}
+
+.nav-inner a:hover,
+.nav-inner a.active {
+  background: rgba(255,255,255,0.15);
+}
+
+.nav-inner a.home {
+  font-size: 18px;
+}
+
+/* DROPDOWN MENU */
+.nav-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: none;
+  z-index: 2000;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.nav-dropdown.show {
+  display: block;
+}
+
+.dropdown-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.dropdown-grid a {
+  color: #111;
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.dropdown-grid a:hover {
+  background: #f3f4f6;
+}
+
+/* CONTAINER */
+.container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 16px;
+}
+
+.category-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #0a2463;
+}
+
+.top-news {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 22px rgba(0,0,0,.15);
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+
+.top-news img {
+  width: 100%;
+  height: 360px;
+  object-fit: cover;
+}
+
+.top-news .content {
+  padding: 18px;
+}
+
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.news-card {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  cursor: pointer;
+  transition: .25s;
+}
+
+.news-card:hover {
+  transform: translateY(-4px);
+}
+
+.news-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.news-card .content {
+  padding: 12px;
+}
+
+.tag {
+  background: var(--red);
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+/* FOOTER */
+footer {
+  background: #1f2937;
+  color: #fff;
+  margin-top: 40px;
+  padding: 30px 20px 20px;
+}
+
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+footer h4 {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: var(--gold);
+}
+
+footer a {
+  color: #d1d5db;
+  text-decoration: none;
+  display: block;
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+footer a:hover {
+  color: var(--gold);
+}
+
+.copyright {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #374151;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.footer-social {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.footer-social img {
+  width: 24px;
+  height: 24px;
+  filter: invert(1);
+  transition: transform 0.3s;
+}
+
+.footer-social img:hover {
+  transform: scale(1.15);
+}
+
+.contact-card {
+  text-align: center;
+  padding: 16px;
+  background: #374151;
+  border-radius: 6px;
+  margin: 20px auto;
+  max-width: 400px;
+  font-size: 14px;
+}
+
+@media(max-width:768px) {
+  .news-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<!-- ================= HEADER ================= -->
-<header id="header"></header>
+<!-- TOP BAR -->
+<div class="top-bar" id="topBar"></div>
 
-<!-- ================= PAGE CONTENT ================= -->
+<!-- MAIN NAVIGATION -->
+<nav class="main-nav" id="mainNav"></nav>
+
 <div class="container">
   <div class="category-title" id="categoryTitle">Loading...</div>
   <div id="topNews"></div>
   <div class="news-grid" id="newsGrid"></div>
 </div>
 
-<!-- ================= FOOTER ================= -->
-<footer></footer>
+<!-- FOOTER -->
+<footer id="footer"></footer>
 
-<!-- ================= NEWS SCRIPT ================= -->
 <script>
 const API = location.hostname.includes("localhost")
- ? "http://localhost:3000"
- : "https://mediabuzz365.in";
+  ? "http://localhost:3000"
+  : "https://mediabuzz365.in";
 
 const params = new URLSearchParams(location.search);
 const category = params.get("category");
@@ -106,68 +315,62 @@ const titleEl = document.getElementById("categoryTitle");
 const topNews = document.getElementById("topNews");
 const grid = document.getElementById("newsGrid");
 
-if(!category){
- titleEl.textContent="తాజా వార్తలు";
-}else{
- titleEl.textContent = category.toUpperCase()+" వార్తలు";
+if (!category) {
+  titleEl.textContent = "లేటెస్ట్ న్యూస్";
+} else {
+  titleEl.textContent = category.toUpperCase() + " లేటెస్ట్ న్యూస్";
 
- fetch(`${API}/api/news`)
- .then(r=>r.json())
- .then(data=>{
+  fetch(`${API}/api/news`)
+    .then(r => r.json())
+    .then(data => {
 
-  const filtered = data.filter(n => n.category === category);
+      const filtered = data.filter(n => n.category === category);
 
-  if(!filtered.length){
-   grid.innerHTML="<p>ఈ విభాగంలో వార్తలు లేవు</p>";
-   return;
-  }
+      if (!filtered.length) {
+        grid.innerHTML = "<p>ఈ విభాగంలో వార్తలు లేవు</p>";
+        return;
+      }
 
-  filtered.sort((a,b)=>new Date(b.date)-new Date(a.date));
-  const latest=filtered[0];
+      filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const latest = filtered[0];
 
-  topNews.innerHTML=`
-   <div class="top-news">
-    <img src="${API}${latest.image}">
-    <div class="content">
-     <span class="tag">${latest.category}</span>
-     <h2>${latest.title}</h2>
-     <small>🕒 ${new Date(latest.date).toLocaleString("te-IN")}</small>
-     <p>${latest.description||""}</p>
-    </div>
-   </div>
-  `;
+      topNews.innerHTML = `
+        <div class="top-news" onclick="openNews('${latest._id}')">
+          <img src="${API}${latest.image}">
+          <div class="content">
+            <span class="tag">${latest.category}</span>
+            <h2>${latest.title}</h2>
+            <small>🕒 ${new Date(latest.date).toLocaleString("te-IN")}</small>
+            <p>${latest.description || ""}</p>
+          </div>
+        </div>
+      `;
 
-  grid.innerHTML="";
-  filtered.slice(1).forEach(n=>{
-   grid.innerHTML+=`
-    <div class="news-card">
-     <img src="${API}${n.image}">
-     <div class="content">
-      <span class="tag">${n.category}</span>
-      <h3>${n.title}</h3>
-      <small>🕒 ${new Date(n.date).toLocaleDateString("te-IN")}</small>
-     </div>
-    </div>`;
-  });
+      grid.innerHTML = "";
+      filtered.slice(1).forEach(n => {
+        const card = document.createElement("div");
+        card.className = "news-card";
+        card.onclick = () => openNews(n._id);
+        card.innerHTML = `
+          <img src="${API}${n.image}">
+          <div class="content">
+            <span class="tag">${n.category}</span>
+            <h3>${n.title}</h3>
+            <small>🕒 ${new Date(n.date).toLocaleDateString("te-IN")}</small>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
 
- });
+    });
+}
+
+function openNews(id) {
+  window.location.href = "news-detail.html?id=" + id;
 }
 </script>
 
-<!-- ================= LOAD HEADER ================= -->
-<script>
-fetch("header.html")
-  .then(r=>r.text())
-  .then(h=>{
-    document.getElementById("header").innerHTML = h;
-
-    const s=document.createElement("script");
-    s.src="header.js";
-    document.body.appendChild(s);
-  });
-</script>
-
-<!-- ================= LOAD FOOTER ================= -->
+<script src="header.js"></script>
 <script src="footer.js"></script>
 
 </body>

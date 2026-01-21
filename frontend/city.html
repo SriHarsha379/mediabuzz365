@@ -3,277 +3,413 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>City News</title>
-
+<title>City News - MediaBuzz365</title>
 <link rel="stylesheet" href="common.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
-
 <style>
-body{
-  font-family:"Noto Sans Telugu",sans-serif;
-  background:#f4f6f9;
-  margin:0;
-}
-#header{
-  background:linear-gradient(90deg,#caa449,#e6c26b);
+:root {
+  --primary: #2563eb;
+  --red: #dc2626;
+  --gold: #d4af37;
 }
 
-.container{
-  max-width:1200px;
-  margin:30px auto;
-  padding:0 16px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.city-title{
-  font-size:28px;
-  margin-bottom:20px;
-  color:#0a2463;
+body {
+  font-family: "Noto Sans Telugu", sans-serif;
+  background: #f5f5f5;
+  margin: 0;
 }
 
-/* 🔴 TOP BIG NEWS */
-.top-news{
-  width:100%;
-  background:#fff;
-  border-radius:14px;
-  overflow:hidden;
-  box-shadow:0 8px 22px rgba(0,0,0,.15);
-  margin-bottom:30px;
+/* TOP BAR */
+.top-bar {
+  background: #fff;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 12px 0;
 }
 
-.top-news img{
-  width:100%;
-  height:360px;
-  object-fit:cover;
+.top-bar-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.top-news .content{
-  padding:18px;
+.logo img {
+  height: 50px;
 }
 
-.top-news h2{
-  font-size:26px;
-  margin:10px 0;
+.epaper-btn {
+  background: var(--red);
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
 }
 
-.top-news .time{
-  color:#777;
-  font-size:13px;
+/* MAIN NAV */
+.main-nav {
+  background: var(--primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-/* 🟦 GRID NEWS */
-.news-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:20px;
+.nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 0 20px;
+  position: relative;
 }
 
-.news-card{
-  background:#fff;
-  border-radius:10px;
-  overflow:hidden;
-  box-shadow:0 6px 18px rgba(0,0,0,.08);
-  transition:.25s;
-  cursor:pointer;
-}
-.news-card:hover{
-  transform:translateY(-4px);
+.nav-inner::-webkit-scrollbar {
+  height: 0;
 }
 
-.news-card img{
-  width:100%;
-  height:180px;
-  object-fit:cover;
+.nav-inner a {
+  color: #fff;
+  text-decoration: none;
+  padding: 14px 20px;
+  white-space: nowrap;
+  font-weight: 600;
+  font-size: 15px;
+  transition: background 0.3s;
+  cursor: pointer;
 }
 
-.news-card .content{
-  padding:12px;
+.nav-inner a:hover,
+.nav-inner a.active {
+  background: rgba(255,255,255,0.15);
 }
 
-.tag{
-  display:inline-block;
-  background:#e31e24;
-  color:#fff;
-  font-size:11px;
-  padding:4px 8px;
-  border-radius:20px;
-  margin-bottom:6px;
+.nav-inner a.home {
+  font-size: 18px;
 }
 
-.news-card h3{
-  font-size:16px;
-  margin:6px 0;
+/* DROPDOWN MENU */
+.nav-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: none;
+  z-index: 2000;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.nav-dropdown.show {
+  display: block;
+}
+
+.dropdown-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.dropdown-grid a {
+  color: #111;
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.dropdown-grid a:hover {
+  background: #f3f4f6;
+}
+
+/* CONTAINER */
+.container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 16px;
+}
+
+.city-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #0a2463;
+}
+
+/* TOP BIG NEWS */
+.top-news {
+  width: 100%;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 22px rgba(0,0,0,.15);
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+
+.top-news img {
+  width: 100%;
+  height: 360px;
+  object-fit: cover;
+}
+
+.top-news .content {
+  padding: 18px;
+}
+
+.top-news h2 {
+  font-size: 26px;
+  margin: 10px 0;
+}
+
+.top-news .time {
+  color: #777;
+  font-size: 13px;
+}
+
+/* GRID NEWS */
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.news-card {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  transition: .25s;
+  cursor: pointer;
+}
+
+.news-card:hover {
+  transform: translateY(-4px);
+}
+
+.news-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.news-card .content {
+  padding: 12px;
+}
+
+.tag {
+  display: inline-block;
+  background: var(--red);
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 20px;
+  margin-bottom: 6px;
+}
+
+.news-card h3 {
+  font-size: 16px;
+  margin: 6px 0;
+}
+
+/* FOOTER */
+footer {
+  background: #1f2937;
+  color: #fff;
+  margin-top: 40px;
+  padding: 30px 20px 20px;
+}
+
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+footer h4 {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: var(--gold);
+}
+
+footer a {
+  color: #d1d5db;
+  text-decoration: none;
+  display: block;
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+footer a:hover {
+  color: var(--gold);
+}
+
+.copyright {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #374151;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.footer-social {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.footer-social img {
+  width: 24px;
+  height: 24px;
+  filter: invert(1);
+  transition: transform 0.3s;
+}
+
+.footer-social img:hover {
+  transform: scale(1.15);
+}
+
+.contact-card {
+  text-align: center;
+  padding: 16px;
+  background: #374151;
+  border-radius: 6px;
+  margin: 20px auto;
+  max-width: 400px;
+  font-size: 14px;
+}
+
+@media(max-width:768px) {
+  .news-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div id="header"></div>
+<!-- TOP BAR -->
+<div class="top-bar" id="topBar"></div>
+
+<!-- MAIN NAVIGATION -->
+<nav class="main-nav" id="mainNav"></nav>
 
 <div class="container">
   <div class="city-title" id="cityTitle">Loading...</div>
-
   <div id="topNews"></div>
-
   <div class="news-grid" id="newsGrid"></div>
 </div>
 
+<!-- FOOTER -->
+<footer id="footer"></footer>
+
 <script>
 const API = location.hostname.includes("localhost")
- ? "http://localhost:3000"
- : "https://mediabuzz365.in";
+  ? "http://localhost:3000"
+  : "https://mediabuzz365.in";
 
 /* GET URL PARAM */
-const params = new URLSearchParams(
-  window.location.search
-);
+const params = new URLSearchParams(window.location.search);
 const city = params.get("city");
 
 /* DOM */
-const cityTitle =
- document.getElementById("cityTitle");
-const topNews =
- document.getElementById("topNews");
-const newsGrid =
- document.getElementById("newsGrid");
+const cityTitle = document.getElementById("cityTitle");
+const topNews = document.getElementById("topNews");
+const newsGrid = document.getElementById("newsGrid");
 
 /* NO CITY */
-if(!city){
- cityTitle.textContent="తాజా వార్తలు";
- newsGrid.innerHTML=
-  "<p>దయచేసి నగరాన్ని ఎంచుకోండి</p>";
-}else{
-
- cityTitle.textContent =
-  city.toUpperCase()+" తాజా వార్తలు";
-
- loadCityNews();
+if (!city) {
+  cityTitle.textContent = "లేటెస్ట్ న్యూస్";
+  newsGrid.innerHTML = "<p>దయచేసి నగరాన్ని ఎంచుకోండి</p>";
+} else {
+  cityTitle.textContent = city.toUpperCase() + " లేటెస్ట్ న్యూస్";
+  loadCityNews();
 }
 
-async function loadCityNews(){
+async function loadCityNews() {
+  try {
+    const res = await fetch(`${API}/api/news`);
+    const data = await res.json();
 
- try{
-  const res =
-   await fetch(`${API}/api/news`);
+    /* FILTER (STRICT MATCH) */
+    const filtered = data.filter(n => {
+      const apiCity = (n.city || "").toLowerCase().replace(/\s+/g, "");
+      const urlCity = city.toLowerCase().replace(/\s+/g, "");
+      return apiCity === urlCity;
+    });
 
-  const data = await res.json();
+    /* SORT LATEST */
+    filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-/* FILTER (STRICT MATCH) */
-const filtered = data.filter(n => {
+    topNews.innerHTML = "";
+    newsGrid.innerHTML = "";
 
-  const apiCity =
-   (n.city || "")
-   .toLowerCase()
-   .replace(/\s+/g,"");
+    if (filtered.length === 0) {
+      newsGrid.innerHTML = "<p>No news available</p>";
+      return;
+    }
 
-  const urlCity =
-   city.toLowerCase()
-   .replace(/\s+/g,"");
+    /* BIG NEWS */
+    const latest = filtered[0];
 
-  return apiCity === urlCity;
-});
+    topNews.innerHTML = `
+      <div class="top-news" onclick="openNews('${latest._id}')">
+        <img src="${API}${latest.image}">
+        <div class="content">
+          <span class="tag">${latest.category}</span>
+          <h2>${latest.title}</h2>
+          <div class="time">🕒 ${new Date(latest.date).toLocaleString("en-IN")}</div>
+          <p>${latest.description || ""}</p>
+        </div>
+      </div>
+    `;
 
+    /* REST */
+    filtered.slice(1).forEach(n => {
+      const card = document.createElement("div");
+      card.className = "news-card";
+      card.onclick = () => openNews(n._id);
+      card.innerHTML = `
+        <img src="${API}${n.image}">
+        <div class="content">
+          <span class="tag">${n.category}</span>
+          <h3>${n.title}</h3>
+          <small style="color:#777">🕒 ${new Date(n.date).toLocaleDateString("en-IN")}</small>
+        </div>
+      `;
+      newsGrid.appendChild(card);
+    });
 
-  /* SORT LATEST */
-  filtered.sort(
-   (a,b)=>new Date(b.date)
-   -new Date(a.date)
-  );
-
-  topNews.innerHTML="";
-  newsGrid.innerHTML="";
-
-  if(filtered.length===0){
-   newsGrid.innerHTML=
-    "<p>No news available</p>";
-   return;
+  } catch (err) {
+    console.error(err);
   }
-
-  /* BIG NEWS */
-  const latest = filtered[0];
-
-  topNews.innerHTML=`
-   <div class="top-news"
-    onclick="openNews('${latest._id}')">
-
-    <img src="${API}${latest.image}">
-
-    <div class="content">
-     <span class="tag">
-      ${latest.category}
-     </span>
-
-     <h2>${latest.title}</h2>
-
-     <div class="time">
-      🕒 ${new Date(latest.date)
-      .toLocaleString("en-IN")}
-     </div>
-
-     <p>
-      ${latest.description||""}
-     </p>
-    </div>
-   </div>
-  `;
-
-  /* REST */
-  filtered.slice(1).forEach(n=>{
-
-   const card =
-    document.createElement("div");
-
-   card.className="news-card";
-
-   card.onclick =
-    ()=>openNews(n._id);
-
-   card.innerHTML=`
-    <img src="${API}${n.image}">
-    <div class="content">
-     <span class="tag">
-      ${n.category}
-     </span>
-
-     <h3>${n.title}</h3>
-
-     <small style="color:#777">
-      🕒 ${new Date(n.date)
-      .toLocaleDateString("en-IN")}
-     </small>
-    </div>
-   `;
-
-   newsGrid.appendChild(card);
-  });
-
- }catch(err){
-  console.error(err);
- }
 }
 
 /* OPEN NEWS */
-function openNews(id){
- window.location.href=
-  "news-detail.html?id="+id;
+function openNews(id) {
+  window.location.href = "news-detail.html?id=" + id;
 }
 </script>
 
-<!-- HEADER LOAD -->
-<script>
-fetch("header.html")
-.then(res=>res.text())
-.then(html=>{
- document.getElementById("header")
- .innerHTML=html;
-
- const s=document.createElement("script");
- s.src="header.js";
- document.body.appendChild(s);
-});
-</script>
-
-<footer></footer>
+<script src="header.js"></script>
 <script src="footer.js"></script>
 
 </body>
