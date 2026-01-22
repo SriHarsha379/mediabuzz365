@@ -319,39 +319,70 @@ let districtMap={};
 async function loadAdmins(){
 
  try{
-  const res = await fetch(
-   API+"/api/users",
-   { headers }
-  );
-
+  const res = await fetch(API+"/api/users",{ headers });
   if(!res.ok) return;
 
   const users = await res.json();
 
   adminList.innerHTML = users.map(u=>`
    <div class="news">
-    <b>${u.name}</b>
-    <p>${u.email}</p>
-    <small>${u.role} | ${u.status}</small>
+
+    <b>👤 Candidate Name:</b> ${u.name}<br>
+    <b>📧 Email:</b> ${u.email}<br>
+
+    <div class="meta">
+     📞 Phone: <b>${u.phone || "N/A"}</b><br>
+     🆔 Aadhaar: <b>${u.aadhaar || "N/A"}</b><br>
+     🗓 Registered On:
+      <b>${new Date(u.createdAt).toLocaleString()}</b><br>
+     🏷 Role: <b>${u.role}</b><br>
+     🔖 Status: <b>${u.status}</b>
+    </div>
 
     ${
      u.role==="super_admin"
      ? "<p style='color:#28a745'>👑 Full Access</p>"
      : `
-      <details>
-       <summary>📍 Assign Districts (${u.districts?.length || 0})</summary>
-       <div style="max-height:200px;overflow-y:auto;margin:10px 0">
-        ${DISTRICTS.map(d=>`
-         <label style="display:block;margin:5px 0">
-          <input type="checkbox"
-           ${u.districts?.includes(d)?"checked":""}
-           onchange="toggleDistrict('${u._id}','${d}',this.checked)">
-          ${d}
-         </label>
-        `).join("")}
-       </div>
-       <button onclick="saveDistricts('${u._id}')">💾 Save</button>
-      </details>
+<details>
+ <summary>📍 Assign Districts (${u.districts?.length || 0})</summary>
+
+ <!-- SEARCH -->
+ <input
+  type="text"
+  placeholder="Search district..."
+  onkeyup="filterDistricts(this,'${u._id}')"
+  style="width:100%;padding:6px;border-radius:6px;border:1px solid #ccc;margin:8px 0">
+
+ <div class="district-box" id="dist-${u._id}"
+  style="max-height:220px;overflow-y:auto">
+
+  <b>📍 ANDHRA PRADESH</b>
+  ${DISTRICTS.slice(0,26).map(d=>`
+   <label class="dist-item">
+    <input type="checkbox"
+     ${u.districts?.includes(d)?"checked":""}
+     onchange="toggleDistrict('${u._id}','${d}',this.checked)">
+    ${d}
+   </label>
+  `).join("")}
+
+  <hr>
+
+  <b>📍 TELANGANA</b>
+  ${DISTRICTS.slice(26).map(d=>`
+   <label class="dist-item">
+    <input type="checkbox"
+     ${u.districts?.includes(d)?"checked":""}
+     onchange="toggleDistrict('${u._id}','${d}',this.checked)">
+    ${d}
+   </label>
+  `).join("")}
+
+ </div>
+
+ <button onclick="saveDistricts('${u._id}')">💾 Save</button>
+</details>
+
      `
     }
 
@@ -368,6 +399,7 @@ async function loadAdmins(){
       </div>
      `
     }
+
    </div>
   `).join("");
 
@@ -375,6 +407,7 @@ async function loadAdmins(){
   console.error("loadAdmins error:",err);
  }
 }
+
 
 function toggleDistrict(userId, district, checked){
  if(!districtMap[userId]) districtMap[userId]=[];
@@ -387,6 +420,19 @@ function toggleDistrict(userId, district, checked){
   districtMap[userId] =
    districtMap[userId].filter(d=>d!==district);
  }
+}
+
+function filterDistricts(input,id){
+
+ const value=input.value.toLowerCase();
+
+ document.querySelectorAll(
+  "#dist-"+id+" .dist-item"
+ ).forEach(el=>{
+  el.style.display=
+   el.innerText.toLowerCase().includes(value)
+   ?"block":"none";
+ });
 }
 
 async function saveDistricts(userId){
@@ -411,6 +457,79 @@ async function saveDistricts(userId){
 
  }catch(err){
   alert("Update failed");
+ }
+}
+
+/* ================= DELETE USER ================= */
+
+async function deleteUser(id){
+
+ if(!confirm("Are you sure you want to delete this admin?")){
+  return;
+ }
+
+ try{
+  const res = await fetch(
+   API+"/api/users/"+id,
+   {
+    method:"DELETE",
+    headers
+   }
+  );
+
+  const data = await res.json();
+
+  alert(data.message || "Deleted");
+  loadAdmins();
+
+ }catch(err){
+  alert("Delete failed");
+ }
+}
+
+/* ================= BLOCK USER ================= */
+
+async function blockUser(id){
+
+ if(!confirm("Block this admin?")) return;
+
+ try{
+  const res = await fetch(
+   API+"/api/users/block/"+id,
+   {
+    method:"PATCH",
+    headers
+   }
+  );
+
+  const data = await res.json();
+  alert(data.message);
+  loadAdmins();
+
+ }catch(err){
+  alert("Block failed");
+ }
+}
+
+/* ================= ACTIVATE USER ================= */
+
+async function activateUser(id){
+
+ try{
+  const res = await fetch(
+   API+"/api/users/activate/"+id,
+   {
+    method:"PATCH",
+    headers
+   }
+  );
+
+  const data = await res.json();
+  alert(data.message);
+  loadAdmins();
+
+ }catch(err){
+  alert("Activate failed");
  }
 }
 

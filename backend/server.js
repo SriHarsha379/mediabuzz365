@@ -87,6 +87,20 @@ app.get("/health",(req,res)=>{
  });
 });
 
+io.on("connection", socket=>{
+ console.log("🟢 Socket connected:",socket.id);
+
+ socket.on("join",room=>{
+  socket.join(room);
+  console.log("Joined:",room);
+ });
+
+ socket.on("disconnect",()=>{
+  console.log("🔴 Socket disconnected:",socket.id);
+ });
+});
+
+
 /* ================= SPA ================= */
 
 app.get("*",(req,res)=>{

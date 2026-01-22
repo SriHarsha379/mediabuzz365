@@ -234,11 +234,56 @@
  from{transform:scale(.85);opacity:0}
  to{transform:scale(1);opacity:1}
 }
+/* NOTIFICATION */
+.notify{
+ position:fixed;
+ top:15px;
+ right:20px;
+ background:#111;
+ color:#fff;
+ padding:10px 16px;
+ border-radius:30px;
+ cursor:pointer;
+ z-index:9999;
+}
+
+.notify span{
+ background:red;
+ padding:2px 7px;
+ border-radius:50%;
+ font-size:12px;
+}
+
+/* TOAST */
+.toast{
+ position:fixed;
+ bottom:20px;
+ right:20px;
+ background:#111;
+ color:#fff;
+ padding:14px 20px;
+ border-radius:10px;
+ opacity:0;
+ transform:translateY(20px);
+ transition:.3s;
+ z-index:9999;
+}
+
+.toast.show{
+ opacity:1;
+ transform:translateY(0);
+}
 
 </style>
 </head>
 
 <body>
+<!-- NOTIFICATION -->
+<div id="notify" class="notify">
+ 🔔 <span id="notifyCount">0</span>
+</div>
+
+<div id="toast" class="toast"></div>
 
 <div class="layout">
 
@@ -284,8 +329,6 @@
 <!-- ADMINS -->
 <div id="admins" class="page">
  <h2>👥 Admin Management</h2>
- <button class="create-admin-btn"
- onclick="showCreateAdminModal()">➕ Create New Admin</button>
  <div id="adminList"></div>
 </div>
 
@@ -306,57 +349,71 @@
  </div>
 </div>
 
-<!-- CREATE ADMIN MODAL -->
-<div id="createAdminModal" class="modal">
- <div class="modal-card">
-  <span class="close"
-  onclick="closeCreateAdminModal()">×</span>
-
-  <h2>Create Admin</h2>
-
-  <form onsubmit="createAdmin(event)">
-   <div class="form-group">
-    <label>Name</label>
-    <input id="adminName" required>
-   </div>
-
-   <div class="form-group">
-    <label>Email</label>
-    <input id="adminEmail" type="email" required>
-   </div>
-
-   <div class="form-group">
-    <label>Password</label>
-    <input id="adminPassword" required>
-   </div>
-
-   <button class="btn-primary">
-    Create
-   </button>
-  </form>
- </div>
-</div>
 
 <!-- ================= SOCKET.IO ================= -->
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
+/* SINGLE SOCKET CONNECTION */
 const socket = io();
 
+/* join super-admin room */
 socket.emit("join","super-admin");
 
-/* realtime */
-
+/* NEW PENDING NEWS */
 socket.on("news:new",()=>{
  console.log("🟢 new pending news");
+ showNotify("🆕 New news submitted for approval");
  loadPending();
 });
 
+/* STATS UPDATE */
 socket.on("stats:update",()=>{
  console.log("📊 stats updated");
  loadStats();
 });
+
+/* ADMIN REGISTER */
+socket.on("admin:registered", data=>{
+ showNotify(`🆕 New admin request: ${data.name}`);
+});
+
+/* APPROVE / REJECT */
+socket.on("notify", data=>{
+ if(data.type==="approve"){
+  showNotify(`✅ News approved: ${data.title}`);
+ }
+ if(data.type==="reject"){
+  showNotify(`❌ News rejected`);
+ }
+});
+
+/* UI TOAST */
+function showNotify(msg){
+
+ let count = document.getElementById("notifyCount");
+ count.innerText = Number(count.innerText) + 1;
+
+ const box = document.createElement("div");
+ box.className="toast";
+ box.innerText=msg;
+
+ document.body.appendChild(box);
+
+ setTimeout(()=>{
+  box.remove();
+ },4000);
+}
+    /* BELL CLICK */
+document.getElementById("notify").onclick = ()=>{
+ show("admins");
+
+ localStorage.setItem("notifyCount",0);
+ document.getElementById("notifyCount").innerText = 0;
+};
+
 </script>
+
 
 <!-- MAIN LOGIC -->
 <script src="super.js"></script>

@@ -1,42 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin Management</title>
+
+<style>
+body{
+ font-family:Arial;
+ background:#f4f6f8;
+ padding:20px
+}
+
+h2{margin-bottom:15px}
+
+/* SEARCH */
+#search{
+ width:100%;
+ padding:10px;
+ border-radius:6px;
+ border:1px solid #ccc;
+ margin-bottom:15px;
+}
+
+/* CARD */
+.news{
+ background:#fff;
+ padding:18px;
+ border-radius:12px;
+ margin-bottom:14px;
+ box-shadow:0 5px 15px rgba(0,0,0,.05);
+}
+
+.news b{font-size:16px}
+
+/* META */
+.meta{
+ font-size:13px;
+ color:#555;
+ margin-top:8px;
+ line-height:1.7;
+}
+
+/* STATUS */
+.badge{
+ padding:4px 12px;
+ border-radius:20px;
+ font-size:12px;
+ font-weight:600;
+}
+.pending{background:#fef3c7;color:#b45309}
+.active{background:#dcfce7;color:#166534}
+.blocked{background:#fee2e2;color:#991b1b}
+
+/* ACTIONS */
+.actions{
+ margin-top:14px;
+ display:flex;
+ flex-wrap:wrap;
+ gap:8px
+}
+
+button{
+ border:none;
+ padding:8px 16px;
+ border-radius:6px;
+ cursor:pointer;
+ font-size:13px
+}
+
+.approve{background:#22c55e;color:white}
+.reject{background:#ef4444;color:white}
+.block{background:#f97316;color:white}
+.activate{background:#3b82f6;color:white}
+.delete{background:#111;color:white}
+
+button:hover{opacity:.85}
+</style>
+</head>
+
+<body>
+
 <h2>👥 Admin Management</h2>
+
+<input id="search" placeholder="Search admin...">
+
 <div id="list"></div>
 
-<script src="admins.js"></script>
-
-
 <script>
-const token=localStorage.getItem("token");
+const token = localStorage.getItem("token");
 
+/* LOAD ADMINS */
 fetch("/api/users",{
- headers:{Authorization:"Bearer "+token}
+ headers:{ Authorization:"Bearer "+token }
 })
 .then(r=>r.json())
-.then(data=>{
- list.innerHTML=data.map(u=>`
+.then(render);
+
+/* HELPERS */
+function formatDate(d){
+ if(!d) return "N/A";
+ return new Date(d).toLocaleString();
+}
+
+/* MASK AADHAAR */
+function maskAadhaar(a){
+ if(!a) return "N/A";
+ return "XXXX-XXXX-" + a.slice(-4);
+}
+
+/* RENDER */
+function render(data){
+
+ list.innerHTML = data.map(u=>`
   <div class="news">
+
    <b>${u.name}</b>
    <p>${u.email}</p>
-   <small>${u.role} | ${u.status}</small>
 
-   <div>
-    <button onclick="block('${u._id}')">Block</button>
-    <button onclick="activate('${u._id}')">Activate</button>
+   <div class="meta">
+    📞 Phone: <b>${u.phone || "N/A"}</b><br>
+    🆔 Aadhaar: <b>${maskAadhaar(u.aadhaar)}</b><br>
+    🗓 Registered: <b>${formatDate(u.createdAt)}</b><br>
+    👤 Registered By:
+     <b>${u.createdBy ? "Super Admin" : "Self"}</b><br>
+    📍 Districts: <b>${u.districts?.length || 0}</b><br>
+    🕒 Last Login: <b>${formatDate(u.lastLogin)}</b>
+   </div>
+
+   <br>
+
+   <span class="badge ${u.status}">
+    ${u.status.toUpperCase()}
+   </span>
+   | ${u.role}
+
+   <div class="actions">
+
+   ${
+    u.status==="pending" ? `
+     <button class="approve"
+      onclick="activate('${u._id}')">Approve</button>
+
+     <button class="reject"
+      onclick="blockUser('${u._id}')">Reject</button>
+    ` : ""
+   }
+
+   ${
+    u.status==="active"
+    ? `<button class="block"
+       onclick="blockUser('${u._id}')">Block</button>`
+    : `<button class="activate"
+       onclick="activate('${u._id}')">Activate</button>`
+   }
+
+   <button class="delete"
+    onclick="del('${u._id}')">Delete</button>
+
    </div>
   </div>
  `).join("");
-});
+}
 
-function block(id){
+/* SEARCH */
+search.oninput = e=>{
+ const v = e.target.value.toLowerCase();
+ document.querySelectorAll(".news")
+ .forEach(n=>{
+  n.style.display =
+   n.innerText.toLowerCase().includes(v)
+   ? "block" : "none";
+ });
+};
+
+/* ACTIONS */
+function blockUser(id){
  fetch("/api/users/block/"+id,{
   method:"PATCH",
-  headers:{Authorization:"Bearer "+token}
+  headers:{ Authorization:"Bearer "+token }
  }).then(()=>location.reload());
 }
 
 function activate(id){
  fetch("/api/users/activate/"+id,{
   method:"PATCH",
-  headers:{Authorization:"Bearer "+token}
+  headers:{ Authorization:"Bearer "+token }
+ }).then(()=>location.reload());
+}
+
+function del(id){
+ if(!confirm("Delete this admin?")) return;
+
+ fetch("/api/users/"+id,{
+  method:"DELETE",
+  headers:{ Authorization:"Bearer "+token }
  }).then(()=>location.reload());
 }
 </script>
+
+</body>
+</html>
