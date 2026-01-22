@@ -299,6 +299,10 @@
 <button onclick="show('analytics')">📈 Analytics</button>
 <button onclick="show('admins')">👥 Manage Admins</button>
 <button class="danger" onclick="logout()">🚪 Logout</button>
+    <button onclick="show('youtube')">
+ 🎥 Manage YouTube
+</button>
+
 </div>
 
 <!-- CONTENT -->
@@ -312,6 +316,15 @@
   <div class="card">Pending <b id="pendingCount"></b></div>
   <div class="card">Approved <b id="approvedCount"></b></div>
  </div>
+</div>
+<div id="youtube" class="page">
+ <h2>🎥 YouTube Links</h2>
+
+ <input id="yt1" placeholder="YouTube Link 1"><br><br>
+ <input id="yt2" placeholder="YouTube Link 2"><br><br>
+ <input id="yt3" placeholder="YouTube Link 3"><br><br>
+
+ <button onclick="saveYoutube()">💾 Save</button>
 </div>
 
 <!-- PENDING -->
@@ -411,6 +424,41 @@ document.getElementById("notify").onclick = ()=>{
  localStorage.setItem("notifyCount",0);
  document.getElementById("notifyCount").innerText = 0;
 };
+
+    async function loadYoutube(){
+
+ const res = await fetch(
+  API+"/api/settings/youtube"
+ );
+ const data = await res.json();
+
+ yt1.value=data[0]||"";
+ yt2.value=data[1]||"";
+ yt3.value=data[2]||"";
+}
+
+async function saveYoutube(){
+
+ const links=[
+  yt1.value,
+  yt2.value,
+  yt3.value
+ ];
+
+ await fetch(
+  API+"/api/settings/youtube",
+  {
+   method:"POST",
+   headers:{
+    "Content-Type":"application/json",
+    ...headers
+   },
+   body:JSON.stringify({links})
+  }
+ );
+
+ alert("YouTube links updated");
+}
 
 </script>
 

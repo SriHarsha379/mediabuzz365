@@ -29,16 +29,19 @@ footer.innerHTML = `
     <h4>Connect With Us</h4>
     <div class="footer-social">
       <a href="https://www.facebook.com/share/16yj95q7u1/" target="_blank">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg">
       </a>
-      <a href="https://www.instagram.com/mediabuzz365?igsh=MWNiemd6dWNhdmFwaQ==" target="_blank">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
+
+      <a href="https://www.instagram.com/mediabuzz365" target="_blank">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg">
       </a>
-      <a href="https://www.youtube.com/@mediabuzz365" target="_blank">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
+
+      <a id="ytLink" href="#" target="_blank">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg">
       </a>
+
       <a href="https://wa.me/919553770077" target="_blank">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg">
       </a>
     </div>
   </div>
@@ -46,11 +49,34 @@ footer.innerHTML = `
 </div>
 
 <div class="contact-card">
-  📧 Email: info@mediabuzz365.in
+ 📧 Email: info@mediabuzz365.in
 </div>
 
 <div class="copyright">
-  © 2025 DHAATRI MEDIA BROADCAST PRIVATE LIMITED - All Rights Reserved
+ © 2025 DHAATRI MEDIA BROADCAST PRIVATE LIMITED
 </div>
 `;
 }
+
+/* 🔥 FETCH DYNAMIC YOUTUBE */
+/* 🔥 FETCH DYNAMIC YOUTUBE */
+fetch("/api/settings/youtube")
+.then(r => r.json())
+.then(data => {
+
+ console.log("YT LINKS:", data);
+
+ if(data && data.length && data[0]){
+
+  const yt = document.getElementById("ytLink");
+
+  if(yt){
+   yt.href = data[0];   // 🔥 dynamic link
+  }
+
+ }
+})
+.catch(err=>{
+ console.error("YT fetch error:", err);
+});
+
