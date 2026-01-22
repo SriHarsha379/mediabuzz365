@@ -1,46 +1,19 @@
-const mongoose = require("mongoose");
+const mongoose=require("mongoose");
 
-const newsSchema = new mongoose.Schema({
+const schema=new mongoose.Schema({
+ title:String,
+ description:String,
+ category:String,
+ city:String,
 
-  state: String,
-  city: String,
+ images:[String], // 🔥 MULTIPLE IMAGES
 
-  category: {
-    type: String,
-    required: true
-  },
+ status:String,
+ createdBy:String,
+ approvedBy:String,
+ rejectedBy:String,
 
-  title: {
-    type: String,
-    required: true
-  },
-
-  description: String,
-  image: String,
-  liveId: String,
-
-  // 🆕 Approval system
-  status: {
-    type: String,
-    enum: ["pending", "approved", "rejected"],
-    default: "pending"
-  },
-
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
-  },
-
-  approvedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
-  },
-
-  date: {
-    type: Date,
-    default: Date.now
-  }
-
+ date:{type:Date,default:Date.now}
 });
 
-module.exports = mongoose.model("News", newsSchema);
+module.exports=mongoose.model("News",schema);

@@ -308,6 +308,17 @@ const API = location.hostname.includes("localhost")
   ? "http://localhost:3000"
   : "https://mediabuzz365.in";
 
+/* SAFE IMAGE PICKER */
+function getImage(news){
+  if(news.images && news.images.length>0){
+    return API + news.images[0]; // first image
+  }
+  if(news.image){
+    return API + news.image; // old records support
+  }
+  return "https://via.placeholder.com/800x400?text=No+Image";
+}
+
 const params = new URLSearchParams(location.search);
 const category = params.get("category");
 
@@ -317,7 +328,8 @@ const grid = document.getElementById("newsGrid");
 
 if (!category) {
   titleEl.textContent = "లేటెస్ట్ న్యూస్";
-} else {
+}
+else {
   titleEl.textContent = category.toUpperCase() + " లేటెస్ట్ న్యూస్";
 
   fetch(`${API}/api/news`)
@@ -331,32 +343,38 @@ if (!category) {
         return;
       }
 
-      filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+      filtered.sort((a,b)=>new Date(b.date)-new Date(a.date));
       const latest = filtered[0];
 
+      /* TOP BIG NEWS */
       topNews.innerHTML = `
         <div class="top-news" onclick="openNews('${latest._id}')">
-          <img src="${API}${latest.image}">
+          <img src="${getImage(latest)}">
           <div class="content">
             <span class="tag">${latest.category}</span>
             <h2>${latest.title}</h2>
-            <small>🕒 ${new Date(latest.date).toLocaleString("te-IN")}</small>
-            <p>${latest.description || ""}</p>
+            <small>
+              🕒 ${new Date(latest.date).toLocaleString("te-IN")}
+            </small>
+            <p>${latest.description||""}</p>
           </div>
         </div>
       `;
 
-      grid.innerHTML = "";
-      filtered.slice(1).forEach(n => {
-        const card = document.createElement("div");
-        card.className = "news-card";
-        card.onclick = () => openNews(n._id);
-        card.innerHTML = `
-          <img src="${API}${n.image}">
+      /* REST NEWS */
+      grid.innerHTML="";
+      filtered.slice(1).forEach(n=>{
+        const card=document.createElement("div");
+        card.className="news-card";
+        card.onclick=()=>openNews(n._id);
+        card.innerHTML=`
+          <img src="${getImage(n)}">
           <div class="content">
             <span class="tag">${n.category}</span>
             <h3>${n.title}</h3>
-            <small>🕒 ${new Date(n.date).toLocaleDateString("te-IN")}</small>
+            <small>
+              🕒 ${new Date(n.date).toLocaleDateString("te-IN")}
+            </small>
           </div>
         `;
         grid.appendChild(card);
@@ -365,10 +383,11 @@ if (!category) {
     });
 }
 
-function openNews(id) {
-  window.location.href = "news-detail.html?id=" + id;
+function openNews(id){
+  window.location.href="news-detail.html?id="+id;
 }
 </script>
+
 
 <script src="header.js"></script>
 <script src="footer.js"></script>

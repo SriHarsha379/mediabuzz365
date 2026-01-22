@@ -640,7 +640,8 @@
 
     <input id="title" placeholder="Enter news title (Telugu or English)">
     <textarea id="description" placeholder="Enter news description"></textarea>
-    <input type="file" id="image" accept="image/*">
+    <input type="file" id="image" multiple accept="image/*">
+
 
     <div>
     <button class="save-btn" onclick="saveNews()" id="saveBtn">Save News</button>
@@ -739,103 +740,103 @@
      politicsCount.textContent=d.filter(n=>n.category==="politics").length;
     }
 
-    /* ========== RENDER ========= */
-    function render(data){
-     newsList.innerHTML="";
+function render(data){
+ newsList.innerHTML="";
 
-     if(!data.length){
-      newsList.innerHTML=
-      `<p style="text-align:center;color:#64748b;padding:40px">
-       No news yet
-      </p>`;
-      return;
-     }
+ if(!data.length){
+  newsList.innerHTML=
+  `<p style="text-align:center;color:#64748b;padding:40px">
+   No news yet
+  </p>`;
+  return;
+ }
 
-     data.forEach(n=>{
-      newsList.innerHTML+=`
-      <div class="news-card">
-       <img src="${n.image||'https://via.placeholder.com/280x180'}">
+ data.forEach(n=>{
 
-       <div class="news-body">
-        <span class="badge ${n.category}">
-         ${n.category}
-        </span>
+  let imgs = "";
 
-        <h4>${n.title}</h4>
-        <p>📍 ${n.city}</p>
-        <small>
-         🕐 ${new Date(n.date).toLocaleString()}
-        </small>
+  if(n.images && n.images.length){
+   n.images.forEach(img=>{
+    imgs += `<img src="${img}" style="width:100%;height:180px;object-fit:cover;margin-bottom:6px;border-radius:8px">`;
+   });
+  }else{
+   imgs = `<img src="https://via.placeholder.com/280x180">`;
+  }
 
-        <div class="actions">
-         <button class="btn-small btn-gray"
-          onclick='editNews(${JSON.stringify(n)
-          .replace(/'/g,"&#39;")})'>Edit</button>
+  newsList.innerHTML+=`
+  <div class="news-card">
 
-         <button class="btn-small btn-red"
-          onclick="openConfirm('${n._id}')">
-          Delete
-         </button>
-        </div>
-       </div>
-      </div>`;
-     });
-    }
+   ${imgs}
+
+   <div class="news-body">
+    <span class="badge ${n.category}">
+     ${n.category}
+    </span>
+
+    <h4>${n.title}</h4>
+    <p>📍 ${n.city}</p>
+    <small>
+     🕐 ${new Date(n.date).toLocaleString()}
+    </small>
+
+    <div class="actions">
+     <button class="btn-small btn-gray"
+      onclick='editNews(${JSON.stringify(n)
+      .replace(/'/g,"&#39;")})'>Edit</button>
+
+     <button class="btn-small btn-red"
+      onclick="openConfirm('${n._id}')">
+      Delete
+     </button>
+    </div>
+   </div>
+  </div>`;
+ });
+}
+
 
     /* ========== SAVE ========= */
-    function saveNews(){
+const image = document.getElementById("image");
+let selectedImages = [];
 
-     if(
-      !city.value ||
-      city.value==="No district assigned" ||
-      !category.value ||
-      !title.value ||
-      !description.value
-     ){
-      showMsg("Fill all fields","warn");
-      return;
-     }
+image.addEventListener("change",()=>{
+ selectedImages = Array.from(image.files);
 
-     const form=new FormData();
-     form.append("city",city.value);
-     form.append("category",category.value);
-     form.append("title",title.value);
-     form.append("description",description.value);
-     if(image.files[0])
-      form.append("imageFile",image.files[0]);
+ console.log("FILES SELECTED:", selectedImages.length);
+ selectedImages.forEach(f=>console.log(f.name));
+});
 
-     let url=API+"/api/news";
-     let method="POST";
+function saveNews(){
 
-     if(editMode){
-      url+="/"+editId;
-      method="PUT";
-     }
+ const form=new FormData();
 
-     fetch(url,{
-      method,
-      headers:{
-       Authorization:"Bearer "+token
-      },
-      body:form
-     })
-     .then(r=>{
-      if(!r.ok) throw "err";
-      return r.json();
-     })
-     .then(()=>{
-      showMsg(editMode?
-       "Updated successfully":
-       "News added","success");
+ form.append("city",city.value);
+ form.append("category",category.value);
+ form.append("title",title.value);
+ form.append("description",description.value);
 
-      cancelEdit();
-      loadNews();
-     })
-     .catch(()=>{
-      showMsg("Save failed","error");
-     });
-    }
+ selectedImages.forEach(file=>{
+  form.append("imageFiles",file);
+ });
 
+ // DEBUG
+ for(let p of form.entries()){
+  console.log(p[0], p[1].name || p[1]);
+ }
+
+ fetch(API+"/api/news",{
+  method:"POST",
+  headers:{
+   Authorization:"Bearer "+token
+  },
+  body:form
+ })
+ .then(r=>r.json())
+ .then(d=>{
+  console.log(d);
+  alert("Uploaded");
+ });
+}
     /* ========== EDIT ========= */
     function editNews(n){
 

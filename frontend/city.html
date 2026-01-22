@@ -326,6 +326,17 @@ const API = location.hostname.includes("localhost")
   ? "http://localhost:3000"
   : "https://mediabuzz365.in";
 
+/* SAFE IMAGE PICKER */
+function getImage(news){
+  if(news.images && news.images.length>0){
+    return API + news.images[0]; // first image
+  }
+  if(news.image){
+    return API + news.image; // old data support
+  }
+  return "https://via.placeholder.com/800x400?text=No+Image";
+}
+
 /* GET URL PARAM */
 const params = new URLSearchParams(window.location.search);
 const city = params.get("city");
@@ -349,21 +360,21 @@ async function loadCityNews() {
     const res = await fetch(`${API}/api/news`);
     const data = await res.json();
 
-    /* FILTER (STRICT MATCH) */
+    /* FILTER */
     const filtered = data.filter(n => {
-      const apiCity = (n.city || "").toLowerCase().replace(/\s+/g, "");
-      const urlCity = city.toLowerCase().replace(/\s+/g, "");
+      const apiCity = (n.city || "").toLowerCase().replace(/\s+/g,"");
+      const urlCity = city.toLowerCase().replace(/\s+/g,"");
       return apiCity === urlCity;
     });
 
-    /* SORT LATEST */
-    filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+    /* SORT */
+    filtered.sort((a,b)=>new Date(b.date)-new Date(a.date));
 
-    topNews.innerHTML = "";
-    newsGrid.innerHTML = "";
+    topNews.innerHTML="";
+    newsGrid.innerHTML="";
 
-    if (filtered.length === 0) {
-      newsGrid.innerHTML = "<p>No news available</p>";
+    if(!filtered.length){
+      newsGrid.innerHTML="<p>No news available</p>";
       return;
     }
 
@@ -372,42 +383,47 @@ async function loadCityNews() {
 
     topNews.innerHTML = `
       <div class="top-news" onclick="openNews('${latest._id}')">
-        <img src="${API}${latest.image}">
+        <img src="${getImage(latest)}">
         <div class="content">
           <span class="tag">${latest.category}</span>
           <h2>${latest.title}</h2>
-          <div class="time">🕒 ${new Date(latest.date).toLocaleString("en-IN")}</div>
-          <p>${latest.description || ""}</p>
+          <div class="time">
+            🕒 ${new Date(latest.date).toLocaleString("en-IN")}
+          </div>
+          <p>${latest.description||""}</p>
         </div>
       </div>
     `;
 
-    /* REST */
-    filtered.slice(1).forEach(n => {
-      const card = document.createElement("div");
-      card.className = "news-card";
-      card.onclick = () => openNews(n._id);
-      card.innerHTML = `
-        <img src="${API}${n.image}">
+    /* REST NEWS */
+    filtered.slice(1).forEach(n=>{
+      const card=document.createElement("div");
+      card.className="news-card";
+      card.onclick=()=>openNews(n._id);
+      card.innerHTML=`
+        <img src="${getImage(n)}">
         <div class="content">
           <span class="tag">${n.category}</span>
           <h3>${n.title}</h3>
-          <small style="color:#777">🕒 ${new Date(n.date).toLocaleDateString("en-IN")}</small>
+          <small style="color:#777">
+            🕒 ${new Date(n.date).toLocaleDateString("en-IN")}
+          </small>
         </div>
       `;
       newsGrid.appendChild(card);
     });
 
-  } catch (err) {
+  } catch(err){
     console.error(err);
   }
 }
 
-/* OPEN NEWS */
-function openNews(id) {
-  window.location.href = "news-detail.html?id=" + id;
+/* OPEN */
+function openNews(id){
+  window.location.href="news-detail.html?id="+id;
 }
 </script>
+
 
 <script src="header.js"></script>
 <script src="footer.js"></script>

@@ -6,372 +6,122 @@
 <title>News Details - MediaBuzz365</title>
 <link rel="stylesheet" href="common.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
-:root {
-  --primary: #2563eb;
-  --red: #dc2626;
-  --gold: #d4af37;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Noto Sans Telugu', sans-serif;
-  background: #f5f5f5;
-  color: #111;
-}
-
-/* TOP BAR */
-.top-bar {
-  background: #fff;
-  border-bottom: 1px solid #e5e5e5;
-  padding: 12px 0;
-}
-
-.top-bar-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo img {
-  height: 50px;
-}
-
-.epaper-btn {
-  background: var(--red);
-  color: #fff;
-  padding: 8px 20px;
-  border-radius: 20px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-/* MAIN NAV */
-.main-nav {
-  background: var(--primary);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.nav-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  gap: 4px;
-  overflow-x: auto;
-  padding: 0 20px;
-  position: relative;
-}
-
-.nav-inner::-webkit-scrollbar {
-  height: 0;
-}
-
-.nav-inner a {
-  color: #fff;
-  text-decoration: none;
-  padding: 14px 20px;
-  white-space: nowrap;
-  font-weight: 600;
-  font-size: 15px;
-  transition: background 0.3s;
-  cursor: pointer;
-}
-
-.nav-inner a:hover,
-.nav-inner a.active {
-  background: rgba(255,255,255,0.15);
-}
-
-.nav-inner a.home {
-  font-size: 18px;
-}
-
-/* DROPDOWN MENU */
-.nav-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: #fff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  display: none;
-  z-index: 2000;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.nav-dropdown.show {
-  display: block;
-}
-
-.dropdown-grid {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
-}
-
-.dropdown-grid a {
-  color: #111;
-  padding: 10px 14px;
-  font-size: 14px;
-  border-radius: 6px;
-  transition: background 0.2s;
-}
-
-.dropdown-grid a:hover {
-  background: #f3f4f6;
-}
+body{font-family:'Noto Sans Telugu',sans-serif;background:#f5f5f5}
 
 /* CONTAINER */
-.container {
-  max-width: 900px;
-  margin: 30px auto;
-  padding: 0 16px;
+.container{
+ max-width:900px;
+ margin:30px auto;
+ padding:0 16px;
 }
 
-.news-img {
-  width: 100%;
-  max-width: 900px;
-  height: 420px;
-  object-fit: cover;
-  border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0,0,0,.2);
-  display: block;
-  margin: 0 auto 25px;
-  cursor: zoom-in;
+.news-img{
+ width:100%;
+ height:420px;
+ object-fit:cover;
+ border-radius:16px;
+ box-shadow:0 12px 30px rgba(0,0,0,.2);
+ display:block;
+ margin:0 auto 20px;
+ cursor:zoom-in;
 }
 
-.news-title {
-  font-size: 26px;
-  margin: 16px 0;
+.news-title{font-size:26px;margin:16px 0}
+.meta{color:#64748b;font-size:13px;margin-bottom:14px}
+.desc{font-size:16px;line-height:1.8}
+
+/* ZOOM */
+.img-overlay{
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,.9);
+ display:none;
+ align-items:center;
+ justify-content:center;
+ z-index:9999;
+ cursor:zoom-out;
 }
-
-.meta {
-  color: #64748b;
-  font-size: 13px;
-  margin-bottom: 14px;
-}
-
-.desc {
-  font-size: 16px;
-  line-height: 1.8;
-}
-
-/* ZOOM OVERLAY */
-.img-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,.9);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  cursor: zoom-out;
-}
-
-.img-overlay img {
-  max-width: 90%;
-  max-height: 90%;
-  border-radius: 12px;
-  box-shadow: 0 0 40px #000;
-}
-
-/* FOOTER */
-footer {
-  background: #1f2937;
-  color: #fff;
-  margin-top: 40px;
-  padding: 30px 20px 20px;
-}
-
-.footer-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 30px;
-  margin-bottom: 20px;
-}
-
-footer h4 {
-  font-size: 16px;
-  margin-bottom: 12px;
-  color: var(--gold);
-}
-
-footer a {
-  color: #d1d5db;
-  text-decoration: none;
-  display: block;
-  margin: 8px 0;
-  font-size: 14px;
-}
-
-footer a:hover {
-  color: var(--gold);
-}
-
-.copyright {
-  text-align: center;
-  padding-top: 20px;
-  border-top: 1px solid #374151;
-  font-size: 13px;
-  color: #9ca3af;
-}
-
-.footer-social {
-  display: flex;
-  gap: 16px;
-  margin-top: 10px;
-}
-
-.footer-social img {
-  width: 24px;
-  height: 24px;
-  filter: invert(1);
-  transition: transform 0.3s;
-}
-
-.footer-social img:hover {
-  transform: scale(1.15);
-}
-
-.contact-card {
-  text-align: center;
-  padding: 16px;
-  background: #374151;
-  border-radius: 6px;
-  margin: 20px auto;
-  max-width: 400px;
-  font-size: 14px;
-}
-
-/* MOBILE RESPONSIVE */
-@media (max-width: 768px) {
-  .container {
-    margin: 20px auto;
-    padding: 0 12px;
-  }
-
-  .news-img {
-    height: 250px;
-    border-radius: 12px;
-  }
-
-  .news-title {
-    font-size: 20px;
-  }
-
-  .desc {
-    font-size: 15px;
-  }
-
-  .nav-inner a {
-    padding: 12px 16px;
-    font-size: 14px;
-  }
-
-  .dropdown-grid {
-    grid-template-columns: 1fr;
-  }
+.img-overlay img{
+ max-width:90%;
+ max-height:90%;
+ border-radius:12px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- TOP BAR -->
-<div class="top-bar" id="topBar"></div>
-
-<!-- MAIN NAVIGATION -->
-<nav class="main-nav" id="mainNav"></nav>
-
-<div class="container">
-  <img id="img" class="news-img">
+<div class="container" id="newsBox">
+  <!-- IMAGES LOAD HERE -->
   <h1 id="title" class="news-title"></h1>
   <div class="meta" id="meta"></div>
   <p id="desc" class="desc"></p>
 </div>
 
-<!-- ZOOM OVERLAY -->
+<!-- ZOOM -->
 <div id="imgOverlay" class="img-overlay">
-  <img id="zoomImg">
+ <img id="zoomImg">
 </div>
-
-<!-- FOOTER -->
-<footer id="footer"></footer>
 
 <script>
 const API =
-  location.hostname === "localhost" ||
-  location.hostname === "127.0.0.1"
-  ? "http://localhost:3000"
-  : "https://mediabuzz365.in";
+ location.hostname==="localhost"||
+ location.hostname==="127.0.0.1"
+ ? "http://localhost:3000"
+ : "https://mediabuzz365.in";
 
-const id = new URLSearchParams(
-  location.search
-).get("id");
+const id=new URLSearchParams(location.search).get("id");
 
-/* FETCH NEWS */
 fetch(`${API}/api/news/single/${id}`)
 .then(r=>r.json())
 .then(n=>{
-console.log(n);
-  document.getElementById("img").src =
-    API+n.image;
 
-  document.getElementById("title")
-  .innerText = n.title;
+ // TITLE
+ title.innerText=n.title;
+ desc.innerText=n.description||"";
+ meta.innerText=
+  `📍 ${n.city} | 🕒 ${
+   new Date(n.date)
+   .toLocaleString("te-IN")
+  }`;
 
-  document.getElementById("meta")
-  .innerText =
-    `📍 ${n.city} | 🕒 ${
-      new Date(n.date)
-      .toLocaleString("te-IN")
-    }`;
+ // 🔥 MULTIPLE IMAGES
+ let imgHTML="";
 
-  document.getElementById("desc")
-  .innerText = n.description || "";
+ if(n.images && n.images.length){
+  n.images.forEach(img=>{
+   imgHTML+=`
+    <img src="${API}${img}"
+     class="news-img"
+     onclick="zoom('${API}${img}')">
+   `;
+  });
+ }else{
+  imgHTML=`<img src="/images/no-image.png"
+   class="news-img">`;
+ }
+
+ newsBox.insertAdjacentHTML(
+  "afterbegin",imgHTML
+ );
 });
 
-/* ZOOM LOGIC */
-const mainImg =
-  document.getElementById("img");
-const overlay =
-  document.getElementById("imgOverlay");
-const zoomImg =
-  document.getElementById("zoomImg");
+/* ZOOM */
+const overlay=
+ document.getElementById("imgOverlay");
+const zoomImg=
+ document.getElementById("zoomImg");
 
-mainImg.onclick = ()=>{
-  zoomImg.src = mainImg.src;
-  overlay.style.display="flex";
-};
-
-overlay.onclick = ()=>{
-  overlay.style.display="none";
+function zoom(src){
+ zoomImg.src=src;
+ overlay.style.display="flex";
+}
+overlay.onclick=()=>{
+ overlay.style.display="none";
 };
 </script>
-
-<script src="header.js"></script>
-<script src="footer.js"></script>
 
 </body>
 </html>

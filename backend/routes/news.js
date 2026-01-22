@@ -11,12 +11,13 @@ const storage = multer.diskStorage({
   cb(null,Date.now()+"-"+file.originalname);
  }
 });
+
 const upload = multer({storage});
 
 /* ================= ADD ================= */
 router.post("/",
  auth,
- upload.single("imageFile"),
+ upload.array("imageFiles",10),
  async(req,res)=>{
 
  const user=req.user;
@@ -27,11 +28,13 @@ router.post("/",
   }
  }
 
+ const files=req.files || [];
+
  const news = await News.create({
   ...req.body,
   status:"pending",
   createdBy:user.id,
-  image:req.file?"/uploads/"+req.file.filename:""
+  images: files.map(f=>"/uploads/"+f.filename)
  });
 
  req.app.get("io")
@@ -51,7 +54,8 @@ router.get("/",async(req,res)=>{
  const data=await News.find(filter).sort({date:-1});
  res.json(data);
 });
-/* ================= SINGLE NEWS ================= */
+
+/* ================= SINGLE ================= */
 router.get("/single/:id", async (req,res)=>{
  try{
   const news = await News.findById(req.params.id);
@@ -61,7 +65,6 @@ router.get("/single/:id", async (req,res)=>{
   res.status(500).json({msg:"error"});
  }
 });
-
 
 /* ================= ADMIN ================= */
 router.get("/admin",
@@ -95,7 +98,7 @@ router.get("/admin/all",
 /* ================= UPDATE ================= */
 router.put("/:id",
  auth,
- upload.single("imageFile"),
+ upload.array("imageFiles",10),
  async(req,res)=>{
 
  const user=req.user;
@@ -114,8 +117,8 @@ router.put("/:id",
   status:"pending"
  };
 
- if(req.file){
-  data.image="/uploads/"+req.file.filename;
+ if(req.files?.length){
+  data.images=req.files.map(f=>"/uploads/"+f.filename);
  }
 
  await News.findByIdAndUpdate(req.params.id,data);
@@ -127,7 +130,7 @@ router.put("/:id",
  res.json({msg:"Updated"});
 });
 
-/* ================= DELETE (ADMIN + SUPER) ================= */
+/* ================= DELETE ================= */
 router.delete("/:id",
  auth,
  async(req,res)=>{
@@ -137,12 +140,10 @@ router.delete("/:id",
 
  if(!old) return res.status(404).json({msg:"Not found"});
 
- /* ROLE CHECK */
  if(!["admin","super_admin"].includes(user.role)){
   return res.status(403).json({msg:"Not allowed"});
  }
 
- /* ADMIN DISTRICT CHECK */
  if(user.role==="admin"){
   if(!user.districts.includes(old.city)){
    return res.status(403).json({msg:"No access"});
