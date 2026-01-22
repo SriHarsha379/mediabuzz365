@@ -58,7 +58,13 @@ app.use(cors({
 
 app.use(express.json({limit:"10mb"}));
 app.use(express.urlencoded({extended:true}));
+
+/* ================= API ROUTES ================= */
+
 app.use("/api/settings",require("./routes/settings"));
+app.use("/api/auth",require("./routes/auth"));
+app.use("/api/news",require("./routes/news"));
+app.use("/api/users",require("./routes/users"));
 
 /* ================= UPLOADS ================= */
 
@@ -73,12 +79,6 @@ app.use("/uploads",express.static(uploadDir));
 const FRONTEND_PATH = path.join(__dirname,"../frontend");
 app.use(express.static(FRONTEND_PATH));
 
-/* ================= ROUTES ================= */
-
-app.use("/api/auth",require("./routes/auth"));
-app.use("/api/news",require("./routes/news"));
-app.use("/api/users",require("./routes/users"));
-
 /* ================= HEALTH ================= */
 
 app.get("/health",(req,res)=>{
@@ -88,27 +88,21 @@ app.get("/health",(req,res)=>{
  });
 });
 
-io.on("connection", socket=>{
- console.log("🟢 Socket connected:",socket.id);
-
- socket.on("join",room=>{
-  socket.join(room);
-  console.log("Joined:",room);
- });
-
- socket.on("disconnect",()=>{
-  console.log("🔴 Socket disconnected:",socket.id);
- });
-});
-
-
-/* ================= SPA ================= */
+/* ================= SPA SAFE ROUTE ================= */
 
 app.get("*",(req,res)=>{
- if(req.path.startsWith("/api")){
-  return res.status(404).json({error:"API not found"});
+
+ // block api & socket
+ if(
+  req.path.startsWith("/api") ||
+  req.path.startsWith("/socket.io")
+ ){
+  return res.status(404).end();
  }
- res.sendFile(path.join(FRONTEND_PATH,"index.html"));
+
+ res.sendFile(
+  path.join(FRONTEND_PATH,"index.html")
+ );
 });
 
 /* ================= START ================= */
