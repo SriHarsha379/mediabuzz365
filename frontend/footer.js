@@ -37,7 +37,7 @@ footer.innerHTML = `
       <a href="https://www.youtube.com/@mediabuzz365" target="_blank">
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
       </a>
-      <a href="https://wa.me/919XXXXXXXXX" target="_blank">
+      <a href="https://wa.me/919553770077" target="_blank">
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp">
       </a>
     </div>
