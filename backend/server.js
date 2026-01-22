@@ -12,7 +12,7 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
-/* ================= SOCKET.IO ================= */
+/* ================= SOCKET.IO SERVER ================= */
 
 const io = new Server(server,{
  cors:{
@@ -21,6 +21,7 @@ const io = new Server(server,{
  }
 });
 
+// make io global
 app.set("io", io);
 
 io.on("connection",(socket)=>{
@@ -28,6 +29,7 @@ io.on("connection",(socket)=>{
 
  socket.on("join",(room)=>{
   socket.join(room);
+  console.log("Joined:",room);
  });
 
  socket.on("join-admin",(id)=>{
@@ -58,11 +60,14 @@ app.use(express.json({limit:"10mb"}));
 app.use(express.urlencoded({extended:true}));
 
 /* ================= SOCKET CLIENT FIX ================= */
+/* THIS IS THE MAIN FIX */
 
-// IMPORTANT: allow socket js file
-app.use("/socket.io", express.static(
- path.join(__dirname,"node_modules/socket.io/client-dist")
-));
+app.use(
+ "/socket.io",
+ express.static(
+  path.join(__dirname,"node_modules/socket.io/client-dist")
+ )
+);
 
 /* ================= ROUTES ================= */
 
