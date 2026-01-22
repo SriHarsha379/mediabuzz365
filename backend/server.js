@@ -21,7 +21,6 @@ const io = new Server(server,{
  }
 });
 
-// make io global
 app.set("io", io);
 
 io.on("connection",(socket)=>{
@@ -29,7 +28,6 @@ io.on("connection",(socket)=>{
 
  socket.on("join",(room)=>{
   socket.join(room);
-  console.log("Joined:",room);
  });
 
  socket.on("join-admin",(id)=>{
@@ -59,12 +57,19 @@ app.use(cors({
 app.use(express.json({limit:"10mb"}));
 app.use(express.urlencoded({extended:true}));
 
-/* ================= API ROUTES ================= */
+/* ================= SOCKET CLIENT FIX ================= */
 
-app.use("/api/settings",require("./routes/settings"));
+// IMPORTANT: allow socket js file
+app.use("/socket.io", express.static(
+ path.join(__dirname,"node_modules/socket.io/client-dist")
+));
+
+/* ================= ROUTES ================= */
+
 app.use("/api/auth",require("./routes/auth"));
 app.use("/api/news",require("./routes/news"));
 app.use("/api/users",require("./routes/users"));
+app.use("/api/settings",require("./routes/settings"));
 
 /* ================= UPLOADS ================= */
 
@@ -88,21 +93,13 @@ app.get("/health",(req,res)=>{
  });
 });
 
-/* ================= SPA SAFE ROUTE ================= */
+/* ================= SPA ================= */
 
 app.get("*",(req,res)=>{
-
- // block api & socket
- if(
-  req.path.startsWith("/api") ||
-  req.path.startsWith("/socket.io")
- ){
-  return res.status(404).end();
+ if(req.path.startsWith("/api")){
+  return res.status(404).json({error:"API not found"});
  }
-
- res.sendFile(
-  path.join(FRONTEND_PATH,"index.html")
- );
+ res.sendFile(path.join(FRONTEND_PATH,"index.html"));
 });
 
 /* ================= START ================= */
