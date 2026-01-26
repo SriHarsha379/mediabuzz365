@@ -211,8 +211,13 @@ function openModal(n){
  mDesc.innerText=n.description;
 const BASE_URL = "https://mediabuzz365.in";
 
-mImage.src = n.image
-  ? (n.image.startsWith("http") ? n.image : BASE_URL + n.image)
+const img =
+  n.images && n.images.length
+    ? n.images[0]
+    : null;
+
+mImage.src = img
+  ? (img.startsWith("http") ? img : BASE_URL + img)
   : "https://via.placeholder.com/400";
 
 
