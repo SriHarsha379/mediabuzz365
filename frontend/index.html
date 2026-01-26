@@ -458,6 +458,25 @@ footer a:hover {
 .sidebar-item .img-wrap {
   aspect-ratio: 3 / 2;
 }
+/* REMOVE UNWANTED WHITE SPACE BELOW IMAGES */
+.news-main h3,
+.news-side h4,
+.trending-item h4,
+.sidebar-item h4 {
+  margin-top: 6px;      /* reduce gap */
+  margin-bottom: 0;
+  line-height: 1.4;
+}
+
+/* ALSO REMOVE IMAGE BOTTOM GAP */
+.img-wrap {
+  margin-bottom: 0;
+}
+
+/* SAFETY: remove inline image spacing */
+.img-wrap img {
+  display: block;
+}
 
 </style>
 </head>
