@@ -6,161 +6,159 @@ const API = location.hostname.includes("localhost")
 // Pick safe image
 function getImage(news) {
   if (news.images && news.images.length > 0) {
-    return API + news.images[0]; // first image
+    return API + news.images[0];
   }
   if (news.image) {
-    return API + news.image; // fallback old data
+    return API + news.image;
   }
   return "https://via.placeholder.com/800x400?text=No+Image";
 }
 
 // Load all news when page loads
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", () => {
   loadAllNews();
 });
 
 async function loadAllNews() {
   try {
     const response = await fetch(`${API}/api/news`);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    if (!response.ok) throw new Error("Failed");
 
     const allNews = await response.json();
-
-    if (!allNews || allNews.length === 0) {
+    if (!allNews || !allNews.length) {
       showNoNewsMessage();
       return;
     }
 
-    // Sort by date (newest first)
     allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    const breakingNews = allNews.filter(n => n.category === "breaking");
+    const breaking = allNews.filter(n => n.category === "breaking");
 
     populateTopNews(allNews);
     populateTrendingNews(allNews);
-    populateBreakingNews(breakingNews.length ? breakingNews : allNews);
+    populateBreakingNews(breaking.length ? breaking : allNews);
     populateMoreNews(allNews);
 
-  } catch (error) {
-    console.error('Error loading news:', error);
+  } catch (e) {
+    console.error(e);
     showErrorMessage();
   }
 }
 
 /* ================= TOP NEWS ================= */
 function populateTopNews(newsData) {
-  const topNewsContent = document.getElementById('topNewsContent');
-  if (!topNewsContent) return;
+  const el = document.getElementById("topNewsContent");
+  if (!el) return;
 
-  if (!newsData.length) {
-    topNewsContent.innerHTML = '<p>వార్తలు లేవు</p>';
+  const items = newsData.slice(0, 5);
+  if (!items.length) {
+    el.innerHTML = "<p>వార్తలు లేవు</p>";
     return;
   }
 
-  const topItems = newsData.slice(0, 5);
-  let html = '';
+  let html = "";
 
-  const mainNews = topItems[0];
+  // Main
+  const main = items[0];
   html += `
-    <div class="news-main" onclick="openNews('${mainNews._id}')">
-      <img src="${getImage(mainNews)}">
-      <h3>${mainNews.title}</h3>
+    <div class="news-main" onclick="openNews('${main._id}')">
+      <div class="img-wrap">
+        <img src="${getImage(main)}" alt="">
+      </div>
+      <h3>${main.title}</h3>
     </div>
   `;
 
-  topItems.slice(1).forEach(news => {
+  // Side
+  items.slice(1).forEach(n => {
     html += `
-      <div class="news-side" onclick="openNews('${news._id}')">
-        <img src="${getImage(news)}">
-        <h4>${news.title}</h4>
+      <div class="news-side" onclick="openNews('${n._id}')">
+        <div class="img-wrap">
+          <img src="${getImage(n)}" alt="">
+        </div>
+        <h4>${n.title}</h4>
       </div>
     `;
   });
 
-  topNewsContent.innerHTML = html;
+  el.innerHTML = html;
 }
 
 /* ================= TRENDING ================= */
 function populateTrendingNews(newsData) {
-  const grid = document.getElementById('trendingGrid');
-  if (!grid) return;
+  const el = document.getElementById("trendingGrid");
+  if (!el) return;
 
-  const trendingItems = newsData.slice(5, 11);
-  let html = '';
-
-  trendingItems.forEach(news => {
+  let html = "";
+  newsData.slice(5, 11).forEach(n => {
     html += `
-      <div class="trending-item" onclick="openNews('${news._id}')">
-        <img src="${getImage(news)}">
-        <h4>${news.title}</h4>
+      <div class="trending-item" onclick="openNews('${n._id}')">
+        <div class="img-wrap">
+          <img src="${getImage(n)}" alt="">
+        </div>
+        <h4>${n.title}</h4>
       </div>
     `;
   });
 
-  grid.innerHTML = html;
+  el.innerHTML = html;
 }
 
 /* ================= BREAKING ================= */
 function populateBreakingNews(newsData) {
-  const breakingNews = document.getElementById('breakingNews');
-  if (!breakingNews) return;
+  const el = document.getElementById("breakingNews");
+  if (!el) return;
 
-  const breakingItems = newsData.slice(0, 5);
-  let html = '';
-
-  breakingItems.forEach(news => {
+  let html = "";
+  newsData.slice(0, 5).forEach(n => {
     html += `
-      <div class="sidebar-item" onclick="openNews('${news._id}')">
-        <img src="${getImage(news)}">
-        <h4>${news.title}</h4>
+      <div class="sidebar-item" onclick="openNews('${n._id}')">
+        <div class="img-wrap">
+          <img src="${getImage(n)}" alt="">
+        </div>
+        <h4>${n.title}</h4>
       </div>
     `;
   });
 
-  breakingNews.innerHTML = html;
+  el.innerHTML = html;
 }
 
 /* ================= MORE ================= */
 function populateMoreNews(newsData) {
-  const moreNews = document.getElementById('moreNews');
-  if (!moreNews) return;
+  const el = document.getElementById("moreNews");
+  if (!el) return;
 
-  const moreItems = newsData.slice(11, 16);
-  let html = '';
-
-  moreItems.forEach(news => {
+  let html = "";
+  newsData.slice(11, 16).forEach(n => {
     html += `
-      <div class="sidebar-item" onclick="openNews('${news._id}')">
-        <img src="${getImage(news)}">
-        <h4>${news.title}</h4>
+      <div class="sidebar-item" onclick="openNews('${n._id}')">
+        <div class="img-wrap">
+          <img src="${getImage(n)}" alt="">
+        </div>
+        <h4>${n.title}</h4>
       </div>
     `;
   });
 
-  moreNews.innerHTML = html;
+  el.innerHTML = html;
 }
 
 /* ================= NAV ================= */
-function openNews(newsId) {
-  window.location.href = `news-detail.html?id=${newsId}`;
+function openNews(id) {
+  window.location.href = `news-detail.html?id=${id}`;
 }
 
 /* ================= ERRORS ================= */
 function showNoNewsMessage() {
-  ['topNewsContent','trendingGrid','breakingNews','moreNews']
-  .forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.innerHTML="<p>వార్తలు లేవు</p>";
+  ["topNewsContent", "trendingGrid", "breakingNews", "moreNews"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = "<p>వార్తలు లేవు</p>";
   });
 }
 
 function showErrorMessage() {
-  ['topNewsContent','trendingGrid','breakingNews','moreNews']
-  .forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.innerHTML="<p style='color:red'>Load failed</p>";
+  ["topNewsContent", "trendingGrid", "breakingNews", "moreNews"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = "<p style='color:red'>Load failed</p>";
   });
 }
