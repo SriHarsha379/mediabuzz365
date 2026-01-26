@@ -209,8 +209,12 @@ function openModal(n){
  mTitle.innerText=n.title;
  mCity.innerText="📍 "+n.city;
  mDesc.innerText=n.description;
- mImage.src=n.image ||
-  "https://via.placeholder.com/400";
+const BASE_URL = "https://mediabuzz365.in";
+
+mImage.src = n.image
+  ? (n.image.startsWith("http") ? n.image : BASE_URL + n.image)
+  : "https://via.placeholder.com/400";
+
 
  document.getElementById("newsModal")
  .style.display="flex";
