@@ -436,19 +436,22 @@ footer a:hover {
   }
 }
 
-    /* IMAGE NO CROP FIX */
+/* IMAGE NO CROP FIX */
 .img-wrap {
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
+  background: #f3f4f6;
+  aspect-ratio: auto;
+  overflow: visible;
 }
 
 .img-wrap img {
   width: 100%;
   height: 100%;
-  object-fit: cover;   /* 🔥 fills box */
+  height: auto;
+  object-fit: contain;
 }
-
 
 .news-side .img-wrap,
 .trending-item .img-wrap {
@@ -458,12 +461,13 @@ footer a:hover {
 .sidebar-item .img-wrap {
   aspect-ratio: 3 / 2;
 }
+
 /* REMOVE UNWANTED WHITE SPACE BELOW IMAGES */
 .news-main h3,
 .news-side h4,
 .trending-item h4,
 .sidebar-item h4 {
-  margin-top: 6px;      /* reduce gap */
+  margin-top: 6px;
   margin-bottom: 0;
   line-height: 1.4;
 }
@@ -477,7 +481,6 @@ footer a:hover {
 .img-wrap img {
   display: block;
 }
-
 </style>
 </head>
 <body>
@@ -524,59 +527,56 @@ footer a:hover {
     </div>
 
     <!-- AD SPACE -->
-<div class="ad-space" style="flex-direction:column; gap:12px; position:relative;">
+    <div class="ad-space" style="flex-direction:column; gap:12px; position:relative;">
 
-  <!-- VIDEO WRAPPER -->
-  <div style="position:relative; width:100%;">
+      <!-- VIDEO WRAPPER -->
+      <div style="position:relative; width:100%;">
 
-    <!-- LOGO OVER VIDEO -->
-    <img
-      src="images/mediabuzz365.png"
-      style="
-        position:absolute;
-        top:8px;
-        right:8px;
-        width:45px;
-        z-index:5;
-<!--        background:#fff;-->
-        padding:4px;
-        border-radius:6px;
-      "
-      alt="MediaBuzz365"
-    >
+        <!-- LOGO OVER VIDEO -->
+        <img
+          src="images/mediabuzz365.png"
+          style="
+            position:absolute;
+            top:8px;
+            right:8px;
+            width:45px;
+            z-index:5;
+            padding:4px;
+            border-radius:6px;
+          "
+          alt="MediaBuzz365"
+        >
 
-    <!-- YOUTUBE VIDEO -->
-<iframe
- id="ytFrame"
- width="100%"
- height="170"
- src=""
- frameborder="0"
- allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
- allowfullscreen
- style="border-radius:8px;">
-</iframe>
+        <!-- YOUTUBE VIDEO -->
+        <iframe
+          id="ytFrame"
+          width="100%"
+          height="170"
+          src=""
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          style="border-radius:8px;">
+        </iframe>
 
+      </div>
 
-  </div>
+      <!-- CHANNEL LINK -->
+      <a
+        href="https://www.youtube.com/@mediabuzz365"
+        target="_blank"
+        style="text-decoration:none; text-align:center;"
+      >
+        <img
+          src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg"
+          style="width:40px; height:40px;"
+        >
+        <p style="margin-top:6px; font-weight:600; color:#dc2626;">
+          Subscribe MediaBuzz365
+        </p>
+      </a>
 
-  <!-- CHANNEL LINK -->
-  <a
-    href="https://www.youtube.com/@mediabuzz365"
-    target="_blank"
-    style="text-decoration:none; text-align:center;"
-  >
-    <img
-      src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg"
-      style="width:40px; height:40px;"
-    >
-    <p style="margin-top:6px; font-weight:600; color:#dc2626;">
-      Subscribe MediaBuzz365
-    </p>
-  </a>
-
-</div>
-
+    </div>
 
     <!-- MORE NEWS -->
     <div class="sidebar-section">
@@ -608,7 +608,7 @@ socket.emit("join","public");
 
 /* REALTIME EVENTS */
 
-// News approved → refresh homepage
+// News approved -> refresh homepage
 socket.on("news:approved",()=>{
  console.log("🟢 New approved news");
 
