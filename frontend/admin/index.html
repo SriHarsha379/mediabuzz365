@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
     <html lang="en">
     <head>
     <meta charset="UTF-8">
@@ -222,6 +222,15 @@
       box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
     }
 
+    .save-btn.preview {
+      background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+    }
+
+    .save-btn.preview:hover {
+      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+    }
+
     /* NEWS */
     #newsList {
       display: grid;
@@ -349,6 +358,196 @@
     .btn-red:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    }
+
+    /* PREVIEW MODAL */
+    .preview-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .preview-overlay.show {
+      display: flex;
+    }
+
+    .preview-container {
+      background: #fff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 1200px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .preview-header {
+      background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+      color: #fff;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 16px 16px 0 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .preview-header h2 {
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .preview-close {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .preview-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg);
+    }
+
+    .preview-content {
+      padding: 30px;
+      background: #f5f5f5;
+    }
+
+    .preview-banner {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .preview-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .preview-main-image {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      background: #f3f4f6;
+      object-fit: contain;
+    }
+
+    .preview-category {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .preview-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1.4;
+      margin-bottom: 12px;
+      font-family: 'Noto Sans Telugu', sans-serif;
+    }
+
+    .preview-description {
+      font-size: 16px;
+      color: #64748b;
+      line-height: 1.6;
+      margin-bottom: 12px;
+      font-family: 'Noto Sans Telugu', sans-serif;
+    }
+
+    .preview-meta {
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+      color: #94a3b8;
+      padding-top: 12px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .preview-sidebar-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .preview-sidebar-image {
+      width: 100px;
+      height: 75px;
+      object-fit: contain;
+      border-radius: 6px;
+      background: #f3f4f6;
+      flex-shrink: 0;
+    }
+
+    .preview-sidebar-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      line-height: 1.4;
+      font-family: 'Noto Sans Telugu', sans-serif;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .preview-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* Responsive */
@@ -581,6 +780,7 @@
     }
 
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
     </head>
 
     <body>
@@ -604,6 +804,44 @@
        <button class="btn-ok" id="confirmYes">Delete</button>
       </div>
      </div>
+    </div>
+
+    <!-- PREVIEW MODAL -->
+    <div id="previewOverlay" class="preview-overlay">
+      <div class="preview-container">
+        <div class="preview-header">
+          <h2>👁️ Preview - How It Will Look</h2>
+          <button class="preview-close" onclick="closePreview()">✕</button>
+        </div>
+        <div class="preview-content">
+
+          <!-- Main News Card Preview -->
+          <div class="preview-label">🌟 Main News Card (Top News Section)</div>
+          <div class="preview-banner" id="previewMainCard">
+            <!-- Content populated by JavaScript -->
+          </div>
+
+          <!-- Two Column Layout -->
+          <div class="preview-grid">
+            <!-- Sidebar Preview -->
+            <div>
+              <div class="preview-label">📋 Sidebar Card (Breaking News)</div>
+              <div class="preview-sidebar-card" id="previewSidebarCard">
+                <!-- Content populated by JavaScript -->
+              </div>
+            </div>
+
+            <!-- Side News Preview -->
+            <div>
+              <div class="preview-label">📰 Side News Card</div>
+              <div class="preview-banner" id="previewSideCard">
+                <!-- Content populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
 
     <div class="wrapper">
@@ -674,6 +912,7 @@
 
     <div>
     <button class="save-btn" onclick="saveNews()" id="saveBtn">Save News</button>
+    <button class="save-btn preview" onclick="showPreview()" id="previewBtn">👁️ Preview</button>
     <button class="save-btn cancel" onclick="cancelEdit()" id="cancelBtn" style="display:none">Cancel</button>
     </div>
     </div>
@@ -866,6 +1105,78 @@ function saveNews(){
   alert("Uploaded");
  });
 }
+
+    /* ========== PREVIEW ========= */
+    function showPreview() {
+      const cityVal = city.value;
+      const categoryVal = category.value;
+      const titleVal = title.value;
+      const descVal = description.value;
+
+      // Validation
+      if (!categoryVal || !titleVal) {
+        showMsg("Please fill category and title to preview", "warn");
+        return;
+      }
+
+      // Get category name in Telugu
+      const categoryMap = {
+        'breaking': 'లేటెస్ట్ న్యూస్',
+        'national': 'నేషనల్',
+        'international': 'ఇంటర్నేషనల్',
+        'politics': 'రాజకీయాలు',
+        'crime': 'క్రైం',
+        'lifestyle': 'లైఫ్ స్టైల్',
+        'technology': 'టెక్నాలజీ',
+        'sports': 'క్రీడలు',
+        'cinema': 'సినిమా',
+        'business': 'బిజినెస్',
+        'health': 'Health'
+      };
+
+      // Get image preview URL
+      let imageUrl = 'https://via.placeholder.com/800x450?text=No+Image+Selected';
+      if (selectedImages && selectedImages.length > 0) {
+        imageUrl = URL.createObjectURL(selectedImages[0]);
+      }
+
+      // Populate Main Card (Image Only)
+      document.getElementById('previewMainCard').innerHTML = `
+        <img src="${imageUrl}" class="preview-main-image" alt="Preview">
+      `;
+
+      // Populate Sidebar Card (Image Only)
+      document.getElementById('previewSidebarCard').innerHTML = `
+        <img src="${imageUrl}" class="preview-sidebar-image" alt="Preview">
+      `;
+
+      // Populate Side Card (Image Only)
+      document.getElementById('previewSideCard').innerHTML = `
+        <img src="${imageUrl}" class="preview-main-image" style="height: 180px; object-fit: contain;" alt="Preview">
+      `;
+
+      // Show modal
+      document.getElementById('previewOverlay').classList.add('show');
+    }
+
+    function closePreview() {
+      document.getElementById('previewOverlay').classList.remove('show');
+    }
+
+    // Close preview on overlay click
+    document.getElementById('previewOverlay').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closePreview();
+      }
+    });
+
+    // Close preview on ESC key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closePreview();
+      }
+    });
+
     /* ========== EDIT ========= */
     function editNews(n){
 
