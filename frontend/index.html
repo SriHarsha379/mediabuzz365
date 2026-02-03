@@ -142,13 +142,15 @@ body {
 
 /* CONTAINER */
 .container {
-  max-width: 1400px;
-  margin: 20px auto;
-  padding: 0 20px;
+  width: 100%;
+  max-width: none;   /* REMOVE width limit */
+  margin: 20px 0;
+  padding: 0 24px;
   display: grid;
-  grid-template-columns: 1fr 340px;
+  grid-template-columns: minmax(0, 1fr) 340px;
   gap: 24px;
 }
+
 
 /* LEFT COLUMN */
 .left-col {
