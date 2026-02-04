@@ -8,7 +8,165 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-body{font-family:'Noto Sans Telugu',sans-serif;background:#f5f5f5}
+body{font-family:'Noto Sans Telugu',sans-serif;background:#f5f5f5;margin:0;padding:0}
+
+/* ==================== HEADER STYLES ==================== */
+#header{
+ position:sticky;
+ top:0;
+ z-index:1000;
+ background:#fff;
+ box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* TOP BAR */
+.top-bar-inner{
+ max-width:1400px;
+ margin:0 auto;
+ padding:12px 20px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ background:#fff;
+}
+
+.logo img{
+ height:50px;
+ width:auto;
+}
+
+.epaper-btn{
+ padding:8px 16px;
+ background:#dc2626;
+ color:#fff;
+ text-decoration:none;
+ border-radius:6px;
+ font-size:14px;
+ font-weight:600;
+ transition:all 0.3s;
+}
+
+.epaper-btn:hover{
+ background:#b91c1c;
+ transform:translateY(-2px);
+}
+
+/* MAIN NAVIGATION */
+#mainNav{
+ background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);
+ position:relative;
+}
+
+.nav-inner{
+ max-width:1400px;
+ margin:0 auto;
+ display:flex;
+ gap:4px;
+ padding:0 20px;
+ overflow-x:auto;
+}
+
+.nav-inner a{
+ padding:14px 18px;
+ color:#fff;
+ text-decoration:none;
+ font-size:15px;
+ font-weight:600;
+ white-space:nowrap;
+ transition:all 0.3s;
+ position:relative;
+}
+
+.nav-inner a:hover,
+.nav-inner a.active{
+ background:rgba(255,255,255,0.2);
+}
+
+.nav-inner a.home{
+ font-size:20px;
+ padding:14px 16px;
+}
+
+/* DROPDOWN */
+.nav-dropdown{
+ position:absolute;
+ top:100%;
+ left:0;
+ right:0;
+ background:#fff;
+ box-shadow:0 4px 12px rgba(0,0,0,0.15);
+ display:none;
+ z-index:999;
+}
+
+.nav-dropdown.show{
+ display:block;
+}
+
+.dropdown-grid{
+ max-width:1400px;
+ margin:0 auto;
+ padding:20px;
+ display:grid;
+ grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+ gap:10px;
+}
+
+.dropdown-grid a{
+ padding:10px 16px;
+ background:#f3f4f6;
+ color:#1f2937;
+ text-decoration:none;
+ border-radius:6px;
+ font-size:14px;
+ transition:all 0.3s;
+}
+
+.dropdown-grid a:hover{
+ background:#2563eb;
+ color:#fff;
+ transform:translateX(4px);
+}
+
+/* Scrollbar for nav */
+.nav-inner::-webkit-scrollbar{
+ height:4px;
+}
+
+.nav-inner::-webkit-scrollbar-track{
+ background:rgba(255,255,255,0.1);
+}
+
+.nav-inner::-webkit-scrollbar-thumb{
+ background:rgba(255,255,255,0.3);
+ border-radius:4px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+ .top-bar-inner{
+  padding:10px 16px;
+ }
+
+ .logo img{
+  height:40px;
+ }
+
+ .epaper-btn{
+  font-size:12px;
+  padding:6px 12px;
+ }
+
+ .nav-inner a{
+  font-size:13px;
+  padding:12px 14px;
+ }
+
+ .dropdown-grid{
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  padding:16px;
+ }
+}
 
 /* CONTAINER */
 .container{
@@ -19,13 +177,20 @@ body{font-family:'Noto Sans Telugu',sans-serif;background:#f5f5f5}
 
 .news-img{
  width:100%;
- height:420px;
- object-fit:cover;
+ max-height:600px;
+ object-fit:contain;
  border-radius:16px;
  box-shadow:0 12px 30px rgba(0,0,0,.2);
  display:block;
  margin:0 auto 20px;
  cursor:zoom-in;
+ background:#fff;
+}
+
+/* Portrait specific styling */
+.news-img.portrait{
+ max-width:500px;
+ max-height:700px;
 }
 
 .news-title{font-size:26px;margin:16px 0}
@@ -42,16 +207,47 @@ body{font-family:'Noto Sans Telugu',sans-serif;background:#f5f5f5}
  justify-content:center;
  z-index:9999;
  cursor:zoom-out;
+ padding:20px;
 }
 .img-overlay img{
  max-width:90%;
  max-height:90%;
  border-radius:12px;
+ object-fit:contain;
+}
+
+/* Image container for centering */
+.image-container{
+ display:flex;
+ justify-content:center;
+ margin-bottom:20px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+ .news-img{
+  max-height:500px;
+ }
+
+ .news-img.portrait{
+  max-width:100%;
+  max-height:600px;
+ }
+
+ .news-title{
+  font-size:22px;
+ }
 }
 </style>
 </head>
 
 <body>
+
+<!-- HEADER -->
+<header id="header">
+  <div id="topBar"></div>
+  <nav id="mainNav"></nav>
+</header>
 
 <div class="container" id="newsBox">
   <!-- IMAGES LOAD HERE -->
@@ -65,6 +261,9 @@ body{font-family:'Noto Sans Telugu',sans-serif;background:#f5f5f5}
  <img id="zoomImg">
 </div>
 
+<!-- FOOTER -->
+<footer id="footer"></footer>
+
 <script>
 const API =
  location.hostname==="localhost"||
@@ -74,9 +273,24 @@ const API =
 
 const id=new URLSearchParams(location.search).get("id");
 
+// Function to check if image is portrait
+function checkImageOrientation(imgSrc) {
+ return new Promise((resolve) => {
+  const img = new Image();
+  img.onload = function() {
+   const isPortrait = img.height > img.width;
+   resolve(isPortrait);
+  };
+  img.onerror = function() {
+   resolve(false);
+  };
+  img.src = imgSrc;
+ });
+}
+
 fetch(`${API}/api/news/single/${id}`)
 .then(r=>r.json())
-.then(n=>{
+.then(async n=>{
 
  // TITLE
  title.innerText=n.title;
@@ -88,24 +302,36 @@ fetch(`${API}/api/news/single/${id}`)
   }`;
 
  // 🔥 MULTIPLE IMAGES
- let imgHTML="";
-
  if(n.images && n.images.length){
-  n.images.forEach(img=>{
-   imgHTML+=`
-    <img src="${API}${img}"
-     class="news-img"
-     onclick="zoom('${API}${img}')">
-   `;
-  });
- }else{
-  imgHTML=`<img src="/images/no-image.png"
-   class="news-img">`;
- }
 
- newsBox.insertAdjacentHTML(
-  "afterbegin",imgHTML
- );
+  // Process each image
+  for(const img of n.images){
+   const fullImgSrc = `${API}${img}`;
+   const isPortrait = await checkImageOrientation(fullImgSrc);
+
+   const container = document.createElement('div');
+   container.className = 'image-container';
+
+   const imgElement = document.createElement('img');
+   imgElement.src = fullImgSrc;
+   imgElement.className = isPortrait ? 'news-img portrait' : 'news-img';
+   imgElement.onclick = function() { zoom(fullImgSrc); };
+
+   container.appendChild(imgElement);
+   newsBox.insertBefore(container, title);
+  }
+
+ }else{
+  const container = document.createElement('div');
+  container.className = 'image-container';
+
+  const imgElement = document.createElement('img');
+  imgElement.src = '/images/no-image.png';
+  imgElement.className = 'news-img';
+
+  container.appendChild(imgElement);
+  newsBox.insertBefore(container, title);
+ }
 });
 
 /* ZOOM */
@@ -121,7 +347,17 @@ function zoom(src){
 overlay.onclick=()=>{
  overlay.style.display="none";
 };
+
+// Close zoom on ESC key
+document.addEventListener('keydown', function(e) {
+ if (e.key === 'Escape') {
+  overlay.style.display="none";
+ }
+});
 </script>
+
+<script src="header.js"></script>
+<script src="footer.js"></script>
 
 </body>
 </html>
