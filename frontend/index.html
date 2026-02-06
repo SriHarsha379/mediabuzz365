@@ -655,37 +655,62 @@ socket.on("disconnect",()=>{
 });
 </script>
 <script>
+   fetch("/api/settings/youtube")
+   .then(r=>r.json())
+   .then(links=>{
+     ... old code ...
+   });
+   </script>
+
+   REPLACE IT WITH THE CODE BELOW:
+*/
+
+<script>
+// Fetch and display YouTube video
 fetch("/api/settings/youtube")
-.then(r=>r.json())
-.then(links=>{
+  .then(r => r.json())
+  .then(link => {
+    console.log("📺 YouTube Link:", link);
 
- console.log("YT LINKS:", links);
- if(!links || !links.length) return;
+    // Check if link exists
+    if(!link || link.trim() === "") {
+      console.warn("⚠️ No YouTube link configured");
+      return;
+    }
 
- const today = new Date().getDate();
- const index = today % links.length;
- const url = links[index];
+    let videoId = null;
 
- let videoId = null;
+    // Extract video ID from different YouTube URL formats
 
- // Normal video link
- if(url.includes("watch?v=")){
-  videoId = url.split("v=")[1].split("&")[0];
- }
+    // Format 1: https://www.youtube.com/watch?v=VIDEO_ID
+    if(link.includes("watch?v=")) {
+      videoId = link.split("v=")[1].split("&")[0];
+    }
+    // Format 2: https://youtu.be/VIDEO_ID
+    else if(link.includes("youtu.be/")) {
+      videoId = link.split("youtu.be/")[1].split("?")[0];
+    }
+    // Format 3: https://www.youtube.com/embed/VIDEO_ID
+    else if(link.includes("youtube.com/embed/")) {
+      videoId = link.split("embed/")[1].split("?")[0];
+    }
 
- // Short youtu.be link
- else if(url.includes("youtu.be")){
-  videoId = url.split("/").pop();
- }
+    if(!videoId) {
+      console.error("❌ Could not extract video ID from:", link);
+      return;
+    }
 
- if(!videoId){
-  console.warn("Invalid video link:", url);
-  return;
- }
+    console.log("✅ Video ID extracted:", videoId);
 
- document.getElementById("ytFrame").src =
-  "https://www.youtube.com/embed/" + videoId;
-});
+    // Set iframe source with autoplay and mute (required for autoplay)
+    const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&rel=0`;
+    document.getElementById("ytFrame").src = embedUrl;
+
+    console.log("✅ YouTube video loaded successfully");
+  })
+  .catch(err => {
+    console.error("❌ Error loading YouTube video:", err);
+  });
 </script>
 
 </body>

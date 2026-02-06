@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 
 const settingsSchema = new mongoose.Schema({
- youtubeLinks:{
-  type:[String],
-  default:["","",""]
+ youtubeLink: {
+  type: String,
+  default: ""
  }
+}, {
+ timestamps: true
 });
 
-module.exports = mongoose.model("Settings",settingsSchema);
+module.exports = mongoose.model("Settings", settingsSchema);

@@ -274,6 +274,33 @@
  transform:translateY(0);
 }
 
+/* YouTube Section Styling */
+#youtube input{
+ width: 100%;
+ max-width: 600px;
+ padding: 12px;
+ border: 2px solid #e5e7eb;
+ border-radius: 10px;
+ font-size: 14px;
+ margin-bottom: 15px;
+}
+
+#youtube button{
+ padding: 12px 24px;
+ background: linear-gradient(135deg,#2563eb,#3b82f6);
+ color: white;
+ border: none;
+ border-radius: 10px;
+ font-weight: 600;
+ cursor: pointer;
+ transition: .25s;
+}
+
+#youtube button:hover{
+ transform: translateY(-2px);
+ box-shadow: 0 8px 20px rgba(59,130,246,.5);
+}
+
 </style>
 </head>
 
@@ -299,9 +326,7 @@
 <button onclick="show('analytics')">📈 Analytics</button>
 <button onclick="show('admins')">👥 Manage Admins</button>
 <button class="danger" onclick="logout()">🚪 Logout</button>
-    <button onclick="show('youtube')">
- 🎥 Manage YouTube
-</button>
+<button onclick="show('youtube')">🎥 Manage YouTube</button>
 
 </div>
 
@@ -317,14 +342,15 @@
   <div class="card">Approved <b id="approvedCount"></b></div>
  </div>
 </div>
+
+<!-- YOUTUBE SECTION -->
 <div id="youtube" class="page">
- <h2>🎥 YouTube Links</h2>
+ <h2>🎥 YouTube Video Link</h2>
+ <p style="color:#666;margin-bottom:20px">Enter a YouTube video URL. The video will autoplay on the website.</p>
 
- <input id="yt1" placeholder="YouTube Link 1"><br><br>
- <input id="yt2" placeholder="YouTube Link 2"><br><br>
- <input id="yt3" placeholder="YouTube Link 3"><br><br>
+ <input id="ytLink" type="text" placeholder="https://www.youtube.com/watch?v=...">
 
- <button onclick="saveYoutube()">💾 Save</button>
+ <button onclick="saveYoutube()">💾 Save YouTube Link</button>
 </div>
 
 <!-- PENDING -->
@@ -417,7 +443,8 @@ function showNotify(msg){
   box.remove();
  },4000);
 }
-    /* BELL CLICK */
+
+/* BELL CLICK */
 document.getElementById("notify").onclick = ()=>{
  show("admins");
 
@@ -425,40 +452,68 @@ document.getElementById("notify").onclick = ()=>{
  document.getElementById("notifyCount").innerText = 0;
 };
 
-    async function loadYoutube(){
+/* LOAD YOUTUBE LINK */
+async function loadYoutube(){
+ try {
+  const res = await fetch(API + "/api/settings/youtube");
+  const data = await res.json();
 
- const res = await fetch(
-  API+"/api/settings/youtube"
- );
- const data = await res.json();
-
- yt1.value=data[0]||"";
- yt2.value=data[1]||"";
- yt3.value=data[2]||"";
+  document.getElementById("ytLink").value = data || "";
+ } catch(err) {
+  console.error("Error loading YouTube link:", err);
+ }
 }
 
+/* SAVE YOUTUBE LINK */
 async function saveYoutube(){
+ const link = document.getElementById("ytLink").value.trim();
 
- const links=[
-  yt1.value,
-  yt2.value,
-  yt3.value
- ];
+ if(!link) {
+  alert("Please enter a YouTube link");
+  return;
+ }
 
- await fetch(
-  API+"/api/settings/youtube",
-  {
-   method:"POST",
-   headers:{
-    "Content-Type":"application/json",
+ // Validate YouTube URL
+ const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/;
+ if(!youtubeRegex.test(link)) {
+  alert("Please enter a valid YouTube URL");
+  return;
+ }
+
+ try {
+  const res = await fetch(API + "/api/settings/youtube", {
+   method: "POST",
+   headers: {
+    "Content-Type": "application/json",
     ...headers
    },
-   body:JSON.stringify({links})
-  }
- );
+   body: JSON.stringify({ link })
+  });
 
- alert("YouTube links updated");
+  const data = await res.json();
+
+  if(res.ok) {
+   alert("✅ YouTube link updated successfully!");
+   showNotify("🎥 YouTube link updated");
+  } else {
+   alert("❌ " + (data.msg || "Failed to update YouTube link"));
+  }
+ } catch(err) {
+  console.error("Error saving YouTube link:", err);
+  alert("❌ Error saving YouTube link");
+ }
 }
+
+// Load YouTube link when the page shows
+const originalShow = window.show;
+window.show = function(page) {
+ if(typeof originalShow === 'function') {
+  originalShow(page);
+ }
+ if(page === 'youtube') {
+  loadYoutube();
+ }
+};
 
 </script>
 
