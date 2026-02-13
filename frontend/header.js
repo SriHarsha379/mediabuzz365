@@ -43,7 +43,7 @@ document.getElementById("mainNav").innerHTML = `
   <a href="category.html?category=crime">క్రైం</a>
   <a href="category.html?category=sports">క్రీడలు</a>
   <a href="category.html?category=cinema">సినిమా & TV</a>
-  <a href="category.html?category=lifestyle">నవరసి</a>
+  <a href="category.html?category=lifestyle">లైఫ్ స్టైల్</a>
   <a href="category.html?category=technology">టెక్నాలజీ</a>
   <a href="index.html#live">LIVE TV</a>
   <a href="#" class="dropdown-trigger" data-dropdown="more">MORE</a>
