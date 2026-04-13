@@ -484,6 +484,35 @@ footer a:hover {
 .img-wrap img {
   display: block;
 }
+
+/* LOAD MORE BUTTON */
+.load-more-wrap {
+  text-align: center;
+  padding: 12px 16px;
+}
+
+.load-more-btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-family: 'Noto Sans Telugu', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: none;
+}
+
+.load-more-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.load-more-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 </style>
 </head>
 <body>
@@ -586,6 +615,9 @@ footer a:hover {
       <h3>మరిన్ని వార్తలు</h3>
       <div class="sidebar-content" id="moreNews">
         <!-- Dynamic content loaded here -->
+      </div>
+      <div class="load-more-wrap">
+        <button id="loadMoreBtn" class="load-more-btn" onclick="loadMoreNews()">మరిన్ని వార్తలు</button>
       </div>
     </div>
 

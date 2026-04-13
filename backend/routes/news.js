@@ -46,10 +46,27 @@ router.post("/",
 
 /* ================= PUBLIC ================= */
 router.get("/",async(req,res)=>{
- const {category}=req.query;
+ const {category,page,limit}=req.query;
 
  let filter={status:"approved"};
  if(category) filter.category=category;
+
+ if(page!==undefined && page!==""){
+  const pageNum=Math.max(1,parseInt(page)||1);
+  const limitNum=Math.min(100,Math.max(1,parseInt(limit)||10));
+  const skip=(pageNum-1)*limitNum;
+
+  const total=await News.countDocuments(filter);
+  const data=await News.find(filter).sort({date:-1}).skip(skip).limit(limitNum);
+
+  return res.json({
+   total,
+   page:pageNum,
+   limit:limitNum,
+   pages:Math.ceil(total/limitNum),
+   data
+  });
+ }
 
  const data=await News.find(filter).sort({date:-1});
  res.json(data);

@@ -7,6 +7,11 @@ const API = location.hostname.includes("localhost")
 const _newsCache = { data: null, ts: 0 };
 const NEWS_CACHE_TTL = 5000; // 5 seconds
 
+// Pagination state
+let _currentPage = 1;
+let _totalPages = 1;
+let _accumulatedNews = [];
+
 // Debounce helper
 function debounce(fn, delay) {
   let timer = null;
@@ -72,23 +77,29 @@ async function loadAllNews() {
 
   _showLoadingState();
   try {
-    const response = await fetch(`${API}/api/news`);
+    const response = await fetch(`${API}/api/news?page=1&limit=10`);
     if (!response.ok) throw new Error("Failed");
 
-    const allNews = await response.json();
+    const result = await response.json();
+    const allNews = result.data;
+
     if (!allNews || !allNews.length) {
       _clearLoadingState();
       showNoNewsMessage();
       return;
     }
 
-    allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
+    // Update pagination state
+    _currentPage = result.page;
+    _totalPages = result.pages;
+    _accumulatedNews = allNews;
 
     // Update cache
-    _newsCache.data = allNews;
+    _newsCache.data = _accumulatedNews;
     _newsCache.ts = Date.now();
 
-    _renderNews(allNews);
+    _renderNews(_accumulatedNews);
+    _updateLoadMoreButton();
   } catch (e) {
     console.error(e);
     _clearLoadingState();
@@ -103,6 +114,64 @@ function _renderNews(allNews) {
   populateBreakingNews(breaking.length ? breaking : allNews);
   populateMoreNews(allNews);
   _clearLoadingState();
+}
+
+function _updateLoadMoreButton() {
+  const btn = document.getElementById("loadMoreBtn");
+  if (!btn) return;
+  if (_currentPage < _totalPages) {
+    btn.style.display = "block";
+    btn.disabled = false;
+    btn.textContent = "మరిన్ని వార్తలు";
+  } else {
+    btn.style.display = "none";
+  }
+}
+
+async function loadMoreNews() {
+  if (_currentPage >= _totalPages) return;
+
+  const btn = document.getElementById("loadMoreBtn");
+  if (btn) { btn.disabled = true; btn.textContent = "లోడ్ అవుతోంది..."; }
+
+  try {
+    const nextPage = _currentPage + 1;
+    const response = await fetch(`${API}/api/news?page=${nextPage}&limit=10`);
+    if (!response.ok) throw new Error("Failed");
+
+    const result = await response.json();
+
+    _currentPage = result.page;
+    _totalPages = result.pages;
+    _accumulatedNews.push(...result.data);
+
+    // Update cache
+    _newsCache.data = _accumulatedNews;
+    _newsCache.ts = Date.now();
+
+    _appendMoreNews(result.data);
+    _updateLoadMoreButton();
+  } catch (e) {
+    console.error(e);
+    if (btn) { btn.disabled = false; btn.textContent = "మరిన్ని వార్తలు"; }
+  }
+}
+
+function _appendMoreNews(articles) {
+  const el = document.getElementById("moreNews");
+  if (!el) return;
+  articles.forEach(n => {
+    const item = document.createElement("div");
+    item.className = "sidebar-item";
+    item.onclick = () => openNews(n._id);
+    item.innerHTML = `
+      <div class="img-wrap">
+        <img src="${getImage(n)}" alt="">
+      </div>
+      <h4>${n.title}</h4>
+    `;
+    el.appendChild(item);
+  });
 }
 
 /* ================= TOP NEWS ================= */
@@ -190,7 +259,7 @@ function populateMoreNews(newsData) {
   if (!el) return;
 
   let html = "";
-  newsData.slice(11, 16).forEach(n => {
+  newsData.slice(11).forEach(n => {
     html += `
       <div class="sidebar-item" onclick="openNews('${n._id}')">
         <div class="img-wrap">
