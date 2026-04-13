@@ -1574,18 +1574,30 @@ function saveNews(){
 
     socket.emit("join-admin",user.id);
 
+    // Debounce helper to batch rapid socket events
+    function _debounce(fn, delay) {
+     let t = null;
+     return function() {
+      var self = this, args = arguments;
+      clearTimeout(t);
+      t = setTimeout(function() { fn.apply(self, args); }, delay);
+     };
+    }
+
+    const _debouncedLoadNews = _debounce(loadNews, 400);
+
     socket.on("news:approved",()=>{
      showMsg("Approved!");
-     loadNews();
+     _debouncedLoadNews();
      loadUserDistricts(); // refresh districts
     });
 
     socket.on("news:rejected",()=>{
      showMsg("Rejected","warn");
-     loadNews();
+     _debouncedLoadNews();
     });
 
-    socket.on("news:deleted",loadNews);
+    socket.on("news:deleted", _debouncedLoadNews);
 
     /* ========== INIT ========= */
     loadUserDistricts();
