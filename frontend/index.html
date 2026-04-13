@@ -614,35 +614,13 @@ socket.emit("join","public");
 // News approved -> refresh homepage
 socket.on("news:approved",()=>{
  console.log("🟢 New approved news");
-
- if(typeof loadLatestNews==="function"){
-  loadLatestNews();
- }
-
- if(typeof loadBreaking==="function"){
-  loadBreaking();
- }
-
- if(typeof loadAllNews==="function"){
-  loadAllNews();
- }
+ if(typeof performRefresh==="function"){ performRefresh(); }
 });
 
 // News deleted
 socket.on("news:deleted",()=>{
  console.log("🔴 News deleted");
-
- if(typeof loadLatestNews==="function"){
-  loadLatestNews();
- }
-
- if(typeof loadBreaking==="function"){
-  loadBreaking();
- }
-
- if(typeof loadAllNews==="function"){
-  loadAllNews();
- }
+ if(typeof performRefresh==="function"){ performRefresh(); }
 });
 
 /* DEBUG */

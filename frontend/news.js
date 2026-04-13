@@ -3,6 +3,27 @@ const API = location.hostname.includes("localhost")
   ? "http://localhost:3000"
   : "https://mediabuzz365.in";
 
+// Simple in-memory cache for news data
+const _newsCache = { data: null, ts: 0 };
+const NEWS_CACHE_TTL = 5000; // 5 seconds
+
+// Debounce helper
+function debounce(fn, delay) {
+  let timer = null;
+  return function () {
+    const self = this;
+    const args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function () { fn.apply(self, args); }, delay);
+  };
+}
+
+// Debounced public refresh — called by Socket.IO events
+const performRefresh = debounce(function () {
+  _newsCache.ts = 0; // invalidate cache so next call fetches fresh data
+  loadAllNews();
+}, 400);
+
 // Pick safe image
 function getImage(news) {
   if (news.images && news.images.length > 0) {
@@ -14,34 +35,74 @@ function getImage(news) {
   return "https://via.placeholder.com/800x400?text=No+Image";
 }
 
+// Show a subtle loading indicator on all sections
+function _showLoadingState() {
+  ["topNewsContent", "trendingGrid", "breakingNews", "moreNews"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && !el.dataset.loading) {
+      el.dataset.loading = "1";
+      el.style.opacity = "0.5";
+    }
+  });
+}
+
+// Clear loading indicator
+function _clearLoadingState() {
+  ["topNewsContent", "trendingGrid", "breakingNews", "moreNews"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      delete el.dataset.loading;
+      el.style.opacity = "";
+    }
+  });
+}
+
 // Load all news when page loads
 document.addEventListener("DOMContentLoaded", () => {
   loadAllNews();
 });
 
 async function loadAllNews() {
+  const now = Date.now();
+  // Return cached data if still fresh
+  if (_newsCache.data && now - _newsCache.ts < NEWS_CACHE_TTL) {
+    _renderNews(_newsCache.data);
+    return;
+  }
+
+  _showLoadingState();
   try {
     const response = await fetch(`${API}/api/news`);
     if (!response.ok) throw new Error("Failed");
 
     const allNews = await response.json();
     if (!allNews || !allNews.length) {
+      _clearLoadingState();
       showNoNewsMessage();
       return;
     }
 
     allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
-    const breaking = allNews.filter(n => n.category === "breaking");
 
-    populateTopNews(allNews);
-    populateTrendingNews(allNews);
-    populateBreakingNews(breaking.length ? breaking : allNews);
-    populateMoreNews(allNews);
+    // Update cache
+    _newsCache.data = allNews;
+    _newsCache.ts = Date.now();
 
+    _renderNews(allNews);
   } catch (e) {
     console.error(e);
+    _clearLoadingState();
     showErrorMessage();
   }
+}
+
+function _renderNews(allNews) {
+  const breaking = allNews.filter(n => n.category === "breaking");
+  populateTopNews(allNews);
+  populateTrendingNews(allNews);
+  populateBreakingNews(breaking.length ? breaking : allNews);
+  populateMoreNews(allNews);
+  _clearLoadingState();
 }
 
 /* ================= TOP NEWS ================= */
