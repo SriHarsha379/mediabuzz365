@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Buzz 365 - తెలుగు వార్తలు</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #2563eb;
+  --red: #dc2626;
+  --gold: #d4af37;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans Telugu', sans-serif;
+  background: #f5f5f5;
+  color: #111;
+}
+
+/* TOP BAR */
+.top-bar {
+  background: #fff;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 12px 0;
+}
+
+.top-bar-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo img {
+  height: 50px;
+}
+
+.epaper-btn {
+  background: var(--red);
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.epaper-btn:hover {
+  background: #b91c1c;
+}
+
+/* MAIN NAV */
+.main-nav {
+  background: var(--primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 0 20px;
+  position: relative;
+}
+
+.nav-inner::-webkit-scrollbar {
+  height: 0;
+}
+
+.nav-inner a {
+  color: #fff;
+  text-decoration: none;
+  padding: 14px 20px;
+  white-space: nowrap;
+  font-weight: 600;
+  font-size: 15px;
+  transition: background 0.3s;
+  cursor: pointer;
+}
+
+.nav-inner a:hover,
+.nav-inner a.active {
+  background: rgba(255,255,255,0.15);
+}
+
+.nav-inner a.home {
+  font-size: 18px;
+}
+
+/* DROPDOWN MENU */
+.nav-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: none;
+  z-index: 2000;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.nav-dropdown.show {
+  display: block;
+}
+
+.dropdown-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.dropdown-grid a {
+  color: #111;
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.dropdown-grid a:hover {
+  background: #f3f4f6;
+}
+
+/* CONTAINER */
+.container {
+  width: 100%;
+  max-width: none;
+  margin: 20px 0;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 24px;
+}
+
+
+
+/* LEFT COLUMN */
+.left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* TOP NEWS SECTION */
+.top-news {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.top-news h2 {
+  background: var(--red);
+  color: #fff;
+  padding: 10px 16px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.top-news h2::before {
+  content: '▶';
+  font-size: 14px;
+}
+
+.top-news-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 16px;
+}
+
+.news-main {
+  grid-column: 1 / -1;
+  cursor: pointer;
+}
+
+.news-main img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.news-main h3 {
+  margin-top: 12px;
+  font-size: 20px;
+  line-height: 1.4;
+  color: #111;
+}
+
+.news-side {
+  cursor: pointer;
+}
+
+.news-side img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.news-side h4 {
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 1.4;
+  color: #333;
+}
+
+/* TRENDING SECTION */
+.trending {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 16px;
+}
+
+.trending h2 {
+  background: var(--red);
+  color: #fff;
+  padding: 10px 16px;
+  font-size: 18px;
+  margin: -16px -16px 16px -16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trending h2::before {
+  content: '▶';
+  font-size: 14px;
+}
+
+.trending-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.trending-item {
+  cursor: pointer;
+}
+
+.trending-item img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.trending-item h4 {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #333;
+}
+
+/* RIGHT SIDEBAR */
+.right-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar-section {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.sidebar-section h3 {
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 16px;
+  font-size: 16px;
+  border-radius: 8px 8px 0 0;
+}
+
+.sidebar-content {
+  padding: 12px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+}
+
+.sidebar-item:last-child {
+  border-bottom: none;
+}
+
+.sidebar-item img {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.sidebar-item h4 {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #333;
+}
+
+.ad-space {
+  background: #f9fafb;
+  border: 2px dashed #ddd;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: #999;
+  font-size: 14px;
+}
+
+/* FOOTER */
+footer {
+  background: #1f2937;
+  color: #fff;
+  margin-top: 40px;
+  padding: 30px 20px 20px;
+}
+
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+footer h4 {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: var(--gold);
+}
+
+footer a {
+  color: #d1d5db;
+  text-decoration: none;
+  display: block;
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+footer a:hover {
+  color: var(--gold);
+}
+
+.copyright {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #374151;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.footer-social {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.footer-social img {
+  width: 24px;
+  height: 24px;
+  filter: invert(1);
+  transition: transform 0.3s;
+}
+
+.footer-social img:hover {
+  transform: scale(1.15);
+}
+
+.contact-card {
+  text-align: center;
+  padding: 16px;
+  background: #374151;
+  border-radius: 6px;
+  margin: 20px auto;
+  max-width: 400px;
+  font-size: 14px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .trending-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .top-news-content {
+    grid-template-columns: 1fr;
+  }
+
+  .trending-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-inner a {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .dropdown-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* IMAGE NO CROP FIX */
+.img-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #f3f4f6;
+  aspect-ratio: auto;
+  overflow: visible;
+}
+
+.img-wrap img {
+  width: 100%;
+  height: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.news-side .img-wrap,
+.trending-item .img-wrap {
+  aspect-ratio: 4 / 3;
+}
+
+.sidebar-item .img-wrap {
+  aspect-ratio: 3 / 2;
+}
+
+/* REMOVE UNWANTED WHITE SPACE BELOW IMAGES */
+.news-main h3,
+.news-side h4,
+.trending-item h4,
+.sidebar-item h4 {
+  margin-top: 6px;
+  margin-bottom: 0;
+  line-height: 1.4;
+}
+
+/* ALSO REMOVE IMAGE BOTTOM GAP */
+.img-wrap {
+  margin-bottom: 0;
+}
+
+/* SAFETY: remove inline image spacing */
+.img-wrap img {
+  display: block;
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar" id="topBar"></div>
+
+<!-- MAIN NAVIGATION -->
+<nav class="main-nav" id="mainNav"></nav>
+
+<!-- MAIN CONTAINER -->
+<div class="container">
+
+  <!-- LEFT COLUMN -->
+  <div class="left-col">
+
+    <!-- TOP NEWS -->
+    <section class="top-news">
+      <h2>టాప్ న్యూస్</h2>
+      <div class="top-news-content" id="topNewsContent">
+        <!-- Dynamic content loaded here -->
+      </div>
+    </section>
+
+    <!-- TRENDING NEWS -->
+    <section class="trending">
+      <h2>ట్రెండింగ్ వార్తలు</h2>
+      <div class="trending-grid" id="trendingGrid">
+        <!-- Dynamic content loaded here -->
+      </div>
+    </section>
+
+  </div>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="right-sidebar">
+
+    <!-- BREAKING NEWS -->
+    <div class="sidebar-section">
+      <h3>బ్రేకింగ్ వార్తలు</h3>
+      <div class="sidebar-content" id="breakingNews">
+        <!-- Dynamic content loaded here -->
+      </div>
+    </div>
+
+    <!-- AD SPACE -->
+    <div class="ad-space" style="flex-direction:column; gap:12px; position:relative;">
+
+      <!-- VIDEO WRAPPER -->
+      <div style="position:relative; width:100%;">
+
+        <!-- LOGO OVER VIDEO -->
+        <img
+          src="images/mediabuzz365.png"
+          style="
+            position:absolute;
+            top:8px;
+            right:8px;
+            width:45px;
+            z-index:5;
+            padding:4px;
+            border-radius:6px;
+          "
+          alt="MediaBuzz365"
+        >
+
+        <!-- YOUTUBE VIDEO -->
+        <iframe
+          id="ytFrame"
+          width="100%"
+          height="170"
+          src=""
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          style="border-radius:8px;">
+        </iframe>
+
+      </div>
+
+      <!-- CHANNEL LINK -->
+      <a
+        href="https://www.youtube.com/@mediabuzz365"
+        target="_blank"
+        style="text-decoration:none; text-align:center;"
+      >
+        <img
+          src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg"
+          style="width:40px; height:40px;"
+        >
+        <p style="margin-top:6px; font-weight:600; color:#dc2626;">
+          Subscribe MediaBuzz365
+        </p>
+      </a>
+
+    </div>
+
+    <!-- MORE NEWS -->
+    <div class="sidebar-section">
+      <h3>మరిన్ని వార్తలు</h3>
+      <div class="sidebar-content" id="moreNews">
+        <!-- Dynamic content loaded here -->
+      </div>
+    </div>
+
+  </aside>
+
+</div>
+
+<!-- FOOTER -->
+<footer id="footer"></footer>
+
+<!-- SCRIPTS -->
+<script src="header.js"></script>
+<script src="footer.js"></script>
+<script src="news.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+/* ================= SOCKET.IO ================= */
+
+const socket = io(); // connect to backend
+
+// Join PUBLIC room
+socket.emit("join","public");
+
+/* REALTIME EVENTS */
+
+// News approved -> refresh homepage
+socket.on("news:approved",()=>{
+ console.log("🟢 New approved news");
+
+ if(typeof loadLatestNews==="function"){
+  loadLatestNews();
+ }
+
+ if(typeof loadBreaking==="function"){
+  loadBreaking();
+ }
+
+ if(typeof loadAllNews==="function"){
+  loadAllNews();
+ }
+});
+
+// News deleted
+socket.on("news:deleted",()=>{
+ console.log("🔴 News deleted");
+
+ if(typeof loadLatestNews==="function"){
+  loadLatestNews();
+ }
+
+ if(typeof loadBreaking==="function"){
+  loadBreaking();
+ }
+
+ if(typeof loadAllNews==="function"){
+  loadAllNews();
+ }
+});
+
+/* DEBUG */
+socket.on("connect",()=>{
+ console.log("🟢 Socket connected:",socket.id);
+});
+
+socket.on("disconnect",()=>{
+ console.log("🔴 Socket disconnected");
+});
+</script>
+<script>
+   fetch("/api/settings/youtube")
+   .then(r=>r.json())
+   .then(links=>{
+     ... old code ...
+   });
+   </script>
+
+   REPLACE IT WITH THE CODE BELOW:
+*/
+
+<script>
+// Fetch and display YouTube video
+fetch("/api/settings/youtube")
+  .then(r => r.json())
+  .then(link => {
+    console.log("📺 YouTube Link:", link);
+
+    // Check if link exists
+    if(!link || link.trim() === "") {
+      console.warn("⚠️ No YouTube link configured");
+      return;
+    }
+
+    let videoId = null;
+
+    // Extract video ID from different YouTube URL formats
+
+    // Format 1: https://www.youtube.com/watch?v=VIDEO_ID
+    if(link.includes("watch?v=")) {
+      videoId = link.split("v=")[1].split("&")[0];
+    }
+    // Format 2: https://youtu.be/VIDEO_ID
+    else if(link.includes("youtu.be/")) {
+      videoId = link.split("youtu.be/")[1].split("?")[0];
+    }
+    // Format 3: https://www.youtube.com/embed/VIDEO_ID
+    else if(link.includes("youtube.com/embed/")) {
+      videoId = link.split("embed/")[1].split("?")[0];
+    }
+
+    if(!videoId) {
+      console.error("❌ Could not extract video ID from:", link);
+      return;
+    }
+
+    console.log("✅ Video ID extracted:", videoId);
+
+    // Set iframe source with autoplay and mute (required for autoplay)
+    const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&rel=0`;
+    document.getElementById("ytFrame").src = embedUrl;
+
+    console.log("✅ YouTube video loaded successfully");
+  })
+  .catch(err => {
+    console.error("❌ Error loading YouTube video:", err);
+  });
+</script>
+
+</body>
+</html>
