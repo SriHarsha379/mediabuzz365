@@ -1,1620 +1,1145 @@
 <!DOCTYPE html>
-    <html lang="en">
-    <head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard – MediaBuzz365</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <style>
-        /* LIMIT TEXT HEIGHT */
-.news-body h4{
- display:-webkit-box;
- -webkit-line-clamp:2;
- -webkit-box-orient:vertical;
- overflow:hidden;
-}
-
-.news-body p{
- display:-webkit-box;
- -webkit-line-clamp:3;
- -webkit-box-orient:vertical;
- overflow:hidden;
-}
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-    }
-
-    /* LAYOUT */
-    .wrapper {
-      display: flex;
-      min-height: 100vh;
-    }
-
-    /* SIDEBAR */
-    .sidebar {
-      width: 260px;
-      background: linear-gradient(180deg, #1a1f35 0%, #0f1419 100%);
-      color: #fff;
-      padding: 30px 20px;
-      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-    }
-
-    .sidebar h2 {
-      margin-bottom: 40px;
-      font-size: 24px;
-      font-weight: 700;
-      background: linear-gradient(135deg, #e31e24 0%, #ff6b6b 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .sidebar button {
-      width: 100%;
-      padding: 14px 16px;
-      margin-bottom: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #fff;
-      cursor: pointer;
-      text-align: left;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .sidebar button:hover {
-      background: linear-gradient(135deg, #e31e24 0%, #ff4757 100%);
-      transform: translateX(5px);
-      box-shadow: 0 4px 15px rgba(227, 30, 36, 0.4);
-    }
-
-    /* MAIN */
-    .main {
-      flex: 1;
-      padding: 40px;
-      overflow-y: auto;
-      margin-left:260px;
-    }
-
-    /* STATS */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-
-    .stat {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 25px;
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .stat:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
-    }
-
-    .stat h3 {
-      font-size: 13px;
-      color: #64748b;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 10px;
-      font-weight: 600;
-    }
-
-    .stat b {
-      font-size: 32px;
-      color: #1e293b;
-      font-weight: 700;
-      background: linear-gradient(135deg, #e31e24 0%, #ff6b6b 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* CARD */
-    .card {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 30px;
-      border-radius: 20px;
-      margin-bottom: 30px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .card h3 {
-      font-size: 22px;
-      color: #1e293b;
-      margin-bottom: 25px;
-      font-weight: 700;
-    }
-
-    /* FORM */
-    input, textarea, select {
-      width: 100%;
-      padding: 14px 16px;
-      margin-top: 12px;
-      margin-bottom: 16px;
-      border-radius: 12px;
-      border: 2px solid #e2e8f0;
-      font-size: 15px;
-      transition: all 0.3s ease;
-      background: #fff;
-      font-family: inherit;
-    }
-
-    input:focus, textarea:focus, select:focus {
-      outline: none;
-      border-color: #e31e24;
-      box-shadow: 0 0 0 3px rgba(227, 30, 36, 0.1);
-    }
-
-    textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-
-    input[type="file"] {
-      padding: 10px;
-      border: 2px dashed #e2e8f0;
-      background: #f8fafc;
-      cursor: pointer;
-    }
-
-    input[type="file"]:hover {
-      border-color: #e31e24;
-      background: #fff;
-    }
-
-    .save-btn {
-      margin-top: 10px;
-      margin-right: 10px;
-      padding: 14px 28px;
-      background: linear-gradient(135deg, #e31e24 0%, #ff4757 100%);
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 15px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(227, 30, 36, 0.3);
-    }
-
-    .save-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(227, 30, 36, 0.4);
-    }
-
-    .save-btn:active {
-      transform: translateY(0);
-    }
-
-    .save-btn.cancel {
-      background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-      box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
-    }
-
-    .save-btn.cancel:hover {
-      box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
-    }
-
-    .save-btn.preview {
-      background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
-      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
-    }
-
-    .save-btn.preview:hover {
-      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
-    }
-
-    /* NEWS */
-    #newsList {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-    }
-
-    .news-card {
-      background: #fff;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s ease;
-      border: 1px solid #f1f5f9;
-    }
-
-    .news-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-    }
-
-
-    .news-card img {
-      width: 100%;
-      height: 180px;
-      object-fit: contain;
-      background:#f1f5f9;
-    }
-
-    .news-card{
- display:flex;
- flex-direction:column;
-}
-
-.news-body{
- flex:1;
- display:flex;
- flex-direction:column;
- justify-content:space-between;
-}
-
-
-    .news-card:hover img {
-      transform: scale(1.05);
-    }
-
-    .news-body {
-      padding: 16px;
-    }
-
-    .news-body h4 {
-      margin: 10px 0 8px 0;
-      font-size: 16px;
-      color: #1e293b;
-      line-height: 1.4;
-      font-weight: 600;
-    }
-
-    .news-body p {
-      color: #64748b;
-      font-size: 14px;
-      margin-bottom: 8px;
-    }
-
-    .news-body small {
-      color: #94a3b8;
-      font-size: 12px;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 11px;
-      color: #fff;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .breaking { background: linear-gradient(135deg, #e31e24 0%, #ff4757 100%); }
-    .national { background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); }
-    .international { background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); }
-    .politics { background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%); }
-    .crime { background: linear-gradient(135deg, #dc2626 0%, #f87171 100%); }
-    .lifestyle { background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%); }
-    .technology { background: linear-gradient(135deg, #0891b2 0%, #22d3ee 100%); }
-    .sports { background: linear-gradient(135deg, #ea580c 0%, #fb923c 100%); }
-    .cinema { background: linear-gradient(135deg, #9333ea 0%, #c084fc 100%); }
-    .business { background: linear-gradient(135deg, #059669 0%, #34d399 100%); }
-    .health { background: linear-gradient(135deg, #9333ea 0%, #a855f7 100%); }
-
-    .actions {
-      margin-top: 14px;
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn-small {
-      padding: 8px 14px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      flex: 1;
-    }
-
-    .btn-gray {
-      background: #f1f5f9;
-      color: #475569;
-    }
-
-    .btn-gray:hover {
-      background: #e2e8f0;
-      transform: translateY(-2px);
-    }
-
-    .btn-red {
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-      color: #fff;
-    }
-
-    .btn-red:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
-    }
-
-    /* PREVIEW MODAL */
-    .preview-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    .preview-overlay.show {
-      display: flex;
-    }
-
-    .preview-container {
-      background: #fff;
-      border-radius: 16px;
-      width: 100%;
-      max-width: 1200px;
-      max-height: 90vh;
-      overflow-y: auto;
-      position: relative;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-      animation: slideUp 0.3s ease;
-    }
-
-    @keyframes slideUp {
-      from {
-        transform: translateY(50px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    .preview-header {
-      background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
-      color: #fff;
-      padding: 20px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-radius: 16px 16px 0 0;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .preview-header h2 {
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .preview-close {
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: #fff;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 20px;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .preview-close:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: rotate(90deg);
-    }
-
-    .preview-content {
-      padding: 30px;
-      background: #f5f5f5;
-    }
-
-    .preview-banner {
-      background: #fff;
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
-    }
-
-    .preview-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: #6b7280;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .preview-main-image {
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-      margin-bottom: 16px;
-      background: #f3f4f6;
-      object-fit: contain;
-    }
-
-    .preview-category {
-      display: inline-block;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      color: #fff;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    .preview-title {
-      font-size: 24px;
-      font-weight: 700;
-      color: #1e293b;
-      line-height: 1.4;
-      margin-bottom: 12px;
-      font-family: 'Noto Sans Telugu', sans-serif;
-    }
-
-    .preview-description {
-      font-size: 16px;
-      color: #64748b;
-      line-height: 1.6;
-      margin-bottom: 12px;
-      font-family: 'Noto Sans Telugu', sans-serif;
-    }
-
-    .preview-meta {
-      display: flex;
-      gap: 20px;
-      font-size: 14px;
-      color: #94a3b8;
-      padding-top: 12px;
-      border-top: 1px solid #e5e7eb;
-    }
-
-    .preview-sidebar-card {
-      background: #fff;
-      border-radius: 8px;
-      padding: 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .preview-sidebar-image {
-      width: 100px;
-      height: 75px;
-      object-fit: contain;
-      border-radius: 6px;
-      background: #f3f4f6;
-      flex-shrink: 0;
-    }
-
-    .preview-sidebar-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #333;
-      line-height: 1.4;
-      font-family: 'Noto Sans Telugu', sans-serif;
-    }
-
-    .preview-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-
-    @media (max-width: 768px) {
-      .preview-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .wrapper {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-      }
-
-      .main {
-        padding: 20px;
-      }
-
-      .stats {
-        grid-template-columns: 1fr;
-      }
-
-      #newsList {
-        grid-template-columns: 1fr;
-      }
-    }
-        .sidebar{
-      width:260px;
-      height:100vh;
-      background:linear-gradient(180deg,#020617,#0f172a);
-      padding:25px 20px;
-      color:white;
-      box-shadow:8px 0 40px rgba(0,0,0,.6);
-      position:relative;
-    }
-
-    /* BRAND */
-    .brand{
-      text-align:center;
-      margin-bottom:40px;
-    }
-
-    .logo-wrap{
-      width:110px;
-      height:110px;
-      margin:auto;
-      border-radius:50%;
-      background:linear-gradient(135deg,#ff004f,#00f0ff);
-      padding:3px;
-      animation:pulse 2.5s infinite;
-    }
-
-    .logo-wrap img{
-      width:100%;
-      height:100%;
-      border-radius:50%;
-      background:#000;
-    }
-
-    .brand h2{
-      margin-top:12px;
-      font-size:20px;
-      letter-spacing:1px;
-      background:linear-gradient(90deg,#ff004f,#00f0ff);
-      -webkit-background-clip:text;
-      color:transparent;
-    }
-
-    .brand p{
-      font-size:12px;
-      letter-spacing:2px;
-      opacity:.7;
-    }
-
-    /* MENU */
-    nav button{
-      width:100%;
-      padding:14px;
-      margin-bottom:14px;
-      border-radius:14px;
-      background:rgba(255,255,255,.04);
-      backdrop-filter:blur(10px);
-      color:white;
-      border:1px solid rgba(255,255,255,.1);
-      cursor:pointer;
-      font-size:15px;
-      display:flex;
-      gap:12px;
-      align-items:center;
-      transition:.35s;
-      position:relative;
-      overflow:hidden;
-    }
-
-    nav button::before{
-      content:'';
-      position:absolute;
-      inset:0;
-      background:linear-gradient(90deg,transparent,#00f0ff,transparent);
-      opacity:0;
-    }
-
-    nav button:hover::before{
-      animation:shine 1.2s;
-    }
-
-    nav button:hover{
-      transform:translateX(6px);
-      background:linear-gradient(90deg,#ff004f,#00f0ff);
-      box-shadow:0 0 25px #00f0ff;
-    }
-
-    nav button span{
-      font-size:18px;
-    }
-
-    /* LOGOUT */
-    .danger:hover{
-      background:linear-gradient(90deg,#ff0000,#ff7300)!important;
-      box-shadow:0 0 25px red;
-    }
-
-    /* ANIMATIONS */
-    @keyframes pulse{
-      0%{box-shadow:0 0 0 #00f0ff}
-      50%{box-shadow:0 0 30px #00f0ff}
-      100%{box-shadow:0 0 0 #00f0ff}
-    }
-
-    @keyframes shine{
-      0%{opacity:0}
-      30%{opacity:.7}
-      100%{opacity:0}
-    }
-    .sidebar{
-      position:fixed;
-      left:0;
-      top:0;
-      height:100vh;
-      width:260px;
-      background:linear-gradient(180deg,#020617,#0f172a);
-      padding:25px 20px;
-      color:white;
-      box-shadow:8px 0 40px rgba(0,0,0,.6);
-      overflow-y:auto;
-      z-index:100;
-    }
-    /* MESSAGE TOAST */
-    .msg-box{
-      position:fixed;
-      top:20px;
-      right:20px;
-      background:#111;
-      color:#fff;
-      padding:14px 20px;
-      border-radius:12px;
-      font-size:14px;
-      box-shadow:0 10px 30px rgba(0,0,0,.4);
-      z-index:9999;
-      display:none;
-      animation:slideIn .3s ease;
-    }
-
-    .msg-box.success{background:#16a34a;}
-    .msg-box.error{background:#dc2626;}
-    .msg-box.warn{background:#f59e0b;}
-
-    @keyframes slideIn{
-      from{transform:translateX(50px);opacity:0}
-      to{transform:translateX(0);opacity:1}
-    }
-    /* CONFIRM MODAL */
-    .confirm-overlay{
-     position:fixed;
-     inset:0;
-     background:rgba(0,0,0,.55);
-     display:none;
-     align-items:center;
-     justify-content:center;
-     z-index:99999;
-    }
-
-    .confirm-card{
-     background:#fff;
-     padding:24px;
-     width:320px;
-     border-radius:14px;
-     text-align:center;
-     animation:pop .25s ease;
-    }
-
-    .confirm-card h3{
-     margin-bottom:10px;
-    }
-
-    .confirm-card p{
-     color:#555;
-     font-size:14px;
-     margin-bottom:18px;
-    }
-
-    .confirm-actions{
-     display:flex;
-     justify-content:space-between;
-     gap:10px;
-    }
-
-    .btn-cancel{
-     flex:1;
-     padding:10px;
-     border:none;
-     border-radius:10px;
-     background:#e5e7eb;
-     cursor:pointer;
-    }
-
-    .btn-ok{
-     flex:1;
-     padding:10px;
-     border:none;
-     border-radius:10px;
-     background:#dc2626;
-     color:#fff;
-     cursor:pointer;
-    }
-
-    @keyframes pop{
-     from{transform:scale(.85);opacity:0}
-     to{transform:scale(1);opacity:1}
-    }
-
-    /* IMAGE WARNING */
-    .image-warning {
-      background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
-      color: #fff;
-      padding: 16px 20px;
-      border-radius: 12px;
-      margin: 16px 0;
-      display: none;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
-      animation: shake 0.5s ease;
-    }
-
-    .image-warning.show {
-      display: flex;
-    }
-
-    .image-warning .icon {
-      font-size: 24px;
-      flex-shrink: 0;
-    }
-
-    .image-warning .content {
-      flex: 1;
-    }
-
-    .image-warning .content strong {
-      display: block;
-      font-size: 15px;
-      margin-bottom: 4px;
-    }
-
-    .image-warning .content p {
-      font-size: 13px;
-      opacity: 0.95;
-      line-height: 1.4;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-      20%, 40%, 60%, 80% { transform: translateX(5px); }
-    }
-
-    /* IMAGE PREVIEW */
-    .image-preview-container {
-      margin: 16px 0;
-      display: none;
-    }
-
-    .image-preview-container.show {
-      display: block;
-    }
-
-    .image-preview-header {
-      font-size: 14px;
-      font-weight: 600;
-      color: #475569;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .image-preview-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 12px;
-    }
-
-    .preview-image-card {
-      position: relative;
-      border-radius: 8px;
-      overflow: hidden;
-      background: #f1f5f9;
-      border: 2px solid #e2e8f0;
-      transition: all 0.3s ease;
-    }
-
-    .preview-image-card:hover {
-      border-color: #e31e24;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .preview-image-card img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .preview-image-info {
-      padding: 8px;
-      background: #fff;
-      font-size: 11px;
-      color: #64748b;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .preview-image-badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .badge-first {
-      background: linear-gradient(135deg, #e31e24 0%, #ff4757 100%);
-      color: #fff;
-    }
-
-    .badge-landscape {
-      background: #10b981;
-      color: #fff;
-    }
-
-    .badge-portrait {
-      background: #f59e0b;
-      color: #fff;
-    }
-
-    .preview-image-remove {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: rgba(220, 38, 38, 0.9);
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      opacity: 0;
-    }
-
-    .preview-image-card:hover .preview-image-remove {
-      opacity: 1;
-    }
-
-    .preview-image-remove:hover {
-      background: #dc2626;
-      transform: scale(1.1);
-    }
-
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
-    </head>
-
-    <body>
-
-    <!-- 🔐 AUTH PROTECTION -->
-    <script>
-    if(!localStorage.getItem("token")){
-     location.href="/admin/login.html";
-    }
-    </script>
-    <!-- MESSAGE BOX -->
-    <div id="msgBox" class="msg-box"></div>
-    <!-- CONFIRM MODAL -->
-    <div id="confirmBox" class="confirm-overlay">
-     <div class="confirm-card">
-      <h3>Confirm Delete</h3>
-      <p id="confirmText">Are you sure?</p>
-
-      <div class="confirm-actions">
-       <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
-       <button class="btn-ok" id="confirmYes">Delete</button>
-      </div>
-     </div>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard – MediaBuzz365</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  /* LIMIT TEXT HEIGHT */
+  .news-body h4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .news-body p {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+  }
+
+  /* LAYOUT */
+  .wrapper {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 260px;
+    background: linear-gradient(180deg, #020617, #0f172a);
+    padding: 25px 20px;
+    color: white;
+    box-shadow: 8px 0 40px rgba(0, 0, 0, .6);
+    overflow-y: auto;
+    z-index: 100;
+  }
+
+  /* BRAND */
+  .brand {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .logo-wrap {
+    width: 110px;
+    height: 110px;
+    margin: auto;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff004f, #00f0ff);
+    padding: 3px;
+    animation: pulse 2.5s infinite;
+  }
+
+  .logo-wrap img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #000;
+  }
+
+  .brand h2 {
+    margin-top: 12px;
+    font-size: 20px;
+    letter-spacing: 1px;
+    background: linear-gradient(90deg, #ff004f, #00f0ff);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .brand p {
+    font-size: 12px;
+    letter-spacing: 2px;
+    opacity: .7;
+  }
+
+  /* MENU */
+  nav button {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .04);
+    backdrop-filter: blur(10px);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, .1);
+    cursor: pointer;
+    font-size: 15px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    transition: .35s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  nav button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, #00f0ff, transparent);
+    opacity: 0;
+  }
+
+  nav button:hover::before {
+    animation: shine 1.2s;
+  }
+
+  nav button:hover {
+    transform: translateX(6px);
+    background: linear-gradient(90deg, #ff004f, #00f0ff);
+    box-shadow: 0 0 25px #00f0ff;
+  }
+
+  nav button span {
+    font-size: 18px;
+  }
+
+  .danger:hover {
+    background: linear-gradient(90deg, #ff0000, #ff7300) !important;
+    box-shadow: 0 0 25px red;
+  }
+
+  /* ANIMATIONS */
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 #00f0ff }
+    50% { box-shadow: 0 0 30px #00f0ff }
+    100% { box-shadow: 0 0 0 #00f0ff }
+  }
+
+  @keyframes shine {
+    0% { opacity: 0 }
+    30% { opacity: .7 }
+    100% { opacity: 0 }
+  }
+
+  /* MAIN */
+  .main {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+    margin-left: 260px;
+  }
+
+  /* STATS */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .stat {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .stat:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  }
+
+  .stat h3 {
+    font-size: 13px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  .stat b {
+    font-size: 32px;
+    color: #1e293b;
+    font-weight: 700;
+    background: linear-gradient(135deg, #e31e24 0%, #ff6b6b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* CARD */
+  .card {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .card h3 {
+    font-size: 22px;
+    color: #1e293b;
+    margin-bottom: 25px;
+    font-weight: 700;
+  }
+
+  /* FORM */
+  input, textarea, select {
+    width: 100%;
+    padding: 14px 16px;
+    margin-top: 12px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    background: #fff;
+    font-family: inherit;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #e31e24;
+    box-shadow: 0 0 0 3px rgba(227, 30, 36, 0.1);
+  }
+
+  textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  input[type="file"] {
+    padding: 10px;
+    border: 2px dashed #e2e8f0;
+    background: #f8fafc;
+    cursor: pointer;
+  }
+
+  input[type="file"]:hover {
+    border-color: #e31e24;
+    background: #fff;
+  }
+
+  .save-btn {
+    margin-top: 10px;
+    margin-right: 10px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #e31e24 0%, #ff4757 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(227, 30, 36, 0.3);
+  }
+
+  .save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(227, 30, 36, 0.4);
+  }
+
+  .save-btn:active { transform: translateY(0); }
+
+  .save-btn.cancel {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
+  }
+
+  .save-btn.cancel:hover {
+    box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
+  }
+
+  .save-btn.preview {
+    background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+  }
+
+  .save-btn.preview:hover {
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+  }
+
+  /* NEWS */
+  #newsList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .news-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid #f1f5f9;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .news-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .news-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    background: #f1f5f9;
+  }
+
+  .news-body {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .news-body h4 {
+    margin: 10px 0 8px 0;
+    font-size: 16px;
+    color: #1e293b;
+    line-height: 1.4;
+    font-weight: 600;
+  }
+
+  .news-body p {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .news-body small {
+    color: #94a3b8;
+    font-size: 12px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    color: #fff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .breaking { background: linear-gradient(135deg, #e31e24 0%, #ff4757 100%); }
+  .national { background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); }
+  .international { background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); }
+  .politics { background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%); }
+  .crime { background: linear-gradient(135deg, #dc2626 0%, #f87171 100%); }
+  .lifestyle { background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%); }
+  .technology { background: linear-gradient(135deg, #0891b2 0%, #22d3ee 100%); }
+  .sports { background: linear-gradient(135deg, #ea580c 0%, #fb923c 100%); }
+  .cinema { background: linear-gradient(135deg, #9333ea 0%, #c084fc 100%); }
+  .business { background: linear-gradient(135deg, #059669 0%, #34d399 100%); }
+  .health { background: linear-gradient(135deg, #9333ea 0%, #a855f7 100%); }
+
+  .actions {
+    margin-top: 14px;
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-small {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    flex: 1;
+  }
+
+  .btn-gray { background: #f1f5f9; color: #475569; }
+  .btn-gray:hover { background: #e2e8f0; transform: translateY(-2px); }
+
+  .btn-red { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #fff; }
+  .btn-red:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4); }
+
+  /* PREVIEW MODAL */
+  .preview-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .preview-overlay.show { display: flex; }
+
+  .preview-container {
+    background: #fff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .preview-header {
+    background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+    color: #fff;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 16px 16px 0 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .preview-header h2 {
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .preview-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .preview-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+  }
+
+  .preview-content {
+    padding: 30px;
+    background: #f5f5f5;
+  }
+
+  .preview-banner {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+
+  .preview-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .preview-main-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    background: #f3f4f6;
+    object-fit: contain;
+  }
+
+  .preview-sidebar-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .preview-sidebar-image {
+    width: 100px;
+    height: 75px;
+    object-fit: contain;
+    border-radius: 6px;
+    background: #f3f4f6;
+    flex-shrink: 0;
+  }
+
+  .preview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  /* MESSAGE TOAST */
+  .msg-box {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #111;
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .4);
+    z-index: 9999;
+    display: none;
+    animation: slideIn .3s ease;
+  }
+
+  .msg-box.success { background: #16a34a; }
+  .msg-box.error { background: #dc2626; }
+  .msg-box.warn { background: #f59e0b; }
+
+  @keyframes slideIn {
+    from { transform: translateX(50px); opacity: 0 }
+    to { transform: translateX(0); opacity: 1 }
+  }
+
+  /* CONFIRM MODAL */
+  .confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+  }
+
+  .confirm-card {
+    background: #fff;
+    padding: 24px;
+    width: 320px;
+    border-radius: 14px;
+    text-align: center;
+    animation: pop .25s ease;
+  }
+
+  .confirm-card h3 { margin-bottom: 10px; }
+
+  .confirm-card p {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+
+  .confirm-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .btn-cancel {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #e5e7eb;
+    cursor: pointer;
+  }
+
+  .btn-ok {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #dc2626;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  @keyframes pop {
+    from { transform: scale(.85); opacity: 0 }
+    to { transform: scale(1); opacity: 1 }
+  }
+
+  /* IMAGE WARNING */
+  .image-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+    color: #fff;
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin: 16px 0;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    animation: shake 0.5s ease;
+  }
+
+  .image-warning.show { display: flex; }
+  .image-warning .icon { font-size: 24px; flex-shrink: 0; }
+  .image-warning .content { flex: 1; }
+  .image-warning .content strong { display: block; font-size: 15px; margin-bottom: 4px; }
+  .image-warning .content p { font-size: 13px; opacity: 0.95; line-height: 1.4; }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+  }
+
+  /* IMAGE PREVIEW */
+  .image-preview-container { margin: 16px 0; display: none; }
+  .image-preview-container.show { display: block; }
+
+  .image-preview-header {
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .image-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+
+  .preview-image-card {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f1f5f9;
+    border: 2px solid #e2e8f0;
+    transition: all 0.3s ease;
+  }
+
+  .preview-image-card:hover {
+    border-color: #e31e24;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .preview-image-card img { width: 100%; height: 150px; object-fit: cover; display: block; }
+
+  .preview-image-info {
+    padding: 8px;
+    background: #fff;
+    font-size: 11px;
+    color: #64748b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .preview-image-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .badge-first { background: linear-gradient(135deg, #e31e24 0%, #ff4757 100%); color: #fff; }
+  .badge-landscape { background: #10b981; color: #fff; }
+  .badge-portrait { background: #f59e0b; color: #fff; }
+
+  .preview-image-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(220, 38, 38, 0.9);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    opacity: 0;
+  }
+
+  .preview-image-card:hover .preview-image-remove { opacity: 1; }
+  .preview-image-remove:hover { background: #dc2626; transform: scale(1.1); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .wrapper { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: relative; }
+    .main { padding: 20px; margin-left: 0; }
+    .stats { grid-template-columns: 1fr; }
+    #newsList { grid-template-columns: 1fr; }
+    .preview-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- AUTH PROTECTION -->
+<script>
+  if (!localStorage.getItem("token")) {
+    location.href = "/admin/login.html";
+  }
+</script>
+
+<!-- MESSAGE BOX -->
+<div id="msgBox" class="msg-box"></div>
+
+<!-- CONFIRM MODAL -->
+<div id="confirmBox" class="confirm-overlay">
+  <div class="confirm-card">
+    <h3>Confirm Delete</h3>
+    <p id="confirmText">Are you sure?</p>
+    <div class="confirm-actions">
+      <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-ok" id="confirmYes">Delete</button>
     </div>
+  </div>
+</div>
 
-    <!-- PREVIEW MODAL -->
-    <div id="previewOverlay" class="preview-overlay">
-      <div class="preview-container">
-        <div class="preview-header">
-          <h2>👁️ Preview - How It Will Look</h2>
-          <button class="preview-close" onclick="closePreview()">✕</button>
+<!-- PREVIEW MODAL -->
+<div id="previewOverlay" class="preview-overlay">
+  <div class="preview-container">
+    <div class="preview-header">
+      <h2>👁️ Preview - How It Will Look</h2>
+      <button class="preview-close" onclick="closePreview()">✕</button>
+    </div>
+    <div class="preview-content">
+      <div class="preview-label">🌟 Main News Card (Top News Section)</div>
+      <div class="preview-banner" id="previewMainCard"></div>
+
+      <div class="preview-grid">
+        <div>
+          <div class="preview-label">📋 Sidebar Card (Breaking News)</div>
+          <div class="preview-sidebar-card" id="previewSidebarCard"></div>
         </div>
-        <div class="preview-content">
-
-          <!-- Main News Card Preview -->
-          <div class="preview-label">🌟 Main News Card (Top News Section)</div>
-          <div class="preview-banner" id="previewMainCard">
-            <!-- Content populated by JavaScript -->
-          </div>
-
-          <!-- Two Column Layout -->
-          <div class="preview-grid">
-            <!-- Sidebar Preview -->
-            <div>
-              <div class="preview-label">📋 Sidebar Card (Breaking News)</div>
-              <div class="preview-sidebar-card" id="previewSidebarCard">
-                <!-- Content populated by JavaScript -->
-              </div>
-            </div>
-
-            <!-- Side News Preview -->
-            <div>
-              <div class="preview-label">📰 Side News Card</div>
-              <div class="preview-banner" id="previewSideCard">
-                <!-- Content populated by JavaScript -->
-              </div>
-            </div>
-          </div>
-
+        <div>
+          <div class="preview-label">📰 Side News Card</div>
+          <div class="preview-banner" id="previewSideCard"></div>
         </div>
       </div>
     </div>
+  </div>
+</div>
 
-    <div class="wrapper">
+<div class="wrapper">
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-
-      <div class="brand">
-        <div class="logo-wrap">
-          <img src="../images/mediabuzz365.png" alt="logo">
-        </div>
-        <h2>MediaBuzz365</h2>
-        <p>Admin Panel</p>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="brand">
+      <div class="logo-wrap">
+        <img src="../images/mediabuzz365.png" alt="logo">
       </div>
-
-      <nav>
-        <button onclick="navigate('add')">
-          <span>➕</span> Add News
-        </button>
-        <button onclick="navigate('list')">
-          <span>📰</span> All News
-        </button>
-        <button class="danger" onclick="logout()">
-          <span>🚪</span> Logout
-        </button>
-      </nav>
-
+      <h2>MediaBuzz365</h2>
+      <p>Admin Panel</p>
     </div>
 
+    <nav>
+      <button onclick="navigate('add')"><span>➕</span> Add News</button>
+      <button onclick="navigate('list')"><span>📰</span> All News</button>
+      <button class="danger" onclick="logout()"><span>🚪</span> Logout</button>
+    </nav>
+  </div>
 
-    <!-- MAIN -->
-    <div class="main">
+  <!-- MAIN -->
+  <div class="main">
 
     <!-- STATS -->
     <div class="stats">
-     <div class="stat"><h3>Total News</h3><b id="totalCount">0</b></div>
-     <div class="stat"><h3>Breaking News</h3><b id="breakingCount">0</b></div>
-     <div class="stat"><h3>National</h3><b id="nationalCount">0</b></div>
-     <div class="stat"><h3>Politics</h3><b id="politicsCount">0</b></div>
+      <div class="stat"><h3>Total News</h3><b id="totalCount">0</b></div>
+      <div class="stat"><h3>Breaking News</h3><b id="breakingCount">0</b></div>
+      <div class="stat"><h3>National</h3><b id="nationalCount">0</b></div>
+      <div class="stat"><h3>Politics</h3><b id="politicsCount">0</b></div>
     </div>
 
     <!-- ADD -->
     <div class="card" id="add">
-    <h3>Add / Edit News</h3>
+      <h3>Add / Edit News</h3>
 
-    <select id="city"></select>
+      <select id="city"></select>
 
+      <select id="category">
+        <option value="">-- Select Category --</option>
+        <option value="breaking">లేటెస్ట్ న్యూస్ (Breaking)</option>
+        <option value="national">నేషనల్ (National)</option>
+        <option value="international">ఇంటర్నేషనల్ (International)</option>
+        <option value="politics">రాజకీయాలు (Politics)</option>
+        <option value="crime">క్రైం (Crime)</option>
+        <option value="lifestyle">లైఫ్ స్టైల్ (Lifestyle)</option>
+        <option value="technology">టెక్నాలజీ (Technology)</option>
+        <option value="sports">క్రీడలు (Sports)</option>
+        <option value="cinema">సినిమా (Cinema)</option>
+        <option value="business">బిజినెస్ (Business)</option>
+        <option value="health">Health</option>
+      </select>
 
-    <select id="category">
-    <option value="">-- Select Category --</option>
-    <option value="breaking">లేటెస్ట్ న్యూస్ (Breaking)</option>
-    <option value="national">నేషనల్ (National)</option>
-    <option value="international">ఇంటర్నేషనల్ (International)</option>
-    <option value="politics">రాజకీయాలు (Politics)</option>
-    <option value="crime">క్రైం (Crime)</option>
-    <option value="lifestyle">లైఫ్ స్టైల్ (Lifestyle)</option>
-    <option value="technology">టెక్నాలజీ (Technology)</option>
-    <option value="sports">క్రీడలు (Sports)</option>
-    <option value="cinema">సినిమా (Cinema)</option>
-    <option value="business">బిజినెస్ (Business)</option>
-    <option value="health">Health</option>
-    </select>
+      <input id="title" placeholder="Enter news title (Telugu or English)">
+      <textarea id="description" placeholder="Enter news description"></textarea>
+      <input type="file" id="image" multiple accept="image/*">
 
-    <input id="title" placeholder="Enter news title (Telugu or English)">
-    <textarea id="description" placeholder="Enter news description"></textarea>
-    <input type="file" id="image" multiple accept="image/*">
-
-    <!-- IMAGE WARNING -->
-    <div id="imageWarning" class="image-warning">
-      <div class="icon">⚠️</div>
-      <div class="content">
-        <strong>Portrait Image Detected!</strong>
-        <p>The first image appears to be in portrait orientation (taller than wide). Please use landscape images as the first image for better display on the website.</p>
+      <!-- IMAGE WARNING -->
+      <div id="imageWarning" class="image-warning">
+        <div class="icon">⚠️</div>
+        <div class="content">
+          <strong>Portrait Image Detected!</strong>
+          <p>The first image appears to be in portrait orientation (taller than wide). Please use landscape images as the first image for better display on the website.</p>
+        </div>
       </div>
-    </div>
 
-    <!-- IMAGE PREVIEW -->
-    <div id="imagePreviewContainer" class="image-preview-container">
-      <div class="image-preview-header">
-        📸 Selected Images (<span id="imageCount">0</span>)
+      <!-- IMAGE PREVIEW -->
+      <div id="imagePreviewContainer" class="image-preview-container">
+        <div class="image-preview-header">
+          📸 Selected Images (<span id="imageCount">0</span>)
+        </div>
+        <div id="imagePreviewGrid" class="image-preview-grid"></div>
       </div>
-      <div id="imagePreviewGrid" class="image-preview-grid">
-        <!-- Images will be populated here -->
-      </div>
-    </div>
 
-    <div>
-    <button class="save-btn" onclick="saveNews()" id="saveBtn">Save News</button>
-    <button class="save-btn preview" onclick="showPreview()" id="previewBtn">👁️ Preview</button>
-    <button class="save-btn cancel" onclick="cancelEdit()" id="cancelBtn" style="display:none">Cancel</button>
-    </div>
+      <div>
+        <button class="save-btn" onclick="saveNews()" id="saveBtn">Save News</button>
+        <button class="save-btn preview" onclick="showPreview()" id="previewBtn">👁️ Preview</button>
+        <button class="save-btn cancel" onclick="cancelEdit()" id="cancelBtn" style="display:none">Cancel</button>
+      </div>
     </div>
 
     <!-- LIST -->
     <div class="card" id="list">
-    <h3>All News Articles</h3>
-    <div id="newsList"></div>
+      <h3>All News Articles</h3>
+      <div id="newsList"></div>
     </div>
 
-    </div>
-    </div>
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
 const API = window.location.origin;
 
-    let allNews=[];
-    let editMode=false;
-    let editId=null;
-    let deleteId=null;
+/* ========== ELEMENTS ========= */
+const city = document.getElementById("city");
+const category = document.getElementById("category");
+const title = document.getElementById("title");
+const description = document.getElementById("description");
+const image = document.getElementById("image");
 
-    const token = localStorage.getItem("token");
+const newsList = document.getElementById("newsList");
 
-    /* ========== AUTH ========= */
-    if(!token){
-     location.href="/admin/login.html";
-    }
+const totalCount = document.getElementById("totalCount");
+const breakingCount = document.getElementById("breakingCount");
+const nationalCount = document.getElementById("nationalCount");
+const politicsCount = document.getElementById("politicsCount");
 
-    /* ========== NAV ========= */
-    function navigate(id){
-     document.getElementById(id)
-     .scrollIntoView({behavior:"smooth"});
-    }
+const msgBox = document.getElementById("msgBox");
 
-    function logout(){
-     localStorage.removeItem("token");
-     location.href="/admin/login.html";
-    }
+const confirmBox = document.getElementById("confirmBox");
+const confirmYes = document.getElementById("confirmYes");
 
-    /* ========== LOAD USER DISTRICTS ========= */
-    function loadUserDistricts(){
+/* ========== STATE ========= */
+let allNews = [];
+let editMode = false;
+let editId = null;
+let deleteId = null;
+let socket = null;
 
-     fetch(API + "/api/users/me",{
-      headers:{ Authorization:"Bearer "+token }
-     })
-     .then(r=>r.json())
-     .then(user=>{
+const token = localStorage.getItem("token");
 
-      city.innerHTML="";
-
-      if(!user.districts.length){
-       city.innerHTML=`
-        <option value="">
-         No district assigned
-        </option>`;
-       city.disabled=true;
-       return;
-      }
-
-      city.disabled=false;
-
-      user.districts.forEach((d,i)=>{
-       city.innerHTML+=`
-        <option ${i===0?"selected":""}>
-         ${d}
-        </option>`;
-      });
-
-     });
-    }
-
-    /* ========== LOAD NEWS ========= */
-    function loadNews(){
-     fetch(API+"/api/news")
-     .then(r=>r.json())
-     .then(d=>{
-      allNews=d.reverse();
-      updateCounts(allNews);
-      render(allNews);
-     })
-     .catch(()=>{
-      showMsg("Failed to load","error");
-     });
-    }
-
-    /* ========== COUNTS ========= */
-    function updateCounts(d){
-     totalCount.textContent=d.length;
-     breakingCount.textContent=d.filter(n=>n.category==="breaking").length;
-     nationalCount.textContent=d.filter(n=>n.category==="national").length;
-     politicsCount.textContent=d.filter(n=>n.category==="politics").length;
-    }
-
-function render(data){
- newsList.innerHTML="";
-
- if(!data.length){
-  newsList.innerHTML=
-  `<p style="text-align:center;color:#64748b;padding:40px">
-   No news yet
-  </p>`;
-  return;
- }
-
- data.forEach(n=>{
-
-  let imgs = "";
-
-  if(n.images && n.images.length){
-   n.images.forEach(img=>{
-    imgs += `<img src="${img}" style="width:100%;height:180px;object-fit:cover;margin-bottom:6px;border-radius:8px">`;
-   });
-  }else{
-   imgs = `<img src="https://via.placeholder.com/280x180">`;
-  }
-
-  newsList.innerHTML+=`
-  <div class="news-card">
-
-   ${imgs}
-
-   <div class="news-body">
-    <span class="badge ${n.category}">
-     ${n.category}
-    </span>
-
-    <h4>${n.title}</h4>
-    <p>📍 ${n.city}</p>
-    <small>
-     🕐 ${new Date(n.date).toLocaleString()}
-    </small>
-
-    <div class="actions">
-     <button class="btn-small btn-gray"
-      onclick='editNews(${JSON.stringify(n)
-      .replace(/'/g,"&#39;")})'>Edit</button>
-
-     <button class="btn-small btn-red"
-      onclick="openConfirm('${n._id}')">
-      Delete
-     </button>
-    </div>
-   </div>
-  </div>`;
- });
+/* ========== AUTH (SAFE) ========= */
+if (!token) {
+  console.log("No token → redirecting");
+  location.href = "/admin/login.html";
 }
 
+/* ========== LOAD USER ========= */
+function loadUserDistricts() {
+  fetch("/api/users/me", {
+    headers: { Authorization: "Bearer " + token }
+  })
+  .then(res => {
+    if (res.status === 401) {
+      console.log("Token expired");
+      localStorage.removeItem("token");
+      location.href = "/admin/login.html";
+      return;
+    }
+    return res.json();
+  })
+  .then(user => {
+    if (!user) return;
 
-    /* ========== IMAGE ORIENTATION CHECK ========= */
-const image = document.getElementById("image");
-const imageWarning = document.getElementById("imageWarning");
-const imagePreviewContainer = document.getElementById("imagePreviewContainer");
-const imagePreviewGrid = document.getElementById("imagePreviewGrid");
-const imageCount = document.getElementById("imageCount");
-let selectedImages = [];
+    console.log("USER:", user);
 
-function checkImageOrientation(file) {
-  return new Promise((resolve) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
+    city.innerHTML = "";
 
-    img.onload = function() {
-      const isPortrait = img.height > img.width;
-      URL.revokeObjectURL(url);
-      resolve({ isPortrait, width: img.width, height: img.height });
-    };
+    // ✅ SUPER ADMIN
+    if (user.role === "super_admin") {
+      city.disabled = false;
+      city.innerHTML = `<option selected>All Districts</option>`;
+      return;
+    }
 
-    img.onerror = function() {
-      URL.revokeObjectURL(url);
-      resolve({ isPortrait: false, width: 0, height: 0 });
-    };
+    // ✅ ADMIN
+    if (!user.districts || !user.districts.length) {
+      city.innerHTML = `<option>No district assigned</option>`;
+      city.disabled = true;
+      return;
+    }
 
-    img.src = url;
+    city.disabled = false;
+
+    user.districts.forEach((d, i) => {
+      city.innerHTML += `<option ${i === 0 ? "selected" : ""}>${d}</option>`;
+    });
+  })
+  .catch(err => {
+    console.error(err);
+    city.innerHTML = `<option>Error loading</option>`;
   });
 }
 
-function renderImagePreviews() {
-  imagePreviewGrid.innerHTML = "";
-  imageCount.textContent = selectedImages.length;
+/* ========== LOAD NEWS ========= */
+let loading = false;
 
-  if (selectedImages.length === 0) {
-    imagePreviewContainer.classList.remove("show");
+function loadNews() {
+  if (loading) return;
+  loading = true;
+
+  fetch("/api/news")
+    .then(r => r.json())
+    .then(d => {
+      allNews = d.reverse();
+      updateCounts(allNews);
+      render(allNews);
+    })
+    .catch(() => showMsg("Failed to load", "error"))
+    .finally(() => loading = false);
+}
+
+/* ========== COUNTS ========= */
+function updateCounts(d) {
+  totalCount.textContent = d.length;
+  breakingCount.textContent = d.filter(n => n.category === "breaking").length;
+  nationalCount.textContent = d.filter(n => n.category === "national").length;
+  politicsCount.textContent = d.filter(n => n.category === "politics").length;
+}
+
+/* ========== RENDER ========= */
+function render(data) {
+  newsList.innerHTML = "";
+
+  if (!data.length) {
+    newsList.innerHTML = `<p style="text-align:center">No news yet</p>`;
     return;
   }
 
-  imagePreviewContainer.classList.add("show");
-
-  selectedImages.forEach((file, index) => {
-    const url = URL.createObjectURL(file);
-
-    // Check orientation for badge
-    checkImageOrientation(file).then(({ isPortrait }) => {
-      const card = document.createElement("div");
-      card.className = "preview-image-card";
-
-      const orientationBadge = isPortrait
-        ? '<span class="preview-image-badge badge-portrait">Portrait</span>'
-        : '<span class="preview-image-badge badge-landscape">Landscape</span>';
-
-      const firstBadge = index === 0
-        ? '<span class="preview-image-badge badge-first">1st Image</span> '
-        : '';
-
-      card.innerHTML = `
-        <img src="${url}" alt="${file.name}">
-        <button class="preview-image-remove" onclick="removeImage(${index})" title="Remove image">✕</button>
-        <div class="preview-image-info">
-          <div style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${file.name}">
-            ${file.name}
-          </div>
-          <div>
-            ${firstBadge}${orientationBadge}
+  data.forEach(n => {
+    newsList.innerHTML += `
+      <div class="news-card">
+        <img src="${n.images?.[0] || 'https://via.placeholder.com/300'}">
+        <div class="news-body">
+          <span class="badge ${n.category}">${n.category}</span>
+          <h4>${n.title}</h4>
+          <p>📍 ${n.city}</p>
+          <small>${new Date(n.date).toLocaleString()}</small>
+          <div class="actions">
+            <button onclick='editNews(${JSON.stringify(n).replace(/'/g, "&#39;")})'>Edit</button>
+            <button onclick="openConfirm('${n._id}')">Delete</button>
           </div>
         </div>
-      `;
-
-      imagePreviewGrid.appendChild(card);
-    });
+      </div>`;
   });
 }
 
-function removeImage(index) {
-  selectedImages.splice(index, 1);
+/* ========== SAVE ========= */
+function saveNews() {
+  const form = new FormData();
 
-  // Update the file input
-  const dt = new DataTransfer();
-  selectedImages.forEach(file => dt.items.add(file));
-  image.files = dt.files;
+  form.append("city", city.value);
+  form.append("category", category.value);
+  form.append("title", title.value);
+  form.append("description", description.value);
 
-  renderImagePreviews();
+  Array.from(image.files).forEach(f => form.append("imageFiles", f));
 
-  // Recheck orientation for first image
-  if (selectedImages.length > 0) {
-    checkImageOrientation(selectedImages[0]).then(({ isPortrait }) => {
-      if (isPortrait) {
-        imageWarning.classList.add("show");
-      } else {
-        imageWarning.classList.remove("show");
-      }
-    });
-  } else {
-    imageWarning.classList.remove("show");
-  }
+  const url = editMode ? "/api/news/" + editId : "/api/news";
+  const method = editMode ? "PUT" : "POST";
 
-  showMsg("Image removed", "success");
+  fetch(url, {
+    method,
+    headers: { Authorization: "Bearer " + token },
+    body: form
+  })
+  .then(() => {
+    showMsg("Saved!");
+    resetForm();
+    loadNews();
+  })
+  .catch(() => showMsg("Error saving", "error"));
 }
 
-image.addEventListener("change", async () => {
-  selectedImages = Array.from(image.files);
+/* ========== DELETE ========= */
+function openConfirm(id) {
+  deleteId = id;
+  confirmBox.style.display = "flex";
+}
 
-  console.log("FILES SELECTED:", selectedImages.length);
-  selectedImages.forEach(f => console.log(f.name));
+function confirmDelete() {
+  fetch("/api/news/" + deleteId, {
+    method: "DELETE",
+    headers: { Authorization: "Bearer " + token }
+  })
+  .then(() => {
+    showMsg("Deleted");
+    loadNews();
+  });
+}
 
-  // Render previews
-  renderImagePreviews();
+/* ========== RESET ========= */
+function resetForm() {
+  editMode = false;
+  editId = null;
 
-  // Check if first image is portrait
-  if (selectedImages.length > 0) {
-    const { isPortrait } = await checkImageOrientation(selectedImages[0]);
-
-    if (isPortrait) {
-      imageWarning.classList.add("show");
-      showMsg("⚠️ First image is portrait! Use landscape for better display", "warn");
-    } else {
-      imageWarning.classList.remove("show");
-    }
-  } else {
-    imageWarning.classList.remove("show");
-  }
-});
-
-    /* ========== SAVE ========= */
-function saveNews(){
-
- const form=new FormData();
-
- form.append("city",city.value);
- form.append("category",category.value);
- form.append("title",title.value);
- form.append("description",description.value);
-
- selectedImages.forEach(file=>{
-  form.append("imageFiles",file);
- });
-
- // DEBUG
- for(let p of form.entries()){
-  console.log(p[0], p[1].name || p[1]);
- }
-
- fetch(API+"/api/news",{
-  method:"POST",
-  headers:{
-   Authorization:"Bearer "+token
-  },
-  body:form
- })
- .then(r=>r.json())
- .then(d=>{
-  console.log(d);
-  showMsg("News uploaded successfully!", "success");
-
-  // Reset form
   city.selectedIndex = 0;
   category.value = "";
   title.value = "";
   description.value = "";
   image.value = "";
-  selectedImages = [];
-  imageWarning.classList.remove("show");
-  imagePreviewContainer.classList.remove("show");
-  imagePreviewGrid.innerHTML = "";
-  imageCount.textContent = "0";
-
-  // Reload news list
-  loadNews();
- })
- .catch(err => {
-  console.error(err);
-  showMsg("Upload failed. Please try again.", "error");
- });
 }
 
-    /* ========== PREVIEW ========= */
-    function showPreview() {
-      const cityVal = city.value;
-      const categoryVal = category.value;
-      const titleVal = title.value;
-      const descVal = description.value;
+/* ========== TOAST ========= */
+function showMsg(text, type = "success") {
+  msgBox.innerText = text;
+  msgBox.style.display = "block";
+  setTimeout(() => msgBox.style.display = "none", 3000);
+}
 
-      // Validation
-      if (!categoryVal || !titleVal) {
-        showMsg("Please fill category and title to preview", "warn");
-        return;
-      }
+/* ========== SOCKET (FIXED) ========= */
+function initSocket() {
+  if (socket) return;
+  if (typeof io !== "function") return; // socket.io not loaded
 
-      // Get category name in Telugu
-      const categoryMap = {
-        'breaking': 'లేటెస్ట్ న్యూస్',
-        'national': 'నేషనల్',
-        'international': 'ఇంటర్నేషనల్',
-        'politics': 'రాజకీయాలు',
-        'crime': 'క్రైం',
-        'lifestyle': 'లైఫ్ స్టైల్',
-        'technology': 'టెక్నాలజీ',
-        'sports': 'క్రీడలు',
-        'cinema': 'సినిమా',
-        'business': 'బిజినెస్',
-        'health': 'Health'
-      };
+  socket = io({ reconnection: false });
 
-      // Get image preview URL
-      let imageUrl = 'https://via.placeholder.com/800x450?text=No+Image+Selected';
-      if (selectedImages && selectedImages.length > 0) {
-        imageUrl = URL.createObjectURL(selectedImages[0]);
-      }
-
-      // Populate Main Card (Image Only)
-      document.getElementById('previewMainCard').innerHTML = `
-        <img src="${imageUrl}" class="preview-main-image" alt="Preview">
-      `;
-
-      // Populate Sidebar Card (Image Only)
-      document.getElementById('previewSidebarCard').innerHTML = `
-        <img src="${imageUrl}" class="preview-sidebar-image" alt="Preview">
-      `;
-
-      // Populate Side Card (Image Only)
-      document.getElementById('previewSideCard').innerHTML = `
-        <img src="${imageUrl}" class="preview-main-image" style="height: 180px; object-fit: contain;" alt="Preview">
-      `;
-
-      // Show modal
-      document.getElementById('previewOverlay').classList.add('show');
-    }
-
-    function closePreview() {
-      document.getElementById('previewOverlay').classList.remove('show');
-    }
-
-    // Close preview on overlay click
-    document.getElementById('previewOverlay').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closePreview();
-      }
-    });
-
-    // Close preview on ESC key
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        closePreview();
-      }
-    });
-
-    /* ========== EDIT ========= */
-    function editNews(n){
-
-     editMode=true;
-     editId=n._id;
-
-     city.value=n.city;
-     category.value=n.category;
-     title.value=n.title;
-     description.value=n.description;
-
-     saveBtn.innerHTML="Update News";
-     cancelBtn.style.display="inline-block";
-
-     // Hide warning when editing existing news
-     imageWarning.classList.remove("show");
-
-     navigate("add");
-    }
-
-    /* ========== CANCEL ========= */
-    function cancelEdit(){
-
-     editMode=false;
-     editId=null;
-
-     saveBtn.innerHTML="Save News";
-     cancelBtn.style.display="none";
-
-     city.selectedIndex=0;
-     title.value="";
-     description.value="";
-     category.value="";
-     image.value="";
-     selectedImages = [];
-     imageWarning.classList.remove("show");
-     imagePreviewContainer.classList.remove("show");
-     imagePreviewGrid.innerHTML = "";
-     imageCount.textContent = "0";
-    }
-
-    /* ========== DELETE ========= */
-    function openConfirm(id){
-     deleteId=id;
-     confirmBox.style.display="flex";
-    }
-
-    function closeConfirm(){
-     deleteId=null;
-     confirmBox.style.display="none";
-    }
-
-    function confirmDelete(){
-
-     fetch(API+"/api/news/"+deleteId,{
-      method:"DELETE",
-      headers:{
-       Authorization:"Bearer "+token
-      }
-     })
-     .then(r=>{
-      if(r.ok){
-       showMsg("Deleted","success");
-       loadNews();
-      }else{
-       showMsg("Delete failed","error");
-      }
-     })
-     .finally(closeConfirm);
-    }
-
-    /* ========== TOAST ========= */
-    function showMsg(text,type="success"){
-
-     msgBox.className="msg-box "+type;
-     msgBox.innerText=text;
-     msgBox.style.display="block";
-
-     setTimeout(()=>{
-      msgBox.style.display="none";
-     },3000);
-    }
-
-    /* ========== SOCKET ========= */
-    let socket;
-
-function initSocket(){
-  if(!socket){
-    socket = io();
-
-    const user = JSON.parse(atob(token.split(".")[1]));
-
-    socket.emit("join-admin", user.id);
-
-    socket.on("news:approved",()=>{
-      showMsg("Approved!");
-      loadNews();
-    });
-
-    socket.on("news:rejected",()=>{
-      showMsg("Rejected","warn");
-      loadNews();
-    });
-
-    socket.on("news:deleted", loadNews);
+  let user = null;
+  try {
+    user = JSON.parse(atob(token.split(".")[1]));
+  } catch (e) {
+    console.warn("Token is not a JWT; skipping join-admin", e);
   }
+
+  socket.on("connect", () => {
+    if (user?.id) socket.emit("join-admin", user.id);
+  });
+
+  socket.on("news:approved", loadNews);
+  socket.on("news:rejected", loadNews);
+  socket.on("news:deleted", loadNews);
 }
 
-    const user = JSON.parse(
-     atob(token.split(".")[1])
-    );
+/* ========== INIT ========= */
+loadUserDistricts();
+loadNews();
+initSocket();
 
-    socket.emit("join-admin",user.id);
+confirmYes.addEventListener("click", confirmDelete);
 
-    socket.on("news:approved",()=>{
-     showMsg("Approved!");
-     initSocket();
-     loadNews();
-     loadUserDistricts(); // refresh districts
-    });
+});
 
-    socket.on("news:rejected",()=>{
-     showMsg("Rejected","warn");
-     loadNews();
-    });
+function navigate(section) {
+  document.getElementById("add").style.display = section === "add" ? "block" : "none";
+  document.getElementById("list").style.display = section === "list" ? "block" : "none";
+}
 
-    socket.on("news:deleted",loadNews);
+// Confirm modal
+function closeConfirm() {
+  confirmBox.style.display = "none";
+}
 
-    /* ========== INIT ========= */
-    loadUserDistricts();
-    loadNews();
+// Preview modal
+function closePreview() {
+  previewOverlay.classList.remove("show");
+}
+function showPreview() {
+  previewOverlay.classList.add("show");
+}
 
-    confirmYes.addEventListener("click",confirmDelete);
-    </script>
+// Cancel edit
+function cancelEdit() {
+  resetForm();
+}
 
+// Edit (you likely already have a version elsewhere; stub to prevent crash)
+function editNews(news) {
+  editMode = true;
+  editId = news._id;
+  city.value = news.city ?? "";
+  category.value = news.category ?? "";
+  title.value = news.title ?? "";
+  description.value = news.description ?? "";
+}
+</script>
 
-    </body>
-    </html>
+</body>
+</html>
