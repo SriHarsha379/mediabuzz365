@@ -10,9 +10,7 @@ const headers = {
  Authorization: "Bearer " + token
 };
 
-const API = location.hostname.includes("localhost")
- ? "http://localhost:3001"
- : "https://mediabuzz365.in";
+const API = window.location.origin;
 
 /* ================= PAGE HANDLER ================= */
 /* ================= DISTRICTS ================= */
@@ -209,15 +207,13 @@ function openModal(n){
  mTitle.innerText=n.title;
  mCity.innerText="📍 "+n.city;
  mDesc.innerText=n.description;
-const BASE_URL = "https://mediabuzz365.in";
-
 const img =
   n.images && n.images.length
     ? n.images[0]
     : null;
 
 mImage.src = img
-  ? (img.startsWith("http") ? img : BASE_URL + img)
+  ? (img.startsWith("http") ? img : API + img)
   : "https://via.placeholder.com/400";
 
 
