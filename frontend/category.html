@@ -231,11 +231,10 @@ function renderCards(count) {
     loadMoreBtn.disabled = false;
     loadMoreBtn.textContent = `మరిన్ని వార్తలు చూడండి (${remaining} మిగిలాయి)`;
   } else {
-    loadMoreWrap.style.display = remaining <= 0 && visibleCount > 0 ? "block" : "none";
-    if (visibleCount > 0) {
-      loadMoreBtn.textContent = "అన్ని వార్తలు చదివారు ✓";
-      loadMoreBtn.disabled = true;
-    }
+    // All items shown — hide button if nothing was rendered, show completion message otherwise
+    loadMoreWrap.style.display = visibleCount > 0 ? "block" : "none";
+    loadMoreBtn.textContent = "అన్ని వార్తలు చదివారు ✓";
+    loadMoreBtn.disabled = true;
   }
 }
 

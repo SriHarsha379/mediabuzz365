@@ -19,7 +19,7 @@ if (tickerBarEl) {
 
   // Fetch latest headlines to populate the ticker
   fetch("/api/news?limit=10")
-    .then(r => r.ok ? r.json() : [])
+    .then(r => r.ok ? r.json() : Promise.resolve([]))
     .then(items => {
       if (!items || !items.length) return;
       items.sort((a, b) => new Date(b.date) - new Date(a.date));

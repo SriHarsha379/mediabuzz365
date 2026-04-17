@@ -72,6 +72,9 @@ body {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
+@media (prefers-reduced-motion: reduce) {
+  .ticker-items { animation: none; }
+}
 
 /* ===== TOP BAR ===== */
 .top-bar {
