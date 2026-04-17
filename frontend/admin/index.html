@@ -951,7 +951,6 @@ const token = localStorage.getItem("token");
 
 /* ========== AUTH (SAFE) ========= */
 if (!token) {
-  console.log("No token → redirecting");
   location.href = "/admin/login.html";
 }
 
@@ -962,7 +961,6 @@ function loadUserDistricts() {
   })
   .then(res => {
     if (res.status === 401) {
-      console.log("Token expired");
       localStorage.removeItem("token");
       location.href = "/admin/login.html";
       return;
@@ -971,8 +969,6 @@ function loadUserDistricts() {
   })
   .then(user => {
     if (!user) return;
-
-    console.log("USER:", user);
 
     city.innerHTML = "";
 

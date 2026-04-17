@@ -16,4 +16,9 @@ const schema=new mongoose.Schema({
  date:{type:Date,default:Date.now}
 });
 
+schema.index({ status: 1 });
+schema.index({ category: 1 });
+schema.index({ city: 1 });
+schema.index({ status: 1, date: -1 });
+
 module.exports=mongoose.model("News",schema);

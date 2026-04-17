@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>News Details - MediaBuzz365</title>
+<meta name="description" content="MediaBuzz365 - తెలుగు వార్తలు">
+<meta property="og:site_name" content="MediaBuzz365">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MediaBuzz365">
+<meta property="og:description" content="తెలుగు వార్తలు">
+<meta property="og:image" content="">
 <link rel="stylesheet" href="common.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -287,6 +293,15 @@ function checkImageOrientation(imgSrc) {
 fetch(`${API}/api/news/single/${id}`)
 .then(r=>r.json())
 .then(async n=>{
+
+ // UPDATE PAGE TITLE AND META TAGS
+ document.title = n.title + " - MediaBuzz365";
+ document.querySelector('meta[name="description"]').content = n.description || n.title;
+ document.querySelector('meta[property="og:title"]').content = n.title;
+ document.querySelector('meta[property="og:description"]').content = n.description || n.title;
+ if(n.images && n.images.length){
+  document.querySelector('meta[property="og:image"]').content = API + n.images[0];
+ }
 
  // TITLE
  title.innerText=n.title;

@@ -306,13 +306,18 @@ footer a:hover {
 <script>
 const API = window.location.origin;
 
+function escapeHtml(str){
+  if(!str) return "";
+  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
 /* SAFE IMAGE PICKER */
 function getImage(news){
   if(news.images && news.images.length>0){
-    return API + news.images[0]; // first image
+    return API + news.images[0];
   }
   if(news.image){
-    return API + news.image; // old records support
+    return API + news.image;
   }
   return "https://via.placeholder.com/800x400?text=No+Image";
 }
@@ -330,46 +335,44 @@ if (!category) {
 else {
   titleEl.textContent = category.toUpperCase() + " లేటెస్ట్ న్యూస్";
 
-  fetch(`${API}/api/news`)
+  fetch(`${API}/api/news?category=${encodeURIComponent(category)}`)
     .then(r => r.json())
     .then(data => {
 
-      const filtered = data.filter(n => n.category === category);
-
-      if (!filtered.length) {
+      if (!data || !data.length) {
         grid.innerHTML = "<p>ఈ విభాగంలో వార్తలు లేవు</p>";
         return;
       }
 
-      filtered.sort((a,b)=>new Date(b.date)-new Date(a.date));
-      const latest = filtered[0];
+      data.sort((a,b)=>new Date(b.date)-new Date(a.date));
+      const latest = data[0];
 
       /* TOP BIG NEWS */
       topNews.innerHTML = `
         <div class="top-news" onclick="openNews('${latest._id}')">
-          <img src="${getImage(latest)}">
+          <img src="${getImage(latest)}" alt="" loading="lazy">
           <div class="content">
-            <span class="tag">${latest.category}</span>
-            <h2>${latest.title}</h2>
+            <span class="tag">${escapeHtml(latest.category)}</span>
+            <h2>${escapeHtml(latest.title)}</h2>
             <small>
               🕒 ${new Date(latest.date).toLocaleString("te-IN")}
             </small>
-            <p>${latest.description||""}</p>
+            <p>${escapeHtml(latest.description||"")}</p>
           </div>
         </div>
       `;
 
       /* REST NEWS */
       grid.innerHTML="";
-      filtered.slice(1).forEach(n=>{
+      data.slice(1).forEach(n=>{
         const card=document.createElement("div");
         card.className="news-card";
         card.onclick=()=>openNews(n._id);
         card.innerHTML=`
-          <img src="${getImage(n)}">
+          <img src="${getImage(n)}" alt="" loading="lazy">
           <div class="content">
-            <span class="tag">${n.category}</span>
-            <h3>${n.title}</h3>
+            <span class="tag">${escapeHtml(n.category)}</span>
+            <h3>${escapeHtml(n.title)}</h3>
             <small>
               🕒 ${new Date(n.date).toLocaleDateString("te-IN")}
             </small>
@@ -378,6 +381,9 @@ else {
         grid.appendChild(card);
       });
 
+    })
+    .catch(()=>{
+      grid.innerHTML = "<p style='color:red'>వార్తలు లోడ్ కాలేదు</p>";
     });
 }
 

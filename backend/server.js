@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const http = require("http");
 const { Server } = require("socket.io");
+const rateLimit = require("express-rate-limit");
 const connectDB = require("./config/db");
 
 connectDB();
@@ -59,6 +60,16 @@ app.use(cors({
 app.use(express.json({limit:"10mb"}));
 app.use(express.urlencoded({extended:true}));
 
+/* ================= RATE LIMITING ================= */
+
+const publicNewsLimiter = rateLimit({
+ windowMs: 60 * 1000, // 1 minute
+ max: 60,             // 60 requests per minute per IP
+ standardHeaders: true,
+ legacyHeaders: false,
+ message: { error: "Too many requests, please try again later." }
+});
+
 /* ================= SOCKET CLIENT FIX ================= */
 /* THIS IS THE MAIN FIX */
 
@@ -72,7 +83,7 @@ app.use(
 /* ================= ROUTES ================= */
 
 app.use("/api/auth",require("./routes/auth"));
-app.use("/api/news",require("./routes/news"));
+app.use("/api/news", publicNewsLimiter, require("./routes/news"));
 app.use("/api/users",require("./routes/users"));
 app.use("/api/settings",require("./routes/settings"));
 

@@ -48,7 +48,7 @@ router.post("/",
 
 /* ================= PUBLIC ================= */
 router.get("/",async(req,res)=>{
- const { category, page: pageQuery, limit: limitQuery } = req.query;
+ const { category, city, page: pageQuery, limit: limitQuery } = req.query;
 
  let filter={status:"approved"};
  if(typeof category !== "undefined"){
@@ -56,6 +56,13 @@ router.get("/",async(req,res)=>{
    return res.status(400).json({ msg:"Invalid category" });
   }
   filter.category=category;
+ }
+
+ if(typeof city !== "undefined"){
+  if(typeof city !== "string" || city.length > 100){
+   return res.status(400).json({ msg:"Invalid city" });
+  }
+  filter.city=new RegExp("^"+city.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"$","i");
  }
 
  const hasPagination =
