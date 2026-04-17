@@ -46,13 +46,48 @@ router.post("/",
 
 /* ================= PUBLIC ================= */
 router.get("/",async(req,res)=>{
- const {category}=req.query;
+ const { category, page: pageQuery, limit: limitQuery } = req.query;
 
  let filter={status:"approved"};
  if(category) filter.category=category;
 
- const data=await News.find(filter).sort({date:-1});
- res.json(data);
+ const hasPagination =
+  typeof pageQuery !== "undefined" ||
+  typeof limitQuery !== "undefined";
+
+ if(!hasPagination){
+  const data=await News.find(filter).sort({date:-1});
+  return res.json(data);
+ }
+
+ const parsedPage = parseInt(pageQuery,10);
+ const parsedLimit = parseInt(limitQuery,10);
+ const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+ const limit =
+  Number.isFinite(parsedLimit) && parsedLimit > 0
+   ? Math.min(parsedLimit,50)
+   : 10;
+
+ const skip = (page - 1) * limit;
+
+ const [total,items] = await Promise.all([
+  News.countDocuments(filter),
+  News.find(filter).sort({date:-1}).skip(skip).limit(limit)
+ ]);
+
+ const totalPages = Math.max(1,Math.ceil(total / limit));
+
+ res.json({
+  items,
+  pagination:{
+   page,
+   limit,
+   total,
+   totalPages,
+   hasPrev: page > 1,
+   hasNext: page < totalPages
+  }
+ });
 });
 
 /* ================= SINGLE ================= */
