@@ -27,7 +27,7 @@ async function loadAllNews() {
 
     const raw = await response.json();
     const allNews = Array.isArray(raw) ? raw : (raw.items || []);
-    if (!allNews.length) {
+    if (!allNews || !allNews.length) {
       showNoNewsMessage();
       return;
     }

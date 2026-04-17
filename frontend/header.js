@@ -21,7 +21,7 @@ if (tickerBarEl) {
   fetch("/api/news?limit=10")
     .then(r => r.ok ? r.json() : Promise.resolve([]))
     .then(raw => {
-      const items = Array.isArray(raw) ? raw : (raw && raw.items ? raw.items : []);
+      const items = Array.isArray(raw) ? raw : (raw.items || []);
       if (!items.length) return;
       items.sort((a, b) => new Date(b.date) - new Date(a.date));
       // Duplicate items so the scroll feels continuous
