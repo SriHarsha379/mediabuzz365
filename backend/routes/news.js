@@ -62,15 +62,17 @@ router.get("/",async(req,res)=>{
   if(typeof city !== "string" || city.length > 100){
    return res.status(400).json({ msg:"Invalid city" });
   }
-  filter.city=new RegExp("^"+city.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"$","i");
+  filter.city=city;
  }
+
+ const collation = { locale:"en", strength:2 }; // case-insensitive, accent-insensitive
 
  const hasPagination =
   typeof pageQuery !== "undefined" ||
   typeof limitQuery !== "undefined";
 
  if(!hasPagination){
-  const data=await News.find(filter).sort({date:-1});
+  const data=await News.find(filter).collation(collation).sort({date:-1});
   return res.json(data);
  }
 
@@ -85,8 +87,8 @@ router.get("/",async(req,res)=>{
  const skip = (page - 1) * limit;
 
  const [total,items,counts] = await Promise.all([
-  News.countDocuments(filter),
-  News.find(filter).sort({date:-1}).skip(skip).limit(limit),
+  News.countDocuments(filter).collation(collation),
+  News.find(filter).collation(collation).sort({date:-1}).skip(skip).limit(limit),
   News.aggregate([
    { $match: filter },
    { $group: { _id: "$category", count: { $sum: 1 } } }
