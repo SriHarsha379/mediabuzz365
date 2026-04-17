@@ -945,6 +945,7 @@ let currentPage = 1;
 const pageSize = 12;
 let totalPages = 1;
 let totalItems = 0;
+let summaryCounts = {};
 
 const token = localStorage.getItem("token");
 
@@ -1018,13 +1019,15 @@ function loadNews(page = currentPage) {
         currentPage = data.pagination.page || 1;
         totalPages = data.pagination.totalPages || 1;
         totalItems = data.pagination.total || allNews.length;
+        summaryCounts = data.categoryCounts || {};
       } else {
         currentPage = 1;
         totalPages = 1;
         totalItems = allNews.length;
+        summaryCounts = {};
       }
 
-      updateCounts(allNews, totalItems);
+      updateCounts(allNews, totalItems, summaryCounts);
       render(allNews);
       updatePaginationControls();
     })
@@ -1033,11 +1036,11 @@ function loadNews(page = currentPage) {
 }
 
 /* ========== COUNTS ========= */
-function updateCounts(d, total = d.length) {
+function updateCounts(d, total = d.length, counts = {}) {
   totalCount.textContent = total;
-  breakingCount.textContent = d.filter(n => n.category === "breaking").length;
-  nationalCount.textContent = d.filter(n => n.category === "national").length;
-  politicsCount.textContent = d.filter(n => n.category === "politics").length;
+  breakingCount.textContent = counts.breaking ?? d.filter(n => n.category === "breaking").length;
+  nationalCount.textContent = counts.national ?? d.filter(n => n.category === "national").length;
+  politicsCount.textContent = counts.politics ?? d.filter(n => n.category === "politics").length;
 }
 
 function updatePaginationControls() {
@@ -1075,6 +1078,7 @@ function render(data) {
 
 /* ========== SAVE ========= */
 function saveNews() {
+  const wasEdit = editMode;
   const form = new FormData();
 
   form.append("city", city.value);
@@ -1095,7 +1099,7 @@ function saveNews() {
   .then(() => {
     showMsg("Saved!");
     resetForm();
-    loadNews(1);
+    loadNews(wasEdit ? currentPage : 1);
   })
   .catch(() => showMsg("Error saving", "error"));
 }

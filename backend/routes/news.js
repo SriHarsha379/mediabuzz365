@@ -49,7 +49,12 @@ router.get("/",async(req,res)=>{
  const { category, page: pageQuery, limit: limitQuery } = req.query;
 
  let filter={status:"approved"};
- if(category) filter.category=category;
+ if(typeof category !== "undefined"){
+  if(typeof category !== "string" || !/^[a-zA-Z0-9_-]{1,40}$/.test(category)){
+   return res.status(400).json({ msg:"Invalid category" });
+  }
+  filter.category=category;
+ }
 
  const hasPagination =
   typeof pageQuery !== "undefined" ||
@@ -70,15 +75,24 @@ router.get("/",async(req,res)=>{
 
  const skip = (page - 1) * limit;
 
- const [total,items] = await Promise.all([
+ const [total,items,counts] = await Promise.all([
   News.countDocuments(filter),
-  News.find(filter).sort({date:-1}).skip(skip).limit(limit)
+  News.find(filter).sort({date:-1}).skip(skip).limit(limit),
+  News.aggregate([
+   { $match: filter },
+   { $group: { _id: "$category", count: { $sum: 1 } } }
+  ])
  ]);
 
  const totalPages = Math.max(1,Math.ceil(total / limit));
+ const categoryCounts = counts.reduce((acc,item)=>{
+  acc[item._id || "unknown"] = item.count;
+  return acc;
+ },{});
 
  res.json({
   items,
+  categoryCounts,
   pagination:{
    page,
    limit,
