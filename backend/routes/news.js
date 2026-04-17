@@ -13,6 +13,8 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({storage});
+const DEFAULT_PAGE_SIZE = 10;
+const MAX_PAGE_SIZE = 50;
 
 /* ================= ADD ================= */
 router.post("/",
@@ -70,8 +72,8 @@ router.get("/",async(req,res)=>{
  const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
  const limit =
   Number.isFinite(parsedLimit) && parsedLimit > 0
-   ? Math.min(parsedLimit,50)
-   : 10;
+   ? Math.min(parsedLimit,MAX_PAGE_SIZE)
+   : DEFAULT_PAGE_SIZE;
 
  const skip = (page - 1) * limit;
 

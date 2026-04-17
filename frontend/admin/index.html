@@ -942,7 +942,7 @@ let editId = null;
 let deleteId = null;
 let socket = null;
 let currentPage = 1;
-const pageSize = 12;
+const pageSize = 10;
 let totalPages = 1;
 let totalItems = 0;
 let summaryCounts = {};
@@ -1012,7 +1012,12 @@ function loadNews(page = currentPage) {
   fetch(`/api/news?page=${page}&limit=${pageSize}`)
     .then(r => r.json())
     .then(data => {
-      const isPaginated = !!data && Array.isArray(data.items) && !!data.pagination;
+      const isPaginated =
+        !!data &&
+        Array.isArray(data.items) &&
+        typeof data.pagination?.page === "number" &&
+        typeof data.pagination?.totalPages === "number" &&
+        typeof data.pagination?.total === "number";
       allNews = isPaginated ? data.items : (Array.isArray(data) ? data.reverse() : []);
 
       if (isPaginated) {
