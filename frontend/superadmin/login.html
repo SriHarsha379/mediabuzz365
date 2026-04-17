@@ -32,7 +32,6 @@ async function login(){
  });
 
  const data = await res.json();
- console.log("LOGIN RESPONSE:",data);
 
  if(!data.token){
   msg.innerText=data.msg || "Login failed";

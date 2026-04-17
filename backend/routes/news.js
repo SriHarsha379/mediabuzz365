@@ -13,6 +13,8 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({storage});
+const DEFAULT_PAGE_SIZE = 10;
+const MAX_PAGE_SIZE = 50;
 
 /* ================= ADD ================= */
 router.post("/",
@@ -46,13 +48,71 @@ router.post("/",
 
 /* ================= PUBLIC ================= */
 router.get("/",async(req,res)=>{
- const {category}=req.query;
+ const { category, city, page: pageQuery, limit: limitQuery } = req.query;
 
  let filter={status:"approved"};
- if(category) filter.category=category;
+ if(typeof category !== "undefined"){
+  if(typeof category !== "string" || !/^[a-zA-Z0-9_-]{1,40}$/.test(category)){
+   return res.status(400).json({ msg:"Invalid category" });
+  }
+  filter.category=category;
+ }
 
- const data=await News.find(filter).sort({date:-1});
- res.json(data);
+ if(typeof city !== "undefined"){
+  if(typeof city !== "string" || city.length > 100){
+   return res.status(400).json({ msg:"Invalid city" });
+  }
+  filter.city=city;
+ }
+
+ const collation = { locale:"en", strength:2 }; // case-insensitive, accent-insensitive
+
+ const hasPagination =
+  typeof pageQuery !== "undefined" ||
+  typeof limitQuery !== "undefined";
+
+ if(!hasPagination){
+  const data=await News.find(filter).collation(collation).sort({date:-1});
+  return res.json(data);
+ }
+
+ const parsedPage = parseInt(pageQuery,10);
+ const parsedLimit = parseInt(limitQuery,10);
+ const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+ const limit =
+  Number.isFinite(parsedLimit) && parsedLimit > 0
+   ? Math.min(parsedLimit,MAX_PAGE_SIZE)
+   : DEFAULT_PAGE_SIZE;
+
+ const skip = (page - 1) * limit;
+
+ const [total,items,counts] = await Promise.all([
+  News.countDocuments(filter).collation(collation),
+  News.find(filter).collation(collation).sort({date:-1}).skip(skip).limit(limit),
+  News.aggregate([
+   { $match: filter },
+   { $group: { _id: "$category", count: { $sum: 1 } } }
+  ])
+ ]);
+
+ const totalPages = Math.max(1,Math.ceil(total / limit));
+ const categoryCounts = counts.reduce((acc,item)=>{
+  acc[item._id || "unknown"] = item.count;
+  return acc;
+ },{});
+
+ res.json({
+  items,
+  categoryCounts,
+  pagination:{
+   page,
+   limit,
+   total,
+   totalPages,
+   hasPrev: page > 1,
+   hasNext: page < totalPages
+  }
+ });
 });
 
 /* ================= SINGLE ================= */

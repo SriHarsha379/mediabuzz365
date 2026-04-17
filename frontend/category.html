@@ -4,152 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Category News - MediaBuzz365</title>
+<link rel="icon" href="/images/mediabuzz365.png" type="image/png">
 <link rel="stylesheet" href="common.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --primary: #2563eb;
-  --red: #dc2626;
-  --gold: #d4af37;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: "Noto Sans Telugu", sans-serif;
-  background: #f5f5f5;
-  margin: 0;
-}
-
-/* TOP BAR */
-.top-bar {
-  background: #fff;
-  border-bottom: 1px solid #e5e5e5;
-  padding: 12px 0;
-}
-
-.top-bar-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo img {
-  height: 50px;
-}
-
-.epaper-btn {
-  background: var(--red);
-  color: #fff;
-  padding: 8px 20px;
-  border-radius: 20px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-/* MAIN NAV */
-.main-nav {
-  background: var(--primary);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.nav-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  gap: 4px;
-  overflow-x: auto;
-  padding: 0 20px;
-  position: relative;
-}
-
-.nav-inner::-webkit-scrollbar {
-  height: 0;
-}
-
-.nav-inner a {
-  color: #fff;
-  text-decoration: none;
-  padding: 14px 20px;
-  white-space: nowrap;
-  font-weight: 600;
-  font-size: 15px;
-  transition: background 0.3s;
-  cursor: pointer;
-}
-
-.nav-inner a:hover,
-.nav-inner a.active {
-  background: rgba(255,255,255,0.15);
-}
-
-.nav-inner a.home {
-  font-size: 18px;
-}
-
-/* DROPDOWN MENU */
-.nav-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: #fff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  display: none;
-  z-index: 2000;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.nav-dropdown.show {
-  display: block;
-}
-
-.dropdown-grid {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
-}
-
-.dropdown-grid a {
-  color: #111;
-  padding: 10px 14px;
-  font-size: 14px;
-  border-radius: 6px;
-  transition: background 0.2s;
-}
-
-.dropdown-grid a:hover {
-  background: #f3f4f6;
-}
-
-/* CONTAINER */
+/* ===== CATEGORY-SPECIFIC STYLES ===== */
 .container {
   max-width: 1200px;
   margin: 30px auto;
   padding: 0 16px;
 }
-
 .category-title {
   font-size: 28px;
   margin-bottom: 20px;
   color: #0a2463;
 }
-
 .top-news {
   background: #fff;
   border-radius: 14px;
@@ -157,46 +26,38 @@ body {
   box-shadow: 0 8px 22px rgba(0,0,0,.15);
   margin-bottom: 30px;
   cursor: pointer;
+  transition: transform 0.2s;
 }
-
+.top-news:hover { transform: translateY(-2px); }
 .top-news img {
   width: 100%;
   height: 360px;
   object-fit: cover;
 }
-
-.top-news .content {
-  padding: 18px;
-}
+.top-news .content { padding: 18px; }
+.top-news .content small { color: #64748b; font-size: 13px; }
 
 .news-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
 }
-
 .news-card {
   background: #fff;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  box-shadow: 0 4px 14px rgba(0,0,0,.08);
   cursor: pointer;
-  transition: .25s;
+  transition: transform 0.2s;
 }
-
-.news-card:hover {
-  transform: translateY(-4px);
-}
-
+.news-card:hover { transform: translateY(-4px); }
 .news-card img {
   width: 100%;
   height: 180px;
   object-fit: cover;
 }
-
-.news-card .content {
-  padding: 12px;
-}
+.news-card .content { padding: 12px; }
+.news-card .content small { color: #64748b; font-size: 12px; }
 
 .tag {
   background: var(--red);
@@ -208,85 +69,41 @@ body {
   margin-bottom: 6px;
 }
 
-/* FOOTER */
-footer {
-  background: #1f2937;
+/* LOAD MORE */
+.load-more-wrap {
+  text-align: center;
+  margin: 30px 0 10px;
+}
+.load-more-btn {
+  background: var(--primary);
   color: #fff;
-  margin-top: 40px;
-  padding: 30px 20px 20px;
+  border: none;
+  padding: 12px 36px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: "Noto Sans Telugu", sans-serif;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
 }
+.load-more-btn:hover { background: #1d4ed8; transform: translateY(-1px); }
+.load-more-btn:disabled { background: #94a3b8; cursor: default; transform: none; }
 
-.footer-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 30px;
-  margin-bottom: 20px;
-}
-
-footer h4 {
-  font-size: 16px;
-  margin-bottom: 12px;
-  color: var(--gold);
-}
-
-footer a {
-  color: #d1d5db;
-  text-decoration: none;
-  display: block;
-  margin: 8px 0;
-  font-size: 14px;
-}
-
-footer a:hover {
-  color: var(--gold);
-}
-
-.copyright {
-  text-align: center;
-  padding-top: 20px;
-  border-top: 1px solid #374151;
-  font-size: 13px;
-  color: #9ca3af;
-}
-
-.footer-social {
-  display: flex;
-  gap: 16px;
-  margin-top: 10px;
-}
-
-.footer-social img {
-  width: 24px;
-  height: 24px;
-  filter: invert(1);
-  transition: transform 0.3s;
-}
-
-.footer-social img:hover {
-  transform: scale(1.15);
-}
-
-.contact-card {
-  text-align: center;
-  padding: 16px;
-  background: #374151;
-  border-radius: 6px;
-  margin: 20px auto;
-  max-width: 400px;
-  font-size: 14px;
-}
+/* SKELETON */
+.skel-card { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 14px rgba(0,0,0,.08); }
+.skel-card .skeleton-img { aspect-ratio: 16/9; }
+.skel-card .skeleton-block { padding: 12px; }
 
 @media(max-width:768px) {
-  .news-grid {
-    grid-template-columns: 1fr;
-  }
+  .news-grid { grid-template-columns: 1fr; }
+  .top-news img { height: 220px; }
 }
 </style>
 </head>
 
 <body>
+
+<!-- BREAKING NEWS TICKER -->
+<div id="tickerBar" class="ticker-bar"></div>
 
 <!-- TOP BAR -->
 <div class="top-bar" id="topBar"></div>
@@ -295,9 +112,19 @@ footer a:hover {
 <nav class="main-nav" id="mainNav"></nav>
 
 <div class="container">
-  <div class="category-title" id="categoryTitle">Loading...</div>
+  <div class="category-title" id="categoryTitle">
+    <div class="skeleton skeleton-text" style="height:28px;width:300px;"></div>
+  </div>
   <div id="topNews"></div>
-  <div class="news-grid" id="newsGrid"></div>
+  <div class="news-grid" id="newsGrid">
+    <!-- skeleton cards -->
+    <div class="skel-card"><div class="skeleton skeleton-img"></div><div class="skeleton-block"><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+    <div class="skel-card"><div class="skeleton skeleton-img"></div><div class="skeleton-block"><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+    <div class="skel-card"><div class="skeleton skeleton-img"></div><div class="skeleton-block"><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></div>
+  </div>
+  <div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
+    <button class="load-more-btn" id="loadMoreBtn" onclick="loadMore()">మరిన్ని వార్తలు చూడండి</button>
+  </div>
 </div>
 
 <!-- FOOTER -->
@@ -305,87 +132,120 @@ footer a:hover {
 
 <script>
 const API = window.location.origin;
+let allNewsData = [];
+let visibleCount = 0;
+const PAGE_SIZE = 9;
 
-/* SAFE IMAGE PICKER */
-function getImage(news){
-  if(news.images && news.images.length>0){
-    return API + news.images[0]; // first image
-  }
-  if(news.image){
-    return API + news.image; // old records support
-  }
-  return "https://via.placeholder.com/800x400?text=No+Image";
+function escapeHtml(str) {
+  if (!str) return "";
+  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+            .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 }
 
-const params = new URLSearchParams(location.search);
+function getImage(news) {
+  if (news.images && news.images.length > 0) return API + news.images[0];
+  if (news.image)                             return API + news.image;
+  return "/images/placeholder.svg";
+}
+
+const params   = new URLSearchParams(location.search);
 const category = params.get("category");
+const search   = params.get("search");
 
-const titleEl = document.getElementById("categoryTitle");
-const topNews = document.getElementById("topNews");
-const grid = document.getElementById("newsGrid");
+const titleEl  = document.getElementById("categoryTitle");
+const topNews  = document.getElementById("topNews");
+const grid     = document.getElementById("newsGrid");
+const loadMoreWrap = document.getElementById("loadMoreWrap");
+const loadMoreBtn  = document.getElementById("loadMoreBtn");
 
-if (!category) {
+// Build fetch URL
+let fetchUrl = `${API}/api/news`;
+if (search) {
+  titleEl.textContent = `"${search}" కోసం వెతికిన ఫలితాలు`;
+  fetchUrl += `?search=${encodeURIComponent(search)}`;
+} else if (category) {
+  titleEl.textContent = category.toUpperCase() + " న్యూస్";
+  fetchUrl += `?category=${encodeURIComponent(category)}`;
+} else {
   titleEl.textContent = "లేటెస్ట్ న్యూస్";
+  fetchUrl = `${API}/api/news`;
 }
-else {
-  titleEl.textContent = category.toUpperCase() + " లేటెస్ట్ న్యూస్";
 
-  fetch(`${API}/api/news`)
-    .then(r => r.json())
-    .then(data => {
+fetch(fetchUrl)
+  .then(r => r.json())
+  .then(data => {
+    grid.innerHTML = "";
+    topNews.innerHTML = "";
 
-      const filtered = data.filter(n => n.category === category);
+    if (!data || !data.length) {
+      grid.innerHTML = "<p>ఈ విభాగంలో వార్తలు లేవు</p>";
+      return;
+    }
 
-      if (!filtered.length) {
-        grid.innerHTML = "<p>ఈ విభాగంలో వార్తలు లేవు</p>";
-        return;
-      }
+    data.sort((a, b) => new Date(b.date) - new Date(a.date));
+    allNewsData = data;
 
-      filtered.sort((a,b)=>new Date(b.date)-new Date(a.date));
-      const latest = filtered[0];
-
-      /* TOP BIG NEWS */
-      topNews.innerHTML = `
-        <div class="top-news" onclick="openNews('${latest._id}')">
-          <img src="${getImage(latest)}">
-          <div class="content">
-            <span class="tag">${latest.category}</span>
-            <h2>${latest.title}</h2>
-            <small>
-              🕒 ${new Date(latest.date).toLocaleString("te-IN")}
-            </small>
-            <p>${latest.description||""}</p>
-          </div>
+    // TOP BIG NEWS (first item)
+    const latest = data[0];
+    topNews.innerHTML = `
+      <div class="top-news" onclick="openNews('${latest._id}')">
+        <img src="${getImage(latest)}" alt="" loading="lazy">
+        <div class="content">
+          <span class="tag">${escapeHtml(latest.category)}</span>
+          <h2>${escapeHtml(latest.title)}</h2>
+          <small>🕒 ${new Date(latest.date).toLocaleString("te-IN")}</small>
+          <p>${escapeHtml(latest.description || "")}</p>
         </div>
-      `;
+      </div>
+    `;
 
-      /* REST NEWS */
-      grid.innerHTML="";
-      filtered.slice(1).forEach(n=>{
-        const card=document.createElement("div");
-        card.className="news-card";
-        card.onclick=()=>openNews(n._id);
-        card.innerHTML=`
-          <img src="${getImage(n)}">
-          <div class="content">
-            <span class="tag">${n.category}</span>
-            <h3>${n.title}</h3>
-            <small>
-              🕒 ${new Date(n.date).toLocaleDateString("te-IN")}
-            </small>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
+    visibleCount = 0;
+    renderCards(PAGE_SIZE);
+  })
+  .catch(() => {
+    grid.innerHTML = "<p style='color:red'>వార్తలు లోడ్ కాలేదు</p>";
+  });
 
-    });
+function renderCards(count) {
+  const slice = allNewsData.slice(1 + visibleCount, 1 + visibleCount + count);
+  slice.forEach(n => {
+    const card = document.createElement("div");
+    card.className = "news-card";
+    card.onclick = () => openNews(n._id);
+    card.innerHTML = `
+      <img src="${getImage(n)}" alt="" loading="lazy">
+      <div class="content">
+        <span class="tag">${escapeHtml(n.category)}</span>
+        <h3>${escapeHtml(n.title)}</h3>
+        <small>🕒 ${new Date(n.date).toLocaleDateString("te-IN")}</small>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+  visibleCount += slice.length;
+
+  // Show/hide load more
+  const remaining = allNewsData.length - 1 - visibleCount;
+  if (remaining > 0) {
+    loadMoreWrap.style.display = "block";
+    loadMoreBtn.disabled = false;
+    loadMoreBtn.textContent = `మరిన్ని వార్తలు చూడండి (${remaining} మిగిలాయి)`;
+  } else {
+    // All items shown — hide button if nothing was rendered, show completion message otherwise
+    loadMoreWrap.style.display = visibleCount > 0 ? "block" : "none";
+    loadMoreBtn.textContent = "అన్ని వార్తలు చదివారు ✓";
+    loadMoreBtn.disabled = true;
+  }
 }
 
-function openNews(id){
-  window.location.href="news-detail.html?id="+id;
+function loadMore() {
+  renderCards(PAGE_SIZE);
+}
+
+function openNews(id) {
+  window.location.href = "news-detail.html?id=" + id;
 }
 </script>
-
 
 <script src="header.js"></script>
 <script src="footer.js"></script>

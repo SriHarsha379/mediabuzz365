@@ -302,6 +302,36 @@
     gap: 20px;
   }
 
+  .pagination-controls {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .pagination-controls button {
+    border: none;
+    border-radius: 10px;
+    padding: 8px 14px;
+    cursor: pointer;
+    background: #0f172a;
+    color: #fff;
+    font-size: 14px;
+  }
+
+  .pagination-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  #paginationInfo {
+    color: #334155;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
   .news-card {
     background: #fff;
     border-radius: 16px;
@@ -867,6 +897,11 @@
     <div class="card" id="list">
       <h3>All News Articles</h3>
       <div id="newsList"></div>
+      <div class="pagination-controls">
+        <button id="prevPageBtn">Previous</button>
+        <span id="paginationInfo">Page 1 of 1</span>
+        <button id="nextPageBtn">Next</button>
+      </div>
     </div>
 
   </div>
@@ -886,6 +921,9 @@ const description = document.getElementById("description");
 const image = document.getElementById("image");
 
 const newsList = document.getElementById("newsList");
+const prevPageBtn = document.getElementById("prevPageBtn");
+const nextPageBtn = document.getElementById("nextPageBtn");
+const paginationInfo = document.getElementById("paginationInfo");
 
 const totalCount = document.getElementById("totalCount");
 const breakingCount = document.getElementById("breakingCount");
@@ -903,12 +941,16 @@ let editMode = false;
 let editId = null;
 let deleteId = null;
 let socket = null;
+let currentPage = 1;
+const pageSize = 10;
+let totalPages = 1;
+let totalItems = 0;
+let summaryCounts = {};
 
 const token = localStorage.getItem("token");
 
 /* ========== AUTH (SAFE) ========= */
 if (!token) {
-  console.log("No token → redirecting");
   location.href = "/admin/login.html";
 }
 
@@ -919,7 +961,6 @@ function loadUserDistricts() {
   })
   .then(res => {
     if (res.status === 401) {
-      console.log("Token expired");
       localStorage.removeItem("token");
       location.href = "/admin/login.html";
       return;
@@ -928,8 +969,6 @@ function loadUserDistricts() {
   })
   .then(user => {
     if (!user) return;
-
-    console.log("USER:", user);
 
     city.innerHTML = "";
 
@@ -962,27 +1001,53 @@ function loadUserDistricts() {
 /* ========== LOAD NEWS ========= */
 let loading = false;
 
-function loadNews() {
+function loadNews(page = currentPage) {
   if (loading) return;
   loading = true;
 
-  fetch("/api/news")
+  fetch(`/api/news?page=${page}&limit=${pageSize}`)
     .then(r => r.json())
-    .then(d => {
-      allNews = d.reverse();
-      updateCounts(allNews);
+    .then(data => {
+      const isPaginated =
+        !!data &&
+        Array.isArray(data.items) &&
+        typeof data.pagination?.page === "number" &&
+        typeof data.pagination?.totalPages === "number" &&
+        typeof data.pagination?.total === "number";
+      allNews = isPaginated ? data.items : (Array.isArray(data) ? data.reverse() : []);
+
+      if (isPaginated) {
+        currentPage = data.pagination.page || 1;
+        totalPages = data.pagination.totalPages || 1;
+        totalItems = data.pagination.total || allNews.length;
+        summaryCounts = data.categoryCounts || {};
+      } else {
+        currentPage = 1;
+        totalPages = 1;
+        totalItems = allNews.length;
+        summaryCounts = {};
+      }
+
+      updateCounts(allNews, totalItems, summaryCounts);
       render(allNews);
+      updatePaginationControls();
     })
     .catch(() => showMsg("Failed to load", "error"))
     .finally(() => loading = false);
 }
 
 /* ========== COUNTS ========= */
-function updateCounts(d) {
-  totalCount.textContent = d.length;
-  breakingCount.textContent = d.filter(n => n.category === "breaking").length;
-  nationalCount.textContent = d.filter(n => n.category === "national").length;
-  politicsCount.textContent = d.filter(n => n.category === "politics").length;
+function updateCounts(d, total = d.length, counts = {}) {
+  totalCount.textContent = total;
+  breakingCount.textContent = counts.breaking ?? d.filter(n => n.category === "breaking").length;
+  nationalCount.textContent = counts.national ?? d.filter(n => n.category === "national").length;
+  politicsCount.textContent = counts.politics ?? d.filter(n => n.category === "politics").length;
+}
+
+function updatePaginationControls() {
+  paginationInfo.textContent = `Page ${currentPage} of ${Math.max(1, totalPages)} • ${totalItems} total`;
+  prevPageBtn.disabled = currentPage <= 1 || loading;
+  nextPageBtn.disabled = currentPage >= totalPages || loading;
 }
 
 /* ========== RENDER ========= */
@@ -1014,6 +1079,7 @@ function render(data) {
 
 /* ========== SAVE ========= */
 function saveNews() {
+  const wasEdit = editMode;
   const form = new FormData();
 
   form.append("city", city.value);
@@ -1034,7 +1100,7 @@ function saveNews() {
   .then(() => {
     showMsg("Saved!");
     resetForm();
-    loadNews();
+    loadNews(wasEdit ? currentPage : 1);
   })
   .catch(() => showMsg("Error saving", "error"));
 }
@@ -1052,7 +1118,8 @@ function confirmDelete() {
   })
   .then(() => {
     showMsg("Deleted");
-    loadNews();
+    const fallbackPage = allNews.length === 1 && currentPage > 1 ? currentPage - 1 : currentPage;
+    loadNews(fallbackPage);
   });
 }
 
@@ -1093,9 +1160,9 @@ function initSocket() {
     if (user?.id) socket.emit("join-admin", user.id);
   });
 
-  socket.on("news:approved", loadNews);
-  socket.on("news:rejected", loadNews);
-  socket.on("news:deleted", loadNews);
+  socket.on("news:approved", () => loadNews(currentPage));
+  socket.on("news:rejected", () => loadNews(currentPage));
+  socket.on("news:deleted", () => loadNews(currentPage));
 }
 
 /* ========== INIT ========= */
@@ -1104,6 +1171,12 @@ loadNews();
 initSocket();
 
 confirmYes.addEventListener("click", confirmDelete);
+prevPageBtn.addEventListener("click", () => {
+  if (currentPage > 1) loadNews(currentPage - 1);
+});
+nextPageBtn.addEventListener("click", () => {
+  if (currentPage < totalPages) loadNews(currentPage + 1);
+});
 
 });
 

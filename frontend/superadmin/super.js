@@ -10,78 +10,11 @@ const headers = {
  Authorization: "Bearer " + token
 };
 
-const API = location.hostname.includes("localhost")
- ? "http://localhost:3001"
- : "https://mediabuzz365.in";
+const API = window.location.origin;
 
 /* ================= PAGE HANDLER ================= */
-/* ================= DISTRICTS ================= */
+/* DISTRICTS is defined in districts.js, loaded before this script */
 
-const DISTRICTS = [
-
- // ANDHRA PRADESH
- "Srikakulam",
- "Parvathipuram Manyam",
- "Vizianagaram",
- "Visakhapatnam",
- "Anakapalli",
- "Alluri Sitharama Raju",
- "Kakinada",
- "Dr. B.R. Ambedkar Konaseema",
- "East Godavari",
- "Eluru",
- "West Godavari",
- "NTR",
- "Krishna",
- "Guntur",
- "Palnadu",
- "Bapatla",
- "Prakasam",
- "Sri Potti Sriramulu Nellore",
- "Kurnool",
- "Nandyal",
- "Anantapur",
- "Sri Sathya Sai",
- "YSR Kadapa",
- "Annamayya",
- "Tirupati",
- "Chittoor",
-
- // TELANGANA
- "Adilabad",
- "Bhadradri Kothagudem",
- "Hanumakonda",
- "Hyderabad",
- "Jagtial",
- "Jangaon",
- "Jayashankar Bhupalpally",
- "Jogulamba Gadwal",
- "Kamareddy",
- "Karimnagar",
- "Khammam",
- "Kumuram Bheem Asifabad",
- "Mahabubabad",
- "Mahabubnagar",
- "Mancherial",
- "Medak",
- "Medchal Malkajgiri",
- "Mulugu",
- "Nagarkurnool",
- "Nalgonda",
- "Narayanpet",
- "Nirmal",
- "Nizamabad",
- "Peddapalli",
- "Rajanna Sircilla",
- "Rangareddy",
- "Sangareddy",
- "Siddipet",
- "Suryapet",
- "Vikarabad",
- "Wanaparthy",
- "Warangal",
- "Yadadri Bhuvanagiri"
-];
 
 function show(id){
 
@@ -209,15 +142,13 @@ function openModal(n){
  mTitle.innerText=n.title;
  mCity.innerText="📍 "+n.city;
  mDesc.innerText=n.description;
-const BASE_URL = "https://mediabuzz365.in";
-
 const img =
   n.images && n.images.length
     ? n.images[0]
     : null;
 
 mImage.src = img
-  ? (img.startsWith("http") ? img : BASE_URL + img)
+  ? (img.startsWith("http") ? img : API + img)
   : "https://via.placeholder.com/400";
 
 
