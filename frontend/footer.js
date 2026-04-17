@@ -66,12 +66,14 @@ fetch("/api/settings/youtube")
 
  console.log("YT LINKS:", data);
 
- if(data && data.length && data[0]){
+ const link = Array.isArray(data) ? data[0] : data;
+
+ if(typeof link === "string" && link.trim()){
 
   const yt = document.getElementById("ytLink");
 
   if(yt){
-   yt.href = data[0];   // 🔥 dynamic link
+   yt.href = link.trim();   // 🔥 dynamic link
   }
 
  }
@@ -79,4 +81,3 @@ fetch("/api/settings/youtube")
 .catch(err=>{
  console.error("YT fetch error:", err);
 });
-
