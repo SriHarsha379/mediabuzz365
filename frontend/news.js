@@ -25,7 +25,8 @@ async function loadAllNews() {
     const response = await fetch(`${API}/api/news?limit=25`);
     if (!response.ok) throw new Error("Failed");
 
-    const allNews = await response.json();
+    const raw = await response.json();
+    const allNews = Array.isArray(raw) ? raw : (raw.items || []);
     if (!allNews || !allNews.length) {
       showNoNewsMessage();
       return;
