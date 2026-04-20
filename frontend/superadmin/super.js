@@ -12,6 +12,15 @@ const headers = {
 
 const API = window.location.origin;
 
+function escapeHTML(value){
+ return String(value ?? "")
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#39;");
+}
+
 /* ================= PAGE HANDLER ================= */
 /* DISTRICTS is defined in districts.js, loaded before this script */
 
@@ -146,10 +155,12 @@ async function loadPending(){
   }
 
   pendingListEl.innerHTML = pendingData.map((n,i)=>{
+   const safeTitle = escapeHTML(n.title);
+   const safeCity = escapeHTML(n.city);
    return `
     <div class="news" onclick="openModalByIndex(${i})">
-     <h3>${n.title}</h3>
-     <p>${n.city}</p>
+     <h3>${safeTitle}</h3>
+     <p>${safeCity}</p>
      <small>Click to view</small>
     </div>
    `;
@@ -312,19 +323,28 @@ async function loadAdmins(){
 
   const users = await res.json();
 
-  adminListEl.innerHTML = users.map(u=>`
+  adminListEl.innerHTML = users.map(u=>{
+   const safeName = escapeHTML(u.name);
+   const safeEmail = escapeHTML(u.email);
+   const safePhone = escapeHTML(u.phone || "N/A");
+   const safeAadhaar = escapeHTML(u.aadhaar || "N/A");
+   const safeRole = escapeHTML(u.role);
+   const safeStatus = escapeHTML(u.status);
+   const safeCreatedAt = escapeHTML(new Date(u.createdAt).toLocaleString());
+
+   return `
    <div class="news">
 
-    <b>👤 Candidate Name:</b> ${u.name}<br>
-    <b>📧 Email:</b> ${u.email}<br>
+    <b>👤 Candidate Name:</b> ${safeName}<br>
+    <b>📧 Email:</b> ${safeEmail}<br>
 
     <div class="meta">
-     📞 Phone: <b>${u.phone || "N/A"}</b><br>
-     🆔 Aadhaar: <b>${u.aadhaar || "N/A"}</b><br>
+     📞 Phone: <b>${safePhone}</b><br>
+     🆔 Aadhaar: <b>${safeAadhaar}</b><br>
      🗓 Registered On:
-      <b>${new Date(u.createdAt).toLocaleString()}</b><br>
-     🏷 Role: <b>${u.role}</b><br>
-     🔖 Status: <b>${u.status}</b>
+      <b>${safeCreatedAt}</b><br>
+     🏷 Role: <b>${safeRole}</b><br>
+     🔖 Status: <b>${safeStatus}</b>
     </div>
 
     ${
@@ -389,7 +409,8 @@ async function loadAdmins(){
     }
 
    </div>
-  `).join("");
+   `;
+  }).join("");
 
  }catch(err){
   console.error("loadAdmins error:",err);
