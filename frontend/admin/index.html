@@ -1037,7 +1037,7 @@ function loadStats() {
     headers: { Authorization: "Bearer " + token }
   })
   .then(r => {
-    if (!r.ok) throw new Error("Failed to fetch stats");
+    if (!r.ok) throw new Error(`Failed to fetch stats: ${r.status} ${r.statusText}`);
     return r.json();
   })
   .then(data => {
@@ -1051,7 +1051,7 @@ function loadStats() {
       headers: { Authorization: "Bearer " + token }
     })
     .then(r => {
-      if (!r.ok) throw new Error("fallback failed");
+      if (!r.ok) throw new Error(`Failed to fetch fallback stats: ${r.status} ${r.statusText}`);
       return r.json();
     })
     .then(items => {
