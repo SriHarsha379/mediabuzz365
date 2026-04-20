@@ -16,6 +16,7 @@ const storage = multer.diskStorage({
 const upload = multer({storage});
 const DEFAULT_PAGE_SIZE = 10;
 const MAX_PAGE_SIZE = 50;
+const ALLOWED_NEWS_STATUS = ["pending","approved","rejected"];
 
 /* ================= ADD ================= */
 router.post("/",
@@ -184,7 +185,12 @@ router.get("/admin",
   createdBy:userId,
   city: { $in: districts }
  };
- if(status) filter.status=status;
+ if(typeof status !== "undefined"){
+  if(typeof status !== "string" || !ALLOWED_NEWS_STATUS.includes(status)){
+   return res.status(400).json({ msg:"Invalid status" });
+  }
+  filter.status=status;
+ }
 
  const data=await News.find(filter).sort({date:-1});
 
@@ -216,7 +222,12 @@ router.get("/admin/all",
 
  const {status}=req.query;
  let filter={};
- if(status) filter.status=status;
+ if(typeof status !== "undefined"){
+  if(typeof status !== "string" || !ALLOWED_NEWS_STATUS.includes(status)){
+   return res.status(400).json({ msg:"Invalid status" });
+  }
+  filter.status=status;
+ }
 
  const data=await News.find(filter).sort({date:-1});
  res.json(data);
@@ -229,7 +240,7 @@ router.put("/:id",
  async(req,res)=>{
  
   if(!mongoose.Types.ObjectId.isValid(req.params.id)){
-   return res.status(400).json({ msg:"Invalid id" });
+   return res.status(400).json({ msg:"Invalid news ID format" });
   }
 
   const user=req.user;
