@@ -152,7 +152,7 @@ router.get("/admin/stats",
     News.countDocuments({status:"pending"}),
     News.countDocuments({status:"approved"})
    ]);
- 
+
    res.json({ total, pending, approved });
   }catch(err){
    res.status(500).json({ msg:"Failed to load stats" });

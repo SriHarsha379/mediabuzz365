@@ -1156,16 +1156,20 @@ function confirmDelete() {
     method: "DELETE",
     headers: { Authorization: "Bearer " + token }
   })
-  .then(r => {
-    if (!r.ok) throw new Error("Delete failed");
-    return r.json();
+  .then(async r => {
+    const payload = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      const reason = payload.msg || payload.message || `HTTP ${r.status}`;
+      throw new Error(reason);
+    }
+    return payload;
   })
   .then(() => {
     showMsg("Deleted");
     const fallbackPage = allNews.length === 1 && currentPage > 1 ? currentPage - 1 : currentPage;
     loadNews(fallbackPage);
   })
-  .catch(() => showMsg("Delete failed", "error"))
+  .catch(err => showMsg(err?.message || "Delete failed", "error"))
   .finally(() => {
     confirmYes.disabled = false;
     closeConfirm();
