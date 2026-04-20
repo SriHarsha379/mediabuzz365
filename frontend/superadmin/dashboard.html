@@ -325,8 +325,8 @@
 <button onclick="show('pending')">⏳ Pending News</button>
 <button onclick="show('analytics')">📈 Analytics</button>
 <button onclick="show('admins')">👥 Manage Admins</button>
-<button class="danger" onclick="logout()">🚪 Logout</button>
 <button onclick="show('youtube')">🎥 Manage YouTube</button>
+<button class="danger" onclick="logout()">🚪 Logout</button>
 
 </div>
 
@@ -337,9 +337,9 @@
 <div id="dashboard" class="page">
  <h2>Dashboard</h2>
  <div class="stats">
-  <div class="card">Total News <b id="total"></b></div>
-  <div class="card">Pending <b id="pendingCount"></b></div>
-  <div class="card">Approved <b id="approvedCount"></b></div>
+  <div class="card">Total News <b id="total">0</b></div>
+  <div class="card">Pending <b id="pendingCount">0</b></div>
+  <div class="card">Approved <b id="approvedCount">0</b></div>
  </div>
 </div>
 
@@ -503,17 +503,6 @@ async function saveYoutube(){
   alert("❌ Error saving YouTube link");
  }
 }
-
-// Load YouTube link when the page shows
-const originalShow = window.show;
-window.show = function(page) {
- if(typeof originalShow === 'function') {
-  originalShow(page);
- }
- if(page === 'youtube') {
-  loadYoutube();
- }
-};
 
 </script>
 

@@ -27,6 +27,7 @@ function show(id){
  if(id==="pending") loadPending();
  if(id==="analytics") drawChart();
  if(id==="admins") loadAdmins();
+ if(id==="youtube" && typeof window.loadYoutube === "function") window.loadYoutube();
 
  setActive(id);
 }
@@ -42,7 +43,8 @@ function setActive(id){
   dashboard:0,
   pending:1,
   analytics:2,
-  admins:3
+  admins:3,
+  youtube:4
  };
 
  if(map[id]!==undefined){
@@ -71,23 +73,40 @@ function setStats(t, p, a){
 async function loadStats(){
 
  try{
-  const res = await fetch(
+  const statsRes = await fetch(
    API+"/api/news/admin/stats",
    { headers }
   );
 
-  if(!res.ok){
-   if(res.status===401 || res.status===403){
-    logout();
-    return;
-   }
+  if(statsRes.ok){
+   const data = await statsRes.json();
+   setStats(data.total ?? 0, data.pending ?? 0, data.approved ?? 0);
+   return;
+  }
+
+  if(statsRes.status===401 || statsRes.status===403){
+   logout();
+   return;
+  }
+
+  // Fallback: derive counts from full list if stats route fails in some deployments
+  const allRes = await fetch(
+   API+"/api/news/admin/all",
+   { headers }
+  );
+
+  if(!allRes.ok){
    setStats(0,0,0);
    return;
   }
 
-  const data = await res.json();
+  const allNews = await allRes.json();
+  const list = Array.isArray(allNews) ? allNews : [];
 
-  setStats(data.total ?? 0, data.pending ?? 0, data.approved ?? 0);
+  const pending = list.filter((n)=>n.status==="pending").length;
+  const approved = list.filter((n)=>n.status==="approved").length;
+
+  setStats(list.length, pending, approved);
 
  }catch(err){
   console.error("loadStats error:",err);
@@ -103,24 +122,30 @@ let currentId=null;
 async function loadPending(){
 
  try{
+  const pendingListEl = document.getElementById("pendingList");
+  if(!pendingListEl) return;
+
   const res = await fetch(
    API+"/api/news/admin/all?status=pending",
    { headers }
   );
 
-  if(!res.ok) return;
+  if(!res.ok){
+   pendingListEl.innerHTML="<p>Failed to load pending news</p>";
+   return;
+  }
 
   pendingData = await res.json();
 
   if(!pendingData.length){
-   pendingList.innerHTML="<p>No pending news</p>";
+   pendingListEl.innerHTML="<p>No pending news</p>";
    return;
   }
 
-  pendingList.innerHTML="";
+  pendingListEl.innerHTML="";
 
   pendingData.forEach((n,i)=>{
-   pendingList.innerHTML+=`
+   pendingListEl.innerHTML+=`
     <div class="news" onclick="openModalByIndex(${i})">
      <h3>${n.title}</h3>
      <p>${n.city}</p>
@@ -131,6 +156,10 @@ async function loadPending(){
 
  }catch(err){
   console.error("loadPending error:",err);
+  const pendingListEl = document.getElementById("pendingList");
+  if(pendingListEl){
+   pendingListEl.innerHTML="<p>Failed to load pending news</p>";
+  }
  }
 }
 
@@ -271,12 +300,18 @@ let districtMap={};
 async function loadAdmins(){
 
  try{
+  const adminListEl = document.getElementById("adminList");
+  if(!adminListEl) return;
+
   const res = await fetch(API+"/api/users",{ headers });
-  if(!res.ok) return;
+  if(!res.ok){
+   adminListEl.innerHTML="<p>Failed to load admins</p>";
+   return;
+  }
 
   const users = await res.json();
 
-  adminList.innerHTML = users.map(u=>`
+  adminListEl.innerHTML = users.map(u=>`
    <div class="news">
 
     <b>👤 Candidate Name:</b> ${u.name}<br>
@@ -357,6 +392,10 @@ async function loadAdmins(){
 
  }catch(err){
   console.error("loadAdmins error:",err);
+  const adminListEl = document.getElementById("adminList");
+  if(adminListEl){
+   adminListEl.innerHTML="<p>Failed to load admins</p>";
+  }
  }
 }
 
