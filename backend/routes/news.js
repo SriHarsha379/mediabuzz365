@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const multer = require("multer");
+const mongoose = require("mongoose");
 const auth = require("../middleware/authMiddleware");
 const allow = require("../middleware/roleMiddleware");
 const News = require("../models/News");
@@ -23,9 +24,10 @@ router.post("/",
  async(req,res)=>{
 
  const user=req.user;
+ const city = typeof req.body.city === "string" ? req.body.city.trim() : "";
 
  if(user.role==="admin"){
-  if(!user.districts.includes(req.body.city)){
+  if(!user.districts.includes(city)){
    return res.status(403).json({msg:"No access"});
   }
  }
@@ -48,7 +50,7 @@ router.post("/",
  }
 
  const news = await News.create({
-   ...req.body,
+   city,
    title,
    description,
    category,
@@ -150,14 +152,19 @@ router.get("/admin/mystats",
  allow("admin"),
  async(req,res)=>{
   try{
-   const userId = String(req.user._id);
-   const [total,pending,approved,rejected] = await Promise.all([
-    News.countDocuments({createdBy:userId}),
-    News.countDocuments({createdBy:userId,status:"pending"}),
-    News.countDocuments({createdBy:userId,status:"approved"}),
-    News.countDocuments({createdBy:userId,status:"rejected"})
-   ]);
-   res.json({ total, pending, approved, rejected });
+    const userId = String(req.user._id);
+    const districts = Array.isArray(req.user.districts) ? req.user.districts : [];
+    const baseFilter = {
+     createdBy:userId,
+     city: { $in: districts }
+    };
+    const [total,pending,approved,rejected] = await Promise.all([
+     News.countDocuments(baseFilter),
+     News.countDocuments({ ...baseFilter, status:"pending" }),
+     News.countDocuments({ ...baseFilter, status:"approved" }),
+     News.countDocuments({ ...baseFilter, status:"rejected" })
+    ]);
+    res.json({ total, pending, approved, rejected });
   }catch(err){
    res.status(500).json({ msg:"Failed to load stats" });
   }
@@ -170,9 +177,13 @@ router.get("/admin",
 
  const user=req.user;
  const userId = String(user._id);
+ const districts = Array.isArray(user.districts) ? user.districts : [];
 
  const {status}=req.query;
- let filter={createdBy:userId};
+ let filter={
+  createdBy:userId,
+  city: { $in: districts }
+ };
  if(status) filter.status=status;
 
  const data=await News.find(filter).sort({date:-1});
@@ -216,17 +227,24 @@ router.put("/:id",
  auth,
  upload.array("imageFiles",10),
  async(req,res)=>{
+ 
+  if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+   return res.status(400).json({ msg:"Invalid id" });
+  }
 
- const user=req.user;
- const old=await News.findById(req.params.id);
+  const user=req.user;
+  const old=await News.findById(req.params.id);
 
  if(!old) return res.status(404).json({msg:"Not found"});
 
- if(user.role==="admin"){
-  if(!user.districts.includes(old.city)){
-   return res.status(403).json({msg:"No access"});
+  const city = typeof req.body.city === "string" ? req.body.city.trim() : "";
+  const targetCity = city || old.city;
+
+  if(user.role==="admin"){
+   if(!user.districts.includes(targetCity)){
+    return res.status(403).json({msg:"No access"});
+   }
   }
- }
 
  const title = typeof req.body.title === "string" ? req.body.title.trim() : "";
  const description = typeof req.body.description === "string" ? req.body.description.trim() : "";
@@ -244,7 +262,7 @@ router.put("/:id",
  }
 
  let data={
-  ...req.body,
+  city:targetCity,
   title,
   description,
   category,
