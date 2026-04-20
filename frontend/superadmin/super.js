@@ -66,7 +66,7 @@ async function loadStats(){
 
  try{
   const res = await fetch(
-   API+"/api/news/admin/all",
+   API+"/api/news/admin/stats",
    { headers }
   );
 
@@ -79,13 +79,9 @@ async function loadStats(){
 
   const data = await res.json();
 
-  total.innerText = data.length;
-
-  pendingCount.innerText =
-   data.filter(n=>n.status==="pending").length;
-
-  approvedCount.innerText =
-   data.filter(n=>n.status==="approved").length;
+  total.innerText = data.total ?? 0;
+  pendingCount.innerText = data.pending ?? 0;
+  approvedCount.innerText = data.approved ?? 0;
 
  }catch(err){
   console.error("loadStats error:",err);
@@ -521,7 +517,4 @@ window.addEventListener("resize",handleResize);
 /* ================= INIT ================= */
 
 show("dashboard");
-loadStats();
-loadPending();
-drawChart();
 handleResize();

@@ -411,6 +411,38 @@
     gap: 8px;
   }
 
+  .actions button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.25s ease;
+    flex: 1;
+  }
+
+  .actions .btn-edit {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+  }
+
+  .actions .btn-edit:hover {
+    background: #e2e8f0;
+    transform: translateY(-2px);
+  }
+
+  .actions .btn-delete {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #fff;
+  }
+
+  .actions .btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  }
+
   .btn-small {
     padding: 8px 14px;
     border: none;
@@ -1070,8 +1102,8 @@ function render(data) {
           <p>📍 ${n.city}</p>
           <small>${new Date(n.date).toLocaleString()}</small>
           <div class="actions">
-            <button onclick='editNews(${JSON.stringify(n).replace(/'/g, "&#39;")})'>Edit</button>
-            <button onclick="openConfirm('${n._id}')">Delete</button>
+            <button class="btn-edit" onclick='editNews(${JSON.stringify(n).replace(/'/g, "&#39;")})'>Edit</button>
+            <button class="btn-delete" onclick="openConfirm('${n._id}')">Delete</button>
           </div>
         </div>
       </div>`;
@@ -1113,14 +1145,34 @@ function openConfirm(id) {
 }
 
 function confirmDelete() {
+  if (!deleteId) {
+    closeConfirm();
+    return;
+  }
+
+  confirmYes.disabled = true;
+
   fetch("/api/news/" + deleteId, {
     method: "DELETE",
     headers: { Authorization: "Bearer " + token }
+  })
+  .then(async r => {
+    const payload = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      const reason = payload.msg || payload.message || `HTTP ${r.status}`;
+      throw new Error(reason);
+    }
+    return payload;
   })
   .then(() => {
     showMsg("Deleted");
     const fallbackPage = allNews.length === 1 && currentPage > 1 ? currentPage - 1 : currentPage;
     loadNews(fallbackPage);
+  })
+  .catch(err => showMsg(err?.message || "Delete failed", "error"))
+  .finally(() => {
+    confirmYes.disabled = false;
+    closeConfirm();
   });
 }
 
@@ -1181,6 +1233,7 @@ function navigate(section) {
 }
 
 function closeConfirm() {
+  deleteId = null;
   confirmBox.style.display = "none";
 }
 
