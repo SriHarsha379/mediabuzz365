@@ -1121,6 +1121,29 @@ function render(data) {
 
 /* ========== SAVE ========= */
 function saveNews() {
+  // --- Mandatory field validation ---
+  let valid = true;
+
+  [category, title, description].forEach(el => el.style.borderColor = "");
+
+  if (!category.value) {
+    category.style.borderColor = "#dc2626";
+    valid = false;
+  }
+  if (!title.value.trim()) {
+    title.style.borderColor = "#dc2626";
+    valid = false;
+  }
+  if (!description.value.trim()) {
+    description.style.borderColor = "#dc2626";
+    valid = false;
+  }
+
+  if (!valid) {
+    showMsg("Please fill in Category, Title and Description", "error");
+    return;
+  }
+
   const wasEdit = editMode;
   const form = new FormData();
 
@@ -1197,6 +1220,8 @@ function resetForm() {
   title.value = "";
   description.value = "";
   image.value = "";
+
+  [category, title, description].forEach(el => el.style.borderColor = "");
 }
 
 /* ========== TOAST ========= */
@@ -1280,6 +1305,11 @@ loadUserDistricts();
 loadStats();
 loadNews();
 initSocket();
+
+// Clear red borders when user corrects a field
+category.addEventListener("change", () => { category.style.borderColor = ""; });
+title.addEventListener("input", () => { title.style.borderColor = ""; });
+description.addEventListener("input", () => { description.style.borderColor = ""; });
 
 confirmYes.addEventListener("click", confirmDelete);
 prevPageBtn.addEventListener("click", () => {
