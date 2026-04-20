@@ -1057,17 +1057,21 @@ function loadStats() {
     })
     .then(items => {
       const list = Array.isArray(items) ? items : [];
-      const knownItems = list.filter(item =>
-        ["pending", "approved", "rejected"].includes(item?.status)
-      );
-      const stats = knownItems.reduce((acc, item) => {
+      const stats = list.reduce((acc, item) => {
         const status = item?.status;
-        if (status === "pending") acc.pending += 1;
-        else if (status === "approved") acc.approved += 1;
-        else if (status === "rejected") acc.rejected += 1;
+        if (status === "pending") {
+          acc.pending += 1;
+          acc.total += 1;
+        } else if (status === "approved") {
+          acc.approved += 1;
+          acc.total += 1;
+        } else if (status === "rejected") {
+          acc.rejected += 1;
+          acc.total += 1;
+        }
         return acc;
-      }, { pending: 0, approved: 0, rejected: 0 });
-      totalCount.textContent = knownItems.length;
+      }, { total: 0, pending: 0, approved: 0, rejected: 0 });
+      totalCount.textContent = stats.total;
       pendingCount.textContent = stats.pending;
       approvedCount.textContent = stats.approved;
       rejectedCount.textContent = stats.rejected;
