@@ -145,17 +145,15 @@ async function loadPending(){
    return;
   }
 
-  pendingListEl.innerHTML="";
-
-  pendingData.forEach((n,i)=>{
-   pendingListEl.innerHTML+=`
+  pendingListEl.innerHTML = pendingData.map((n,i)=>{
+   return `
     <div class="news" onclick="openModalByIndex(${i})">
      <h3>${n.title}</h3>
      <p>${n.city}</p>
      <small>Click to view</small>
     </div>
    `;
-  });
+  }).join("");
 
  }catch(err){
   console.error("loadPending error:",err);
