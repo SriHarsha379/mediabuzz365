@@ -1144,6 +1144,13 @@ function saveNews() {
     return;
   }
 
+  // Image required for non-breaking news on new (non-edit) submissions
+  if (!editMode && category.value !== "breaking" && image.files.length === 0) {
+    image.style.borderColor = "#dc2626";
+    showMsg("Please upload at least one image (required for non-breaking news)", "error");
+    return;
+  }
+
   const wasEdit = editMode;
   const form = new FormData();
 
@@ -1310,6 +1317,7 @@ initSocket();
 category.addEventListener("change", () => { category.style.borderColor = ""; });
 title.addEventListener("input", () => { title.style.borderColor = ""; });
 description.addEventListener("input", () => { description.style.borderColor = ""; });
+image.addEventListener("change", () => { image.style.borderColor = ""; });
 
 confirmYes.addEventListener("click", confirmDelete);
 prevPageBtn.addEventListener("click", () => {

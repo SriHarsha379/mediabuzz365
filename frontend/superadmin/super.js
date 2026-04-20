@@ -62,6 +62,12 @@ function logout(){
 
 /* ================= DASHBOARD ================= */
 
+function setStats(t, p, a){
+ document.getElementById("total").innerText = t;
+ document.getElementById("pendingCount").innerText = p;
+ document.getElementById("approvedCount").innerText = a;
+}
+
 async function loadStats(){
 
  try{
@@ -73,18 +79,19 @@ async function loadStats(){
   if(!res.ok){
    if(res.status===401 || res.status===403){
     logout();
+    return;
    }
+   setStats(0,0,0);
    return;
   }
 
   const data = await res.json();
 
-  total.innerText = data.total ?? 0;
-  pendingCount.innerText = data.pending ?? 0;
-  approvedCount.innerText = data.approved ?? 0;
+  setStats(data.total ?? 0, data.pending ?? 0, data.approved ?? 0);
 
  }catch(err){
   console.error("loadStats error:",err);
+  setStats(0,0,0);
  }
 }
 
@@ -246,9 +253,18 @@ async function drawChart(){
 
 /* ================= ADMIN MANAGEMENT ================= */
 
-const myId = JSON.parse(
- atob(token.split(".")[1])
-).id;
+let myId;
+try {
+ // JWTs use base64url; atob() needs standard base64 with padding
+ const b64 = token.split(".")[1]
+  .replace(/-/g, "+")
+  .replace(/_/g, "/");
+ const paddingNeeded = (4 - b64.length % 4) % 4;
+ const padded = b64 + "=".repeat(paddingNeeded);
+ myId = JSON.parse(atob(padded)).id;
+} catch(e) {
+ console.warn("Could not parse JWT payload:", e);
+}
 
 let districtMap={};
 
