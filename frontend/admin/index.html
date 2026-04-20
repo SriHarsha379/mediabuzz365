@@ -1123,18 +1123,21 @@ function render(data) {
 function saveNews() {
   // --- Mandatory field validation ---
   let valid = true;
+  const categoryValue = category.value.trim();
+  const titleValue = title.value.trim();
+  const descriptionValue = description.value.trim();
 
   [category, title, description].forEach(el => el.style.borderColor = "");
 
-  if (!category.value) {
+  if (!categoryValue) {
     category.style.borderColor = "#dc2626";
     valid = false;
   }
-  if (!title.value.trim()) {
+  if (!titleValue) {
     title.style.borderColor = "#dc2626";
     valid = false;
   }
-  if (!description.value.trim()) {
+  if (!descriptionValue) {
     description.style.borderColor = "#dc2626";
     valid = false;
   }
@@ -1144,8 +1147,11 @@ function saveNews() {
     return;
   }
 
-  // Image required for non-breaking news on new (non-edit) submissions
-  if (!editMode && category.value !== "breaking" && image.files.length === 0) {
+  const editingNews = editMode ? allAdminNews.find(n => n._id === editId) : null;
+  const hasExistingImages = Array.isArray(editingNews?.images) && editingNews.images.length > 0;
+
+  // Image required for all non-breaking news
+  if (categoryValue !== "breaking" && image.files.length === 0 && !hasExistingImages) {
     image.style.borderColor = "#dc2626";
     showMsg("Please upload at least one image (required for non-breaking news)", "error");
     return;
@@ -1155,9 +1161,9 @@ function saveNews() {
   const form = new FormData();
 
   form.append("city", city.value);
-  form.append("category", category.value);
-  form.append("title", title.value);
-  form.append("description", description.value);
+  form.append("category", categoryValue);
+  form.append("title", titleValue);
+  form.append("description", descriptionValue);
 
   Array.from(image.files).forEach(f => form.append("imageFiles", f));
 
@@ -1169,13 +1175,21 @@ function saveNews() {
     headers: { Authorization: "Bearer " + token },
     body: form
   })
+  .then(async r => {
+    const payload = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      const reason = payload.msg || payload.message || `HTTP ${r.status}`;
+      throw new Error(reason);
+    }
+    return payload;
+  })
   .then(() => {
     showMsg("Saved!");
     resetForm();
     loadStats();
     loadNews(wasEdit ? currentPage : 1);
   })
-  .catch(() => showMsg("Error saving", "error"));
+  .catch(err => showMsg(err?.message || "Error saving", "error"));
 }
 
 /* ========== DELETE ========= */

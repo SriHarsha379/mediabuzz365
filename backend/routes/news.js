@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const multer = require("multer");
+const mongoose = require("mongoose");
 const auth = require("../middleware/authMiddleware");
 const allow = require("../middleware/roleMiddleware");
 const News = require("../models/News");
@@ -15,6 +16,7 @@ const storage = multer.diskStorage({
 const upload = multer({storage});
 const DEFAULT_PAGE_SIZE = 10;
 const MAX_PAGE_SIZE = 50;
+const ALLOWED_NEWS_STATUS = ["pending","approved","rejected"];
 
 /* ================= ADD ================= */
 router.post("/",
@@ -23,9 +25,10 @@ router.post("/",
  async(req,res)=>{
 
  const user=req.user;
+ const city = typeof req.body.city === "string" ? req.body.city.trim() : "";
 
  if(user.role==="admin"){
-  if(!user.districts.includes(req.body.city)){
+  if(!user.districts.includes(city)){
    return res.status(403).json({msg:"No access"});
   }
  }
@@ -33,23 +36,28 @@ router.post("/",
  const files=req.files || [];
 
  // Validate required fields
- const { title, description, category } = req.body;
- if (!title || !title.trim()) return res.status(400).json({ msg: "Title is required" });
- if (!description || !description.trim()) return res.status(400).json({ msg: "Description is required" });
- if (!category || !category.trim()) return res.status(400).json({ msg: "Category is required" });
- if (title.trim().length > 500) return res.status(400).json({ msg: "Title must be 500 characters or less" });
- if (description.trim().length > 10000) return res.status(400).json({ msg: "Description must be 10000 characters or less" });
+ const title = typeof req.body.title === "string" ? req.body.title.trim() : "";
+ const description = typeof req.body.description === "string" ? req.body.description.trim() : "";
+ const category = typeof req.body.category === "string" ? req.body.category.trim() : "";
+ if (!title) return res.status(400).json({ msg: "Title is required" });
+ if (!description) return res.status(400).json({ msg: "Description is required" });
+ if (!category) return res.status(400).json({ msg: "Category is required" });
+ if (title.length > 500) return res.status(400).json({ msg: "Title must be 500 characters or less" });
+ if (description.length > 10000) return res.status(400).json({ msg: "Description must be 10000 characters or less" });
 
  // Image required for all categories except breaking news
- if (category.trim() !== "breaking" && files.length === 0) {
+ if (category !== "breaking" && files.length === 0) {
   return res.status(400).json({ msg: "At least one image is required for non-breaking news" });
  }
 
  const news = await News.create({
-  ...req.body,
-  status:"pending",
-  createdBy:user.id,
-  images: files.map(f=>"/uploads/"+f.filename)
+   city,
+   title,
+   description,
+   category,
+   status:"pending",
+   createdBy:user.id,
+   images: files.map(f=>"/uploads/"+f.filename)
  });
 
  req.app.get("io")
@@ -145,14 +153,19 @@ router.get("/admin/mystats",
  allow("admin"),
  async(req,res)=>{
   try{
-   const userId = String(req.user._id);
-   const [total,pending,approved,rejected] = await Promise.all([
-    News.countDocuments({createdBy:userId}),
-    News.countDocuments({createdBy:userId,status:"pending"}),
-    News.countDocuments({createdBy:userId,status:"approved"}),
-    News.countDocuments({createdBy:userId,status:"rejected"})
-   ]);
-   res.json({ total, pending, approved, rejected });
+    const userId = String(req.user._id);
+    const districts = Array.isArray(req.user.districts) ? req.user.districts : [];
+    const baseFilter = {
+     createdBy:userId,
+     city: { $in: districts }
+    };
+    const [total,pending,approved,rejected] = await Promise.all([
+     News.countDocuments(baseFilter),
+     News.countDocuments({ ...baseFilter, status:"pending" }),
+     News.countDocuments({ ...baseFilter, status:"approved" }),
+     News.countDocuments({ ...baseFilter, status:"rejected" })
+    ]);
+    res.json({ total, pending, approved, rejected });
   }catch(err){
    res.status(500).json({ msg:"Failed to load stats" });
   }
@@ -165,10 +178,19 @@ router.get("/admin",
 
  const user=req.user;
  const userId = String(user._id);
+ const districts = Array.isArray(user.districts) ? user.districts : [];
 
  const {status}=req.query;
- let filter={createdBy:userId};
- if(status) filter.status=status;
+ let filter={
+  createdBy:userId,
+  city: { $in: districts }
+ };
+ if(typeof status !== "undefined"){
+  if(typeof status !== "string" || !ALLOWED_NEWS_STATUS.includes(status)){
+   return res.status(400).json({ msg:"Invalid status" });
+  }
+  filter.status=ALLOWED_NEWS_STATUS.find((allowed)=>allowed===status);
+ }
 
  const data=await News.find(filter).sort({date:-1});
 
@@ -200,7 +222,12 @@ router.get("/admin/all",
 
  const {status}=req.query;
  let filter={};
- if(status) filter.status=status;
+ if(typeof status !== "undefined"){
+  if(typeof status !== "string" || !ALLOWED_NEWS_STATUS.includes(status)){
+   return res.status(400).json({ msg:"Invalid status" });
+  }
+  filter.status=ALLOWED_NEWS_STATUS.find((allowed)=>allowed===status);
+ }
 
  const data=await News.find(filter).sort({date:-1});
  res.json(data);
@@ -211,25 +238,50 @@ router.put("/:id",
  auth,
  upload.array("imageFiles",10),
  async(req,res)=>{
+ 
+  if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+   return res.status(400).json({ msg:"Invalid news ID format" });
+  }
 
- const user=req.user;
- const old=await News.findById(req.params.id);
+  const user=req.user;
+  const old=await News.findById(req.params.id);
 
  if(!old) return res.status(404).json({msg:"Not found"});
 
- if(user.role==="admin"){
-  if(!user.districts.includes(old.city)){
-   return res.status(403).json({msg:"No access"});
+  const city = typeof req.body.city === "string" ? req.body.city.trim() : "";
+  const targetCity = city || old.city;
+
+  if(user.role==="admin"){
+   if(!user.districts.includes(targetCity)){
+    return res.status(403).json({msg:"No access"});
+   }
   }
+
+ const title = typeof req.body.title === "string" ? req.body.title.trim() : "";
+ const description = typeof req.body.description === "string" ? req.body.description.trim() : "";
+ const category = typeof req.body.category === "string" ? req.body.category.trim() : "";
+ if (!title) return res.status(400).json({ msg: "Title is required" });
+ if (!description) return res.status(400).json({ msg: "Description is required" });
+ if (!category) return res.status(400).json({ msg: "Category is required" });
+ if (title.length > 500) return res.status(400).json({ msg: "Title must be 500 characters or less" });
+ if (description.length > 10000) return res.status(400).json({ msg: "Description must be 10000 characters or less" });
+
+ const uploadedImages = req.files || [];
+ const hasExistingImages = Array.isArray(old.images) && old.images.length > 0;
+ if (category !== "breaking" && uploadedImages.length === 0 && !hasExistingImages) {
+  return res.status(400).json({ msg: "At least one image is required for non-breaking news" });
  }
 
  let data={
-  ...req.body,
+  city:targetCity,
+  title,
+  description,
+  category,
   status:"pending"
  };
 
- if(req.files?.length){
-  data.images=req.files.map(f=>"/uploads/"+f.filename);
+ if(uploadedImages.length){
+  data.images=uploadedImages.map(f=>"/uploads/"+f.filename);
  }
 
  await News.findByIdAndUpdate(req.params.id,data);
