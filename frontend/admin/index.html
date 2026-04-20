@@ -870,10 +870,10 @@
 
     <!-- STATS -->
     <div class="stats">
-      <div class="stat"><h3>Total News</h3><b id="totalCount">0</b></div>
-      <div class="stat"><h3>Breaking News</h3><b id="breakingCount">0</b></div>
-      <div class="stat"><h3>National</h3><b id="nationalCount">0</b></div>
-      <div class="stat"><h3>Politics</h3><b id="politicsCount">0</b></div>
+      <div class="stat"><h3>My News</h3><b id="totalCount">0</b></div>
+      <div class="stat"><h3>Pending</h3><b id="pendingCount">0</b></div>
+      <div class="stat"><h3>Approved</h3><b id="approvedCount">0</b></div>
+      <div class="stat"><h3>Rejected</h3><b id="rejectedCount">0</b></div>
     </div>
 
     <!-- ADD -->
@@ -958,9 +958,9 @@ const nextPageBtn = document.getElementById("nextPageBtn");
 const paginationInfo = document.getElementById("paginationInfo");
 
 const totalCount = document.getElementById("totalCount");
-const breakingCount = document.getElementById("breakingCount");
-const nationalCount = document.getElementById("nationalCount");
-const politicsCount = document.getElementById("politicsCount");
+const pendingCount = document.getElementById("pendingCount");
+const approvedCount = document.getElementById("approvedCount");
+const rejectedCount = document.getElementById("rejectedCount");
 
 const msgBox = document.getElementById("msgBox");
 
@@ -970,6 +970,7 @@ const previewOverlay = document.getElementById("previewOverlay");
 
 /* ========== STATE ========= */
 let allNews = [];
+let allAdminNews = [];
 let editMode = false;
 let editId = null;
 let deleteId = null;
@@ -978,7 +979,6 @@ let currentPage = 1;
 const pageSize = 10;
 let totalPages = 1;
 let totalItems = 0;
-let summaryCounts = {};
 
 const token = localStorage.getItem("token");
 
@@ -1031,50 +1031,55 @@ function loadUserDistricts() {
   });
 }
 
+/* ========== LOAD STATS ========= */
+function loadStats() {
+  fetch("/api/news/admin/mystats", {
+    headers: { Authorization: "Bearer " + token }
+  })
+  .then(r => r.json())
+  .then(data => {
+    totalCount.textContent = data.total ?? 0;
+    pendingCount.textContent = data.pending ?? 0;
+    approvedCount.textContent = data.approved ?? 0;
+    rejectedCount.textContent = data.rejected ?? 0;
+  })
+  .catch(() => {});
+}
+
 /* ========== LOAD NEWS ========= */
 let loading = false;
 
-function loadNews(page = currentPage) {
+function loadNews(page = 1) {
   if (loading) return;
   loading = true;
 
-  fetch(`/api/news?page=${page}&limit=${pageSize}`)
-    .then(r => r.json())
-    .then(data => {
-      const isPaginated =
-        !!data &&
-        Array.isArray(data.items) &&
-        typeof data.pagination?.page === "number" &&
-        typeof data.pagination?.totalPages === "number" &&
-        typeof data.pagination?.total === "number";
-      allNews = isPaginated ? data.items : (Array.isArray(data) ? data.reverse() : []);
-
-      if (isPaginated) {
-        currentPage = data.pagination.page || 1;
-        totalPages = data.pagination.totalPages || 1;
-        totalItems = data.pagination.total || allNews.length;
-        summaryCounts = data.categoryCounts || {};
-      } else {
-        currentPage = 1;
-        totalPages = 1;
-        totalItems = allNews.length;
-        summaryCounts = {};
+  fetch(`/api/news/admin`, {
+    headers: { Authorization: "Bearer " + token }
+  })
+    .then(r => {
+      if (r.status === 401) {
+        localStorage.removeItem("token");
+        location.href = "/admin/login.html";
+        throw new Error("Unauthorized");
       }
+      return r.json();
+    })
+    .then(data => {
+      allAdminNews = Array.isArray(data) ? data : [];
+      totalItems = allAdminNews.length;
+      totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+      currentPage = Math.min(Math.max(1, page), totalPages);
 
-      updateCounts(allNews, totalItems, summaryCounts);
+      const start = (currentPage - 1) * pageSize;
+      allNews = allAdminNews.slice(start, start + pageSize);
+
       render(allNews);
       updatePaginationControls();
     })
-    .catch(() => showMsg("Failed to load", "error"))
+    .catch(err => {
+      if (err.message !== "Unauthorized") showMsg("Failed to load", "error");
+    })
     .finally(() => loading = false);
-}
-
-/* ========== COUNTS ========= */
-function updateCounts(d, total = d.length, counts = {}) {
-  totalCount.textContent = total;
-  breakingCount.textContent = counts.breaking ?? d.filter(n => n.category === "breaking").length;
-  nationalCount.textContent = counts.national ?? d.filter(n => n.category === "national").length;
-  politicsCount.textContent = counts.politics ?? d.filter(n => n.category === "politics").length;
 }
 
 function updatePaginationControls() {
@@ -1093,11 +1098,15 @@ function render(data) {
   }
 
   data.forEach(n => {
+    const statusColor = n.status === "approved" ? "#16a34a" : n.status === "rejected" ? "#dc2626" : "#f59e0b";
     newsList.innerHTML += `
       <div class="news-card">
         <img src="${n.images?.[0] || 'https://via.placeholder.com/300'}">
         <div class="news-body">
-          <span class="badge ${n.category}">${n.category}</span>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px;">
+            <span class="badge ${n.category}">${n.category}</span>
+            <span style="display:inline-block;padding:5px 12px;border-radius:20px;font-size:11px;color:#fff;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;background:${statusColor}">${n.status}</span>
+          </div>
           <h4>${n.title}</h4>
           <p>📍 ${n.city}</p>
           <small>${new Date(n.date).toLocaleString()}</small>
@@ -1133,6 +1142,7 @@ function saveNews() {
   .then(() => {
     showMsg("Saved!");
     resetForm();
+    loadStats();
     loadNews(wasEdit ? currentPage : 1);
   })
   .catch(() => showMsg("Error saving", "error"));
@@ -1166,6 +1176,7 @@ function confirmDelete() {
   })
   .then(() => {
     showMsg("Deleted");
+    loadStats();
     const fallbackPage = allNews.length === 1 && currentPage > 1 ? currentPage - 1 : currentPage;
     loadNews(fallbackPage);
   })
@@ -1213,9 +1224,9 @@ function initSocket() {
     if (user?.id) socket.emit("join-admin", user.id);
   });
 
-  socket.on("news:approved", () => loadNews(currentPage));
-  socket.on("news:rejected", () => loadNews(currentPage));
-  socket.on("news:deleted", () => loadNews(currentPage));
+  socket.on("news:approved", () => { loadStats(); loadNews(currentPage); });
+  socket.on("news:rejected", () => { loadStats(); loadNews(currentPage); });
+  socket.on("news:deleted", () => { loadStats(); loadNews(currentPage); });
 }
 
 function editNews(news) {
@@ -1266,6 +1277,7 @@ window.logout = logout;
 
 /* ========== INIT ========= */
 loadUserDistricts();
+loadStats();
 loadNews();
 initSocket();
 

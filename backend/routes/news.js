@@ -127,16 +127,37 @@ router.get("/single/:id", async (req,res)=>{
 });
 
 /* ================= ADMIN ================= */
+router.get("/admin/mystats",
+ auth,
+ allow("admin"),
+ async(req,res)=>{
+  try{
+   const userId = String(req.user._id);
+   const [total,pending,approved,rejected] = await Promise.all([
+    News.countDocuments({createdBy:userId}),
+    News.countDocuments({createdBy:userId,status:"pending"}),
+    News.countDocuments({createdBy:userId,status:"approved"}),
+    News.countDocuments({createdBy:userId,status:"rejected"})
+   ]);
+   res.json({ total, pending, approved, rejected });
+  }catch(err){
+   res.status(500).json({ msg:"Failed to load stats" });
+  }
+ });
+
 router.get("/admin",
  auth,
  allow("admin"),
  async(req,res)=>{
 
  const user=req.user;
+ const userId = String(user._id);
 
- const data=await News.find({
-  city:{ $in:user.districts }
- }).sort({date:-1});
+ const {status}=req.query;
+ let filter={createdBy:userId};
+ if(status) filter.status=status;
+
+ const data=await News.find(filter).sort({date:-1});
 
  res.json(data);
 });
