@@ -1036,14 +1036,33 @@ function loadStats() {
   fetch("/api/news/admin/mystats", {
     headers: { Authorization: "Bearer " + token }
   })
-  .then(r => r.json())
+  .then(r => {
+    if (!r.ok) throw new Error("stats endpoint unavailable");
+    return r.json();
+  })
   .then(data => {
     totalCount.textContent = data.total ?? 0;
     pendingCount.textContent = data.pending ?? 0;
     approvedCount.textContent = data.approved ?? 0;
     rejectedCount.textContent = data.rejected ?? 0;
   })
-  .catch(() => {});
+  .catch(() => {
+    fetch("/api/news/admin", {
+      headers: { Authorization: "Bearer " + token }
+    })
+    .then(r => {
+      if (!r.ok) throw new Error("fallback failed");
+      return r.json();
+    })
+    .then(items => {
+      const list = Array.isArray(items) ? items : [];
+      totalCount.textContent = list.length;
+      pendingCount.textContent = list.filter(n => n?.status === "pending").length;
+      approvedCount.textContent = list.filter(n => n?.status === "approved").length;
+      rejectedCount.textContent = list.filter(n => n?.status === "rejected").length;
+    })
+    .catch(() => {});
+  });
 }
 
 /* ========== LOAD NEWS ========= */
