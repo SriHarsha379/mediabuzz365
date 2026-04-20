@@ -934,6 +934,7 @@ const msgBox = document.getElementById("msgBox");
 
 const confirmBox = document.getElementById("confirmBox");
 const confirmYes = document.getElementById("confirmYes");
+const previewOverlay = document.getElementById("previewOverlay");
 
 /* ========== STATE ========= */
 let allNews = [];
@@ -1165,6 +1166,51 @@ function initSocket() {
   socket.on("news:deleted", () => loadNews(currentPage));
 }
 
+function editNews(news) {
+  editMode = true;
+  editId = news._id;
+  city.value = news.city ?? "";
+  category.value = news.category ?? "";
+  title.value = news.title ?? "";
+  description.value = news.description ?? "";
+}
+
+function navigate(section) {
+  document.getElementById("add").style.display = section === "add" ? "block" : "none";
+  document.getElementById("list").style.display = section === "list" ? "block" : "none";
+}
+
+function closeConfirm() {
+  confirmBox.style.display = "none";
+}
+
+function closePreview() {
+  previewOverlay.classList.remove("show");
+}
+
+function showPreview() {
+  previewOverlay.classList.add("show");
+}
+
+function cancelEdit() {
+  resetForm();
+}
+
+function logout() {
+  localStorage.removeItem("token");
+  location.href = "/admin/login.html";
+}
+
+window.saveNews = saveNews;
+window.showPreview = showPreview;
+window.cancelEdit = cancelEdit;
+window.openConfirm = openConfirm;
+window.closeConfirm = closeConfirm;
+window.closePreview = closePreview;
+window.navigate = navigate;
+window.editNews = editNews;
+window.logout = logout;
+
 /* ========== INIT ========= */
 loadUserDistricts();
 loadNews();
@@ -1179,39 +1225,6 @@ nextPageBtn.addEventListener("click", () => {
 });
 
 });
-
-function navigate(section) {
-  document.getElementById("add").style.display = section === "add" ? "block" : "none";
-  document.getElementById("list").style.display = section === "list" ? "block" : "none";
-}
-
-// Confirm modal
-function closeConfirm() {
-  confirmBox.style.display = "none";
-}
-
-// Preview modal
-function closePreview() {
-  previewOverlay.classList.remove("show");
-}
-function showPreview() {
-  previewOverlay.classList.add("show");
-}
-
-// Cancel edit
-function cancelEdit() {
-  resetForm();
-}
-
-// Edit (you likely already have a version elsewhere; stub to prevent crash)
-function editNews(news) {
-  editMode = true;
-  editId = news._id;
-  city.value = news.city ?? "";
-  category.value = news.category ?? "";
-  title.value = news.title ?? "";
-  description.value = news.description ?? "";
-}
 </script>
 
 </body>
