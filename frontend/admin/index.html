@@ -1046,7 +1046,8 @@ function loadStats() {
     approvedCount.textContent = data.approved ?? 0;
     rejectedCount.textContent = data.rejected ?? 0;
   })
-  .catch(() => {
+  .catch(err => {
+    console.warn("Primary stats endpoint failed:", err);
     fetch("/api/news/admin", {
       headers: { Authorization: "Bearer " + token }
     })
@@ -1068,7 +1069,9 @@ function loadStats() {
       approvedCount.textContent = stats.approved;
       rejectedCount.textContent = stats.rejected;
     })
-    .catch(() => {});
+    .catch(fallbackErr => {
+      console.error("Fallback stats endpoint failed:", fallbackErr);
+    });
   });
 }
 
