@@ -255,10 +255,12 @@ async function drawChart(){
 
 let myId;
 try {
+ // JWTs use base64url; atob() needs standard base64 with padding
  const b64 = token.split(".")[1]
   .replace(/-/g, "+")
   .replace(/_/g, "/");
- const padded = b64 + "=".repeat((4 - b64.length % 4) % 4);
+ const paddingNeeded = (4 - b64.length % 4) % 4;
+ const padded = b64 + "=".repeat(paddingNeeded);
  myId = JSON.parse(atob(padded)).id;
 } catch(e) {
  console.warn("Could not parse JWT payload:", e);

@@ -33,13 +33,15 @@ router.post("/",
  const files=req.files || [];
 
  // Validate required fields
- const { title: t, description: d, category: cat } = req.body;
- if (!t || !t.trim())   return res.status(400).json({ msg: "Title is required" });
- if (!d || !d.trim())   return res.status(400).json({ msg: "Description is required" });
- if (!cat || !cat.trim()) return res.status(400).json({ msg: "Category is required" });
+ const { title, description, category } = req.body;
+ if (!title || !title.trim()) return res.status(400).json({ msg: "Title is required" });
+ if (!description || !description.trim()) return res.status(400).json({ msg: "Description is required" });
+ if (!category || !category.trim()) return res.status(400).json({ msg: "Category is required" });
+ if (title.trim().length > 500) return res.status(400).json({ msg: "Title must be 500 characters or less" });
+ if (description.trim().length > 10000) return res.status(400).json({ msg: "Description must be 10000 characters or less" });
 
  // Image required for all categories except breaking news
- if (cat.trim() !== "breaking" && files.length === 0) {
+ if (category.trim() !== "breaking" && files.length === 0) {
   return res.status(400).json({ msg: "At least one image is required for non-breaking news" });
  }
 
