@@ -1063,7 +1063,7 @@ function loadStats() {
         else if (status === "rejected") acc.rejected += 1;
         return acc;
       }, { pending: 0, approved: 0, rejected: 0 });
-      totalCount.textContent = stats.pending + stats.approved + stats.rejected;
+      totalCount.textContent = list.length;
       pendingCount.textContent = stats.pending;
       approvedCount.textContent = stats.approved;
       rejectedCount.textContent = stats.rejected;
