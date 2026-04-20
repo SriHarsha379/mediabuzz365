@@ -142,6 +142,23 @@ router.get("/admin",
 });
 
 /* ================= SUPER ================= */
+router.get("/admin/stats",
+ auth,
+ allow("super_admin"),
+ async(req,res)=>{
+  try{
+   const [total,pending,approved] = await Promise.all([
+    News.countDocuments({}),
+    News.countDocuments({status:"pending"}),
+    News.countDocuments({status:"approved"})
+   ]);
+ 
+   res.json({ total, pending, approved });
+  }catch(err){
+   res.status(500).json({ msg:"Failed to load stats" });
+  }
+ });
+
 router.get("/admin/all",
  auth,
  allow("super_admin"),
