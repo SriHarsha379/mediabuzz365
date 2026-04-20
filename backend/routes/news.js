@@ -189,7 +189,7 @@ router.get("/admin",
   if(typeof status !== "string" || !ALLOWED_NEWS_STATUS.includes(status)){
    return res.status(400).json({ msg:"Invalid status" });
   }
-  filter.status=status;
+  filter.status=ALLOWED_NEWS_STATUS.find((allowed)=>allowed===status);
  }
 
  const data=await News.find(filter).sort({date:-1});
@@ -226,7 +226,7 @@ router.get("/admin/all",
   if(typeof status !== "string" || !ALLOWED_NEWS_STATUS.includes(status)){
    return res.status(400).json({ msg:"Invalid status" });
   }
-  filter.status=status;
+  filter.status=ALLOWED_NEWS_STATUS.find((allowed)=>allowed===status);
  }
 
  const data=await News.find(filter).sort({date:-1});
