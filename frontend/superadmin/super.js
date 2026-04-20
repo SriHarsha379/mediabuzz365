@@ -12,6 +12,15 @@ const headers = {
 
 const API = window.location.origin;
 
+function escapeHTML(value){
+ return String(value ?? "")
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#39;");
+}
+
 /* ================= PAGE HANDLER ================= */
 /* DISTRICTS is defined in districts.js, loaded before this script */
 
@@ -27,6 +36,7 @@ function show(id){
  if(id==="pending") loadPending();
  if(id==="analytics") drawChart();
  if(id==="admins") loadAdmins();
+ if(id==="youtube" && typeof window.loadYoutube === "function") window.loadYoutube();
 
  setActive(id);
 }
@@ -42,7 +52,8 @@ function setActive(id){
   dashboard:0,
   pending:1,
   analytics:2,
-  admins:3
+  admins:3,
+  youtube:4
  };
 
  if(map[id]!==undefined){
@@ -71,23 +82,43 @@ function setStats(t, p, a){
 async function loadStats(){
 
  try{
-  const res = await fetch(
+  const statsRes = await fetch(
    API+"/api/news/admin/stats",
    { headers }
   );
 
-  if(!res.ok){
-   if(res.status===401 || res.status===403){
-    logout();
-    return;
-   }
+  if(statsRes.ok){
+   const data = await statsRes.json();
+   setStats(data.total ?? 0, data.pending ?? 0, data.approved ?? 0);
+   return;
+  }
+
+  if(statsRes.status===401 || statsRes.status===403){
+   logout();
+   return;
+  }
+
+  // Fallback: derive counts from full list if stats route fails in some deployments
+  const allRes = await fetch(
+   API+"/api/news/admin/all",
+   { headers }
+  );
+
+  if(!allRes.ok){
    setStats(0,0,0);
    return;
   }
 
-  const data = await res.json();
+  const allNews = await allRes.json();
+  const list = Array.isArray(allNews) ? allNews : [];
 
-  setStats(data.total ?? 0, data.pending ?? 0, data.approved ?? 0);
+  const counts = list.reduce((acc, n)=>{
+   if(n.status==="pending") acc.pending += 1;
+   if(n.status==="approved") acc.approved += 1;
+   return acc;
+  },{ pending:0, approved:0 });
+
+  setStats(list.length, counts.pending, counts.approved);
 
  }catch(err){
   console.error("loadStats error:",err);
@@ -103,34 +134,44 @@ let currentId=null;
 async function loadPending(){
 
  try{
+  const pendingListEl = document.getElementById("pendingList");
+  if(!pendingListEl) return;
+
   const res = await fetch(
    API+"/api/news/admin/all?status=pending",
    { headers }
   );
 
-  if(!res.ok) return;
+  if(!res.ok){
+   pendingListEl.innerHTML="<p>Failed to load pending news</p>";
+   return;
+  }
 
   pendingData = await res.json();
 
   if(!pendingData.length){
-   pendingList.innerHTML="<p>No pending news</p>";
+   pendingListEl.innerHTML="<p>No pending news</p>";
    return;
   }
 
-  pendingList.innerHTML="";
-
-  pendingData.forEach((n,i)=>{
-   pendingList.innerHTML+=`
+  pendingListEl.innerHTML = pendingData.map((n,i)=>{
+   const safeTitle = escapeHTML(n.title);
+   const safeCity = escapeHTML(n.city);
+   return `
     <div class="news" onclick="openModalByIndex(${i})">
-     <h3>${n.title}</h3>
-     <p>${n.city}</p>
+     <h3>${safeTitle}</h3>
+     <p>${safeCity}</p>
      <small>Click to view</small>
     </div>
    `;
-  });
+  }).join("");
 
  }catch(err){
   console.error("loadPending error:",err);
+  const pendingListEl = document.getElementById("pendingList");
+  if(pendingListEl){
+   pendingListEl.innerHTML="<p>Failed to load pending news</p>";
+  }
  }
 }
 
@@ -271,24 +312,39 @@ let districtMap={};
 async function loadAdmins(){
 
  try{
+  const adminListEl = document.getElementById("adminList");
+  if(!adminListEl) return;
+
   const res = await fetch(API+"/api/users",{ headers });
-  if(!res.ok) return;
+  if(!res.ok){
+   adminListEl.innerHTML="<p>Failed to load admins</p>";
+   return;
+  }
 
   const users = await res.json();
 
-  adminList.innerHTML = users.map(u=>`
+  adminListEl.innerHTML = users.map(u=>{
+   const safeName = escapeHTML(u.name);
+   const safeEmail = escapeHTML(u.email);
+   const safePhone = escapeHTML(u.phone || "N/A");
+   const safeAadhaar = escapeHTML(u.aadhaar || "N/A");
+   const safeRole = escapeHTML(u.role);
+   const safeStatus = escapeHTML(u.status);
+   const safeCreatedAt = escapeHTML(new Date(u.createdAt).toLocaleString());
+
+   return `
    <div class="news">
 
-    <b>👤 Candidate Name:</b> ${u.name}<br>
-    <b>📧 Email:</b> ${u.email}<br>
+    <b>👤 Candidate Name:</b> ${safeName}<br>
+    <b>📧 Email:</b> ${safeEmail}<br>
 
     <div class="meta">
-     📞 Phone: <b>${u.phone || "N/A"}</b><br>
-     🆔 Aadhaar: <b>${u.aadhaar || "N/A"}</b><br>
+     📞 Phone: <b>${safePhone}</b><br>
+     🆔 Aadhaar: <b>${safeAadhaar}</b><br>
      🗓 Registered On:
-      <b>${new Date(u.createdAt).toLocaleString()}</b><br>
-     🏷 Role: <b>${u.role}</b><br>
-     🔖 Status: <b>${u.status}</b>
+      <b>${safeCreatedAt}</b><br>
+     🏷 Role: <b>${safeRole}</b><br>
+     🔖 Status: <b>${safeStatus}</b>
     </div>
 
     ${
@@ -353,10 +409,15 @@ async function loadAdmins(){
     }
 
    </div>
-  `).join("");
+   `;
+  }).join("");
 
  }catch(err){
   console.error("loadAdmins error:",err);
+  const adminListEl = document.getElementById("adminList");
+  if(adminListEl){
+   adminListEl.innerHTML="<p>Failed to load admins</p>";
+  }
  }
 }
 
