@@ -103,10 +103,13 @@ async function loadStats(){
   const allNews = await allRes.json();
   const list = Array.isArray(allNews) ? allNews : [];
 
-  const pending = list.filter((n)=>n.status==="pending").length;
-  const approved = list.filter((n)=>n.status==="approved").length;
+  const counts = list.reduce((acc, n)=>{
+   if(n.status==="pending") acc.pending += 1;
+   if(n.status==="approved") acc.approved += 1;
+   return acc;
+  },{ pending:0, approved:0 });
 
-  setStats(list.length, pending, approved);
+  setStats(list.length, counts.pending, counts.approved);
 
  }catch(err){
   console.error("loadStats error:",err);
